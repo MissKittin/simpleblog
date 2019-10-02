@@ -51,7 +51,7 @@ div.art-tags a:link, div.art-tags a:hover, div.art-tags a:visited {
 .art-date {
 	text-align: right;
 }
-.quotation { /* formatowanie tekstu */
+.quotation { /* text formatting */
 	text-align: center;
 	font-style: italic;
 	font-size: 20px;
