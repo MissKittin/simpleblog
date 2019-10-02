@@ -112,7 +112,6 @@ div#taglinks a:link, div#taglinks a:hover, div#taglinks a:visited {
 
 /* phone and tablet resolution */
 @media only screen and (max-width: 850px) {
-	/* tylko poprawki głównego stylu */
 	#headlinks {
 		width: 600px;
 		
