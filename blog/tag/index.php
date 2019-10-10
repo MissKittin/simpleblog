@@ -79,7 +79,6 @@
 					}
 					if($no_tags)
 						echo '<h1 style="text-align: center;">Empty</h1>';
-
 					echo '</div>';
 				}
 			?>
