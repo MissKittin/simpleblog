@@ -2,7 +2,7 @@
 	// Blog page renderer
 	// 13.04.2019 - 15.04.2019
 	// count_pages and articles naming patch 25.09.2019
-	// taglinks 29.09.2019
+	// taglinks 29.09.2019 switch 18.10.2019
 
 	include 'settings.php';
 
@@ -96,17 +96,18 @@
 							// check if article is public (old naming)
 							//if($art_public)
 							//{
-								// render tags
-								$tags='';
-								foreach(explode('#', $art_tags) as $tag)
+								// render tags if enabled
+								if($taglinks)
 								{
-									if($tag != '')
-									{
-										$tag=trim($tag);
-										$tags=$tags . ' <a href="' . $cms_root . 'tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
-									}
+									$tags='';
+									foreach(explode('#', $art_tags) as $tag)
+										if($tag != '')
+										{
+											$tag=trim($tag);
+											$tags=$tags . ' <a href="' . $cms_root . 'tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
+										}
+									$art_tags=$tags;
 								}
-								$art_tags=$tags; // if you want disable link render, comment out this line
 
 								// render article
 								echo '<div class="article">'."\n";
