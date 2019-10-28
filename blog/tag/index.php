@@ -113,10 +113,10 @@
 	</head>
 	<body>
 		<div id="header">
-			<?php include '../header.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include '../headlinks.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<?php
@@ -181,7 +181,7 @@
 			?>
 		</div>
 		<div id="footer">
-			<?php include '../footer.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'footer.php'; ?>
 		</div>
 	</body>
 </html>
