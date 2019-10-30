@@ -1,8 +1,13 @@
 <?php
 	// If you want to run this app on the php built-in server, pass path to this script in cmdline
 
+	// router cache
+	$router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
+	$router_cache['strrpos']=strrpos($router_cache['strtok'], '/');
+	$router_cache['substr']=substr($router_cache['strtok'], $router_cache['strrpos'] + 1);
+
 	// hide script - fake 404
-	if(strtok(substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '/') + 1), '?') === 'router.php')
+	if($router_cache['substr'] === 'router.php')
 	{
 		http_response_code(404);
 		echo '<!DOCTYPE html>
@@ -17,7 +22,7 @@
 
 	// hide script - fake 404 for local scripts
 	$routerscan['filename']='.router.php'; // set file name here
-	if(strtok(substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '/') + 1), '?') === $routerscan['filename'])
+	if($router_cache['substr'] === $routerscan['filename'])
 	{
 		http_response_code(404);
 		echo '<!DOCTYPE html>
@@ -31,7 +36,7 @@
 	}
 
 	// dont allow index.php in uri
-	if(strtok(substr($_SERVER['REQUEST_URI'], strrpos($_SERVER['REQUEST_URI'], '/') + 1), '?') === 'index.php')
+	if($router_cache['substr'] === 'index.php')
 	{
 		http_response_code(404);
 		echo '<!DOCTYPE html>
@@ -45,7 +50,7 @@
 	}
 
 	// 404 handle - for files
-	if(!file_exists(strtok($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'], '?')))
+	if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $router_cache['strtok']))
 	{
 		http_response_code(404);
 		if(substr(strtok($_SERVER['REQUEST_URI'], '?'), -1) === '/')
@@ -64,8 +69,8 @@
 	}
 
 	// 404 handle - for dirs
-	if(is_dir(strtok($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'], '?')))
-		if((file_exists(strtok($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'], '?') . '/index.php')) || (file_exists(strtok($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'], '?') . '/index.html')))
+	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $router_cache['strtok']))
+		if((file_exists($_SERVER['DOCUMENT_ROOT'] . $router_cache['strtok'] . '/index.php')) || (file_exists($_SERVER['DOCUMENT_ROOT'] . $router_cache['strtok'] . '/index.html')))
 		{ /* everything is ok */ }
 		else
 		{
@@ -112,6 +117,9 @@
 		$routerscan['rendered']='/';
 	}
 	unset($routerscan); // clean
+
+	// drop cache
+	unset($router_cache);
 
 	// abort script - load destination file
 	return false;
