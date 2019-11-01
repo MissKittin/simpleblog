@@ -91,6 +91,4 @@
 
 	// drop cache
 	unset($simpleblog_router_cache);
-
-return false;
 ?>
