@@ -11,7 +11,6 @@
 		exit();
 	}
 
-	include $_SERVER['DOCUMENT_ROOT'] . '/' . $_GET['root'] . 'settings.php';
 	header("Content-Type: text/css; X-Content-Type-Options: nosniff;");
-	echo '@import "' . $cms_root . 'skins/' . $skin . '/style.css"';
+	echo '@import "' . $cms_root . '/skins/' . $skin . '/style.css"';
 ?>

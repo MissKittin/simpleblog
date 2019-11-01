@@ -3,7 +3,6 @@
 	// 25.09.2019
 
 	// setup
-	include '../settings.php';
 	chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'articles');
 
 	// primitive security

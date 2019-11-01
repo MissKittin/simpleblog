@@ -3,8 +3,7 @@
 	// 13.04.2019 - 15.04.2019
 	// count_pages and articles naming patch 25.09.2019
 	// taglinks 29.09.2019 switch 18.10.2019
-
-	include 'settings.php';
+	// code redesign 01.11.2019
 
 	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
 
@@ -62,20 +61,20 @@
 	<head>
 		<title><?php echo "$page_title"; ?></title>
 		<meta charset="utf-8">
-		<link rel="shortcut icon" type="image/icon" href="<?php echo "$cms_root"; ?>favicon.ico">
-		<link rel="stylesheet" type="text/css" href="<?php echo "$cms_root"; ?>style?root=<?php echo "$cms_root"; ?>">
+		<link rel="shortcut icon" type="image/icon" href="<?php echo "$cms_root"; ?>/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="<?php echo "$cms_root"; ?>/style?root=<?php echo "$cms_root"; ?>">
 	</head>
 	<body>
 		<div id="header">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'header.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'headlinks.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<?php
 				$loop_ind=1; // first if in foreach
-				$files=scandir('articles/');
+				$files=scandir($_SERVER['DOCUMENT_ROOT'] . $cms_root . '/articles/');
 				foreach(array_reverse($files) as $file)
 				{
 					// debug
@@ -133,7 +132,7 @@
 			<?php count_pages(); echo "\n"; ?>
 		</div>
 		<div id="footer">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . 'footer.php'; ?>
+			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/footer.php'; ?>
 		</div>
 	</body>
 </html>
