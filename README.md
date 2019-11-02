@@ -2,7 +2,7 @@
 I wanted a wordpress on my linux server, but without javascript. So I wrote simple script, that render my short posts.
 <br><br>
 No cookies, no sessions and conventional database, with tags, custom pages and hiding articles. Managed via SSH (admin panel is primitive and unsecured).<br>
-But first: open blog/router.php and fill settings<br>
-then copy /blog/skins/default and create your own.
+But first: run setup.sh (setup.bat on windows), open files indicated by the setup script, copy /blog/skins/default and create your own.
 <br><br>
-run setup.sh after clone
+with my skin looks like this:<br>
+![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/preview_main.png)
