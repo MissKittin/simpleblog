@@ -1,0 +1,14 @@
+# Fill paths below
+ErrorDocument 403 /blog/prevent-index.php
+ErrorDocument 404 /blog/prevent-index.php
+
+# Deny access to articles
+RewriteEngine On
+RewriteRule ^articles/?$ - [F,L]
+RewriteRule ^articles/* - [F,L]
+
+# Deny access to footer.php, header.php, headlinks.php and settings.php
+<FilesMatch "^(footer|header|headlinks|settings)\.php">
+Order allow,deny
+Deny from all
+</FilesMatch>

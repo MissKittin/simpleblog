@@ -1,9 +1,11 @@
+<?php if(php_sapi_name() != 'cli-server') include 'settings.php'; ?>
 <?php
 	// Blog page renderer
 	// 13.04.2019 - 15.04.2019
 	// count_pages and articles naming patch 25.09.2019
 	// taglinks 29.09.2019 switch 18.10.2019
 	// code redesign 01.11.2019
+	// apache mod  02.11.2019
 
 	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
 
@@ -103,7 +105,7 @@
 										if($tag != '')
 										{
 											$tag=trim($tag);
-											$tags=$tags . ' <a href="' . $cms_root . 'tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
+											$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
 										}
 									$art_tags=$tags;
 								}

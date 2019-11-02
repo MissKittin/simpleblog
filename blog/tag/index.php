@@ -1,3 +1,4 @@
+<?php if(php_sapi_name() != 'cli-server') include '../settings.php'; ?>
 <?php
 	// Tag browser
 	// 28-29.09.2019

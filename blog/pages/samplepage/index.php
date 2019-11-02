@@ -1,3 +1,4 @@
+<?php if(php_sapi_name() != 'cli-server') include '../../settings.php'; ?>
 <!DOCTYPE html>
 <html>
 	<head>

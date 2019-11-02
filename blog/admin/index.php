@@ -1,14 +1,15 @@
+<?php if(php_sapi_name() != 'cli-server') include '../settings.php'; ?>
 <?php
 	// Admin page
 	// 25.09.2019
 
 	// setup
-	chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'articles');
+	chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/articles');
 
 	// primitive security
-	if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'admin/disabled.php'))
+	if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php'))
 	{
-		include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'admin/disabled.php';
+		include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php';
 		exit();
 	}
 
@@ -17,14 +18,14 @@
 	{
 		if(isset($_GET['sure']))
 		{
-			chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'admin');
+			chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin');
 			$files=scandir('.');
 			foreach($files as $file)
 				if(($file != '.') && ($file != '..') && ($file != 'index.php'))
 				{
 					rename($file, 'disabled.php');
 				}
-			include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . 'admin/disabled.php';
+			include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php';
 			exit();
 		}
 		else
@@ -48,7 +49,7 @@
 			exit();
 		}
 ?>
-<?php if(isset($_GET['new'])) { if(opcache_get_status()) opcache_reset(); ?>
+<?php if(isset($_GET['new'])) { if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset(); ?>
 	<?php
 		// save new article
 		if(isset($_POST['save_new']))
@@ -74,7 +75,7 @@
 		</head>
 		<body>
 			<h1>Write new article</h1>
-			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>admin">Back</a></div>
+			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>/admin">Back</a></div>
 			<?php
 				if(isset($_GET['filename']))
 					$filename=$_GET['filename'];
@@ -124,7 +125,7 @@
 		</body>
 	</html>
 <?php exit(); } ?>
-<?php if(isset($_GET['edit'])) { if(opcache_get_status()) opcache_reset(); ?>
+<?php if(isset($_GET['edit'])) { if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset(); ?>
 	<?php
 		// save edited article
 		if(isset($_POST['save_edited']))
@@ -150,7 +151,7 @@
 		</head>
 		<body>
 			<h1>Edit article</h1>
-			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>admin">Back</a></div>
+			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>/admin">Back</a></div>
 			<?php
 				if(!file_exists($_GET['edit']))
 				{
@@ -183,8 +184,8 @@
 					<head>
 						<title>Preview</title>
 						<meta charset="utf-8">
-						<link rel="shortcut icon" type="image/icon" href="' . $cms_root . 'favicon.ico">
-						<link rel="stylesheet" type="text/css" href="' . $cms_root . 'style?root=' . $cms_root . '">
+						<link rel="shortcut icon" type="image/icon" href="' . $cms_root . '/favicon.ico">
+						<link rel="stylesheet" type="text/css" href="' . $cms_root . '/style?root=' . $cms_root . '">
 					</head>
 					<body>
 						<div id="articles">

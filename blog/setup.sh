@@ -21,8 +21,32 @@ echo 'pages'
 cd ../pages
 ln -s ../prevent-index.php index.php
 
+echo; cd ..
+while true; do
+	echo -n 'will you use simpleblog on php built-in server? [y/n] '
+	read answer
+	if [ "$answer" = 'y' ]; then
+		echo 'htaccess'
+		rm htaccess
+		echo 'settings.php'
+		rm settings.php
+		echo; echo 'fill the settings in router.php'
+		break
+	fi
+	if [ "$answer" = 'n' ]; then
+		echo 'router.php'
+		rm router.php
+		echo '.htaccess'
+		mv htaccess .htaccess
+		echo; echo 'fill the settings in settings.php and .htaccess'
+		break
+	fi
+done
+
+echo; echo 'setup.bat'
+rm setup.bat
+
 echo 'setup.sh'
-cd ..
 rm setup.sh
 
 exit 0
