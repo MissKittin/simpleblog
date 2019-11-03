@@ -1,11 +1,11 @@
 <?php
 	// simpleblog router script
-	// Denied: footer.php, header.php, headlinks.php, articles (whole directory), prevent-index.php
+	// Denied: footer.php, header.php, headlinks.php, articles (whole directory), prevent-index.php, favicon.php, htmlheaders.php
 	// Removed (replaced by prevent-index.php): media, pages
 
 	// settings
 	$cms_root='/blog'; // directory
-	$page_title='Blog'; // <title>
+	$page_title='Simpleblog'; // <title>
 	$entries_per_page=10;
 	$taglinks=true; // enable/disable tag as link
 	$skin='default'; // skin name
@@ -75,6 +75,36 @@
 	}
 
 	if($simpleblog_router_cache['substr'] === 'prevent-index.php')
+	{
+		http_response_code(404);
+		echo '<!DOCTYPE html>
+			<html>
+				<head>
+					<title>' . $page_title . '</title>
+					<link rel="stylesheet" type="text/css" href="' . $cms_root . '/style?root=' . $cms_root . '">
+					<meta http-equiv="refresh" content="0; url=.">
+				</head>
+			</html>
+		';
+		exit();
+	}
+
+	if($simpleblog_router_cache['substr'] === 'favicon.php')
+	{
+		http_response_code(404);
+		echo '<!DOCTYPE html>
+			<html>
+				<head>
+					<title>' . $page_title . '</title>
+					<link rel="stylesheet" type="text/css" href="' . $cms_root . '/style?root=' . $cms_root . '">
+					<meta http-equiv="refresh" content="0; url=.">
+				</head>
+			</html>
+		';
+		exit();
+	}
+
+	if($simpleblog_router_cache['substr'] === 'htmlheaders.php')
 	{
 		http_response_code(404);
 		echo '<!DOCTYPE html>

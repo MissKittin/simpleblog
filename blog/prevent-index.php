@@ -1,4 +1,7 @@
-<?php if(php_sapi_name() != 'cli-server') include 'settings.php'; ?>
+<?php
+	if(php_sapi_name() == 'cli-server')
+	{
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -11,3 +14,21 @@
 		?>
 	</head>
 </html>
+<?php
+	}
+	else
+	{
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Not found</title>
+		<meta charset="utf-8">
+		<?php
+			echo (substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/') ? '<meta http-equiv="refresh" content="0; url=..">' : '<meta http-equiv="refresh" content="0; url=.">';
+		?>
+	</head>
+</html>
+<?php
+	}
+?>

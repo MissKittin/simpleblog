@@ -21,7 +21,7 @@
 	}
 
 	// hide script - fake 404 for local scripts
-	$routerscan['filename']='.router.php'; // set file name here
+	$routerscan['filename']='router.php'; // set file name here
 	if($router_cache['substr'] === $routerscan['filename'])
 	{
 		http_response_code(404);

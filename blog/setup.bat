@@ -25,6 +25,11 @@ cd ..
 cd pages
 copy ..\prevent-index.php index.php > NUL
 
+echo favicon
+cd ..
+cd favicon
+copy ..\prevent-index.php index.php > NUL
+
 cd ..
 echo:
 set /p phpcli="will you use simpleblog on php built-in server? (y/[n]) "

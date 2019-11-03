@@ -6,6 +6,7 @@
 	// taglinks 29.09.2019 switch 18.10.2019
 	// code redesign 01.11.2019
 	// apache mod  02.11.2019
+	// customizable html headers 03.11.2019
 
 	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
 
@@ -63,8 +64,7 @@
 	<head>
 		<title><?php echo "$page_title"; ?></title>
 		<meta charset="utf-8">
-		<link rel="shortcut icon" type="image/icon" href="<?php echo "$cms_root"; ?>/favicon.ico">
-		<link rel="stylesheet" type="text/css" href="<?php echo "$cms_root"; ?>/style?root=<?php echo "$cms_root"; ?>">
+		<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
