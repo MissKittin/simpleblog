@@ -8,4 +8,7 @@ But first:<br>
 3) copy /blog/skins/default and create your own.<br><br>
 *setup.bat is based on copy, setup-links.bat is based on mklink<br><br>
 with my skin looks like this:<br>
-![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/preview_main.png)
+![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/preview_main.png)<br><br>
+# additional functions
+checkDate.php -> apply eg custom style beetwen start and end date<br>
+checkEaster.php -> checkDate for Easter and other movable feasts dependent of it
