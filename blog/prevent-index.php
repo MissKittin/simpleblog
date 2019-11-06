@@ -1,34 +1,24 @@
 <?php
-	if(php_sapi_name() == 'cli-server')
+	if(php_sapi_name() != 'cli-server')
 	{
+		$search_settings='settings.php';
+		$search_prevent_index='prevent-index.php';
+		while((!file_exists($search_settings)) || (!file_exists($search_prevent_index)))
+		{
+			$search_settings='../' . $search_settings;
+			$search_prevent_index='../' . $search_prevent_index;
+		}
+		include $search_settings;
+	}
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
 		<title><?php echo "$page_title"; ?></title>
 		<meta charset="utf-8">
-		<link rel="shortcut icon" type="image/icon" href="<?php echo "$cms_root"; ?>/favicon.ico">
-		<link rel="stylesheet" type="text/css" href="<?php echo "$cms_root"; ?>/style?root=<?php echo "$cms_root"; ?>">
+		<?php include $cms_root_php . '/htmlheaders.php'; ?>
 		<?php
 			echo (substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/') ? '<meta http-equiv="refresh" content="0; url=..">' : '<meta http-equiv="refresh" content="0; url=.">';
 		?>
 	</head>
 </html>
-<?php
-	}
-	else
-	{
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Not found</title>
-		<meta charset="utf-8">
-		<?php
-			echo (substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/') ? '<meta http-equiv="refresh" content="0; url=..">' : '<meta http-equiv="refresh" content="0; url=.">';
-		?>
-	</head>
-</html>
-<?php
-	}
-?>

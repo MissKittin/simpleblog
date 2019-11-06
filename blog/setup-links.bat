@@ -3,32 +3,32 @@
 echo media
 md media
 cd media
-copy ..\prevent-index.php index.php > NUL
+mklink index.php ..\prevent-index.php > NUL
 
 echo skins
 cd ..
 cd skins
-copy ..\prevent-index.php index.php > NUL
+mklink index.php ..\prevent-index.php > NUL
 
 echo skins/default
 cd default
-copy ..\..\prevent-index.php index.php > NUL
+mklink index.php ..\..\prevent-index.php > NUL
 
 echo admin
 cd ..
 cd ..
 cd admin
-copy ..\prevent-index.php disabled.php > NUL
+mklink disabled.php ..\prevent-index.php > NUL
 
 echo pages
 cd ..
 cd pages
-copy ..\prevent-index.php index.php > NUL
+mklink index.php ..\prevent-index.php > NUL
 
 echo favicon
 cd ..
 cd favicon
-copy ..\prevent-index.php index.php > NUL
+mklink index.php ..\prevent-index.php > NUL
 
 cd ..
 echo:
@@ -54,8 +54,8 @@ echo:
 echo setup.sh
 del setup.sh > NUL
 
-echo setup-links.bat
-del setup-links.bat > NUL
-
 echo setup.bat
 del setup.bat > NUL
+
+echo setup-links.bat
+del setup-links.bat > NUL

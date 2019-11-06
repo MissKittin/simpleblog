@@ -4,7 +4,7 @@
 	// 28-29.09.2019
 
 	// Enter into jail
-	chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/articles');
+	chdir($cms_root_php . '/articles');
 ?>
 <?php
 /*
@@ -108,14 +108,14 @@
 	<head>
 		<title><?php echo "$page_title"; ?></title>
 		<meta charset="utf-8">
-		<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/htmlheaders.php'; ?>
+		<?php include $cms_root_php . '/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/header.php'; ?>
+			<?php include $cms_root_php . '/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/headlinks.php'; ?>
+			<?php include $cms_root_php . '/headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<?php
@@ -180,7 +180,7 @@
 			?>
 		</div>
 		<div id="footer">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/footer.php'; ?>
+			<?php include $cms_root_php . '/footer.php'; ?>
 		</div>
 	</body>
 </html>

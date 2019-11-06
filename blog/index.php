@@ -7,6 +7,7 @@
 	// code redesign 01.11.2019
 	// apache mod  02.11.2019
 	// customizable html headers 03.11.2019
+	// added cms_root_php 06.11.2019
 
 	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
 
@@ -64,19 +65,19 @@
 	<head>
 		<title><?php echo "$page_title"; ?></title>
 		<meta charset="utf-8">
-		<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/htmlheaders.php'; ?>
+		<?php include $cms_root_php . '/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/header.php'; ?>
+			<?php include $cms_root_php . '/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/headlinks.php'; ?>
+			<?php include $cms_root_php . '/headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<?php
 				$loop_ind=1; // first if in foreach
-				$files=scandir($_SERVER['DOCUMENT_ROOT'] . $cms_root . '/articles/');
+				$files=scandir($cms_root_php . '/articles/');
 				foreach(array_reverse($files) as $file)
 				{
 					// debug
@@ -134,7 +135,7 @@
 			<?php count_pages(); echo "\n"; ?>
 		</div>
 		<div id="footer">
-			<?php include $_SERVER['DOCUMENT_ROOT'] . $cms_root . '/footer.php'; ?>
+			<?php include $cms_root_php . '/footer.php'; ?>
 		</div>
 	</body>
 </html>

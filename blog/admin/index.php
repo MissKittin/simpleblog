@@ -4,12 +4,12 @@
 	// 25.09.2019
 
 	// setup
-	chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/articles');
+	chdir($cms_root_php . '/articles');
 
 	// primitive security
-	if(file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php'))
+	if(file_exists($cms_root_php . '/admin/disabled.php'))
 	{
-		include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php';
+		include $cms_root_php . '/admin/disabled.php';
 		exit();
 	}
 
@@ -18,14 +18,14 @@
 	{
 		if(isset($_GET['sure']))
 		{
-			chdir($_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin');
+			chdir($cms_root_php . '/admin');
 			$files=scandir('.');
 			foreach($files as $file)
 				if(($file != '.') && ($file != '..') && ($file != 'index.php'))
 				{
 					rename($file, 'disabled.php');
 				}
-			include $_SERVER['DOCUMENT_ROOT'] . '/' . $cms_root . '/admin/disabled.php';
+			include $cms_root_php . '/admin/disabled.php';
 			exit();
 		}
 		else
