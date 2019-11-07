@@ -11,4 +11,4 @@ with my skin looks like this:<br>
 ![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/preview_main.png)<br><br>
 # additional functions
 checkDate.php -> apply eg custom style beetwen start and end date<br>
-checkEaster.php -> checkDate for Easter and other movable feasts dependent of it
+checkEaster.php -> checkDate for Easter - calculates the first day of Easter and the end date by adding n days to the first day
