@@ -1,9 +1,12 @@
 <?php
 	// simpleblog_checkDate() reqd
 
-	function simpleblog_checkEaster()
+	function simpleblog_checkEaster($easterEndDays)
 	{
 		// simpleblog_checkDate extension for easter
+		// usage: simpleblog_checkEaster(daysToEnd)
+		// example: simpleblog_checkEaster(49)
+
 		$calculateEaster=function()
 		{
 			$thisYear=date('Y');
@@ -51,8 +54,8 @@
 			return $easter;
 		};
 
-		$easterStart=$calculateEaster();
-		$easterEnd['day']=$easterStart['day']+49; $easterEnd['month']=$easterStart['month'];
+		$easterStart=$calculateEaster(); if($easterStart == false) return false;
+		$easterEnd['day']=$easterStart['day']+$easterEndDays; $easterEnd['month']=$easterStart['month'];
 
 		while($easterEnd['day'] > 30)
 		{
@@ -66,6 +69,6 @@
 		return simpleblog_checkDate($easterStart['day'].'.'.$easterStart['month'], $easterEnd['day'].'.'.$easterEnd['month']);
 	}
 
-	if(simpleblog_checkEaster())
+	if(simpleblog_checkEaster(49))
 		echo '@import "' . $_GET['root'] . '/skins/' . $skin . '/myeastercustomization?root=' . $_GET['root'] . '";';
 ?>
