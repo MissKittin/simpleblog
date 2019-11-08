@@ -9,7 +9,9 @@
 
 		$calculateEaster=function()
 		{
-			$thisYear=date('Y');
+			$thisYear=date('Y'); // cache year
+
+			// constants
 			if(($thisYear >= 1900) && ($thisYear <= 2099))
 			{
 				$tabA=24;
@@ -38,6 +40,7 @@
 			else
 				return false;
 
+			// Gauss' algorithm
 			$a=$thisYear % 19;
 			$b=$thisYear % 4;
 			$c=$thisYear % 7;
@@ -45,6 +48,7 @@
 			$e=((2 * $b)+(4 * $c)+(6 * $d)+5) % 7;
 			$easter['day']=22 + $d + $e; $easter['month']=3;
 
+			// correct start date
 			while($easter['day'] > 31)
 			{
 				$easter['day']=$easter['day'] - 31;
@@ -54,9 +58,11 @@
 			return $easter;
 		};
 
-		$easterStart=$calculateEaster(); if($easterStart == false) return false;
+		// calculate end date
+		$easterStart=$calculateEaster(); if($easterStart == false) { echo '/* no constants defined */' . "\n"; return false; }
 		$easterEnd['day']=$easterStart['day']+$easterEndDays; $easterEnd['month']=$easterStart['month'];
 
+		// correct end date
 		while($easterEnd['day'] > 30)
 		{
 			if($easterEnd['month']%2 == 0)
