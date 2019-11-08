@@ -30,6 +30,11 @@ cd ..
 cd favicon
 mklink index.php ..\prevent-index.php > NUL
 
+echo tag
+cd ..
+cd tag
+if exist "index-stripdown.php" del index-stripdown.php > NUL
+
 cd ..
 echo:
 set /p phpcli="will you use simpleblog on php built-in server? (y/[n]) "

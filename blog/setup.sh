@@ -25,6 +25,10 @@ echo 'favicon'
 cd ../favicon
 ln -s ../prevent-index.php index.php
 
+echo 'tag'
+cd ../tag
+[ -e index-stripdown.php ] && rm index-stripdown.php
+
 echo; cd ..
 while true; do
 	echo -n 'will you use simpleblog on php built-in server? [y/n] '
