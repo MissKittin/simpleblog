@@ -65,7 +65,7 @@
 		foreach($cron['tasks'] as $cron['task'])
 			if(($cron['task'] != '.') && ($cron['task'] != '..') && (substr($cron['task'], 0, 3) === 'on_')) // include tasks only with on_ prefix
 				include $cron['location']['php'] . '/' . $cron['task'];
-
-		unset($cron); // clean
 	}
+
+	unset($cron); // clean
 ?>
