@@ -17,16 +17,15 @@
 	$cron['location']['html']=$cms_root . '/cron'; // for html
 	$cron['location']['php']=$cms_root_php . '/cron'; // for php scripts
 
+	// deny direct access
+	if(strtok($_SERVER['REQUEST_URI'], '?') === $cms_root . '/cron.php')
+	{
+		include $cms_root_php . '/prevent-index.php'; exit();
+	}
 
 	// check if cron is enabled
 	if($cron['enabled'])
 	{
-		// deny direct access
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $cms_root . '/cron.php')
-		{
-			include $cms_root_php . '/prevent-index.php'; exit();
-		}
-
 		// functions
 		$cron['checkDate']=function($dateInput) // $cron['checkDate']('DD.MM.YYYY')
 		{
