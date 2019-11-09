@@ -1,5 +1,8 @@
 @echo off
 
+echo cron
+md cron
+
 echo media
 md media
 cd media

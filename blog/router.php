@@ -10,6 +10,7 @@
 	$entries_per_page=10;
 	$taglinks=true; // enable/disable tag as link
 	$skin='default'; // skin name
+	$cms_fake_notfound=true; // use http_response_code(404)
 
 	// router cache
 	$simpleblog_router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
@@ -18,177 +19,83 @@
 	// simpleblog rules
 	if($simpleblog_router_cache['substr'] === 'footer.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'header.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'headlinks.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if(explode('/', substr($simpleblog_router_cache['strtok'], strlen($cms_root)))[1] === 'articles')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'prevent-index.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'favicon.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'htmlheaders.php')
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
+		exit();
+	}
+
+	if(explode('/', substr($simpleblog_router_cache['strtok'], strlen($cms_root)))[1] === 'cron')
+	{
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	// rewrite common rules
 	if($simpleblog_router_cache['substr'] === $routerscan['filename']) // hide script - fake 404 for local scripts
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
 	if($simpleblog_router_cache['substr'] === 'index.php') // hide php
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 
-	if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'])) // 404 handle - for files
+	/* if(!file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'])) // 404 handle - for files
 	{
-		http_response_code(404);
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title>' . $page_title . '</title>
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=.">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
-	}
+	} */
 
 	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'])) // 404 handle - for dirs
 		if((file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.php')) || (file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.html')))
 		{ /* everything is ok */ }
 		else
 		{
-			http_response_code(404);
-			if(substr(strtok($_SERVER['REQUEST_URI'], '?'), -1) === '/')
-				$url='..';
-			else
-				$url='.';
-			echo '<!DOCTYPE html>
-				<html>
-					<head>
-						<title>' . $page_title . '</title>
-						'; include $cms_root_php . '/htmlheaders.php'; echo '
-						<meta http-equiv="refresh" content="0; url=' . $url . '">
-					</head>
-				</html>
-			';
+			include $cms_root_php . '/prevent-index.php';
 			exit();
 
 		}
+
+	// execute cron tasks
+	include $cms_root_php . '/cron.php';
 
 	// drop cache
 	unset($simpleblog_router_cache);

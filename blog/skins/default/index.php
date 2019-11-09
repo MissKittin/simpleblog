@@ -3,31 +3,13 @@
 	if(php_sapi_name() === 'cli-server')
 		if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/')
 		{
-			echo '<!DOCTYPE html>
-				<html>
-					<head>
-						<title><?php echo "$page_title"; ?></title>
-						<meta charset="utf-8">
-						'; include $cms_root_php . '/htmlheaders.php'; echo '
-						<meta http-equiv="refresh" content="0; url=' . substr(strtok($_SERVER['REQUEST_URI'], '?'), 0, -1) . '">
-					</head>
-				</html>
-			';
+			include $cms_root_php . '/prevent-index.php';
 			exit();
 		}
 
 	if(!isset($_GET['root']))
 	{
-		echo '<!DOCTYPE html>
-			<html>
-				<head>
-					<title><?php echo "$page_title"; ?></title>
-					<meta charset="utf-8">
-					'; include $cms_root_php . '/htmlheaders.php'; echo '
-					<meta http-equiv="refresh" content="0; url=' . substr(strtok($_SERVER['REQUEST_URI'], '?'), 0, -1) . '">
-				</head>
-			</html>
-		';
+		include $cms_root_php . '/prevent-index.php';
 		exit();
 	}
 

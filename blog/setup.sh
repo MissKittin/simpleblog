@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo 'cron'
+mkdir cron
+
 echo 'media'
 mkdir media
 cd media

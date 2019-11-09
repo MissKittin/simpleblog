@@ -1,15 +1,17 @@
 <?php
 	if(php_sapi_name() != 'cli-server')
-	{
-		$search_settings='settings.php';
-		$search_prevent_index='prevent-index.php';
-		while((!file_exists($search_settings)) || (!file_exists($search_prevent_index)))
+		if(!isset($cms_root_php))
 		{
-			$search_settings='../' . $search_settings;
-			$search_prevent_index='../' . $search_prevent_index;
+			$search_settings='settings.php';
+			$search_prevent_index='prevent-index.php';
+			while((!file_exists($search_settings)) || (!file_exists($search_prevent_index)))
+			{
+				$search_settings='../' . $search_settings;
+				$search_prevent_index='../' . $search_prevent_index;
+			}
+			include $search_settings;
 		}
-		include $search_settings;
-	}
+	if($cms_fake_notfound) http_response_code(404);
 ?>
 <!DOCTYPE html>
 <html>
