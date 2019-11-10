@@ -94,6 +94,9 @@
 
 		}
 
+	// include maintenace break pattern
+	include $cms_root_php . '/maintenace-break.php';
+
 	// execute cron tasks
 	include $cms_root_php . '/cron.php';
 
