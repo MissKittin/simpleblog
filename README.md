@@ -12,3 +12,8 @@ with my skin looks like this:<br>
 # additional functions
 checkDate.php -> apply eg custom style beetwen start and end date<br>
 checkEaster.php -> checkDate for Easter - calculates the first day of Easter and the end date by adding n days to the first day
+<br><br>
+# cron
+read https://github.com/MissKittin/simpleblog/blob/master/blog/cron.php<br><br>
+# maintenace break pattern
+edit maintenace-break.php: enable/disable switch and one ip on which the pattern isn't displayed
