@@ -8,6 +8,7 @@
 	// apache mod  02.11.2019
 	// customizable html headers 03.11.2019
 	// added cms_root_php 06.11.2019
+	// added local article styles 11.11.2019
 
 	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
 
@@ -106,16 +107,28 @@
 										if($tag != '')
 										{
 											$tag=trim($tag);
-											$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
+											if(isset($art_style['taglink']))
+												$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '" style="' . $art_style['taglink'] . '">#' . $tag . '</a>';
+											else
+												$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
 										}
 									$art_tags=$tags;
 								}
 
 								// render article
-								echo '<div class="article">'."\n";
-									echo '<div class="art-tags">'.$art_tags.'</div><div class="art-date">'.$art_date.'</div><div class="art-title"><h2>'.$art_title.'</h2></div>';
-									echo "$art_content";
+								if(isset($art_style['article'])) echo '<div class="article" style="' . $art_style['article'] . '">'."\n"; else echo '<div class="article">'."\n";
+									if(isset($art_style['tags'])) echo '<div class="art-tags" style="' . $art_style['tags'] . '">'.$art_tags.'</div>'; else echo '<div class="art-tags">'.$art_tags.'</div>';
+									if(isset($art_style['date'])) echo '<div class="art-date" style="' . $art_style['date'] . '">'.$art_date.'</div>'."\n"; else echo '<div class="art-date">'.$art_date.'</div>'."\n";
+									if(isset($art_style['title'])) echo '<div class="art-title" style="' . $art_style['title'] . '">'; else echo '<div class="art-title">';
+										if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
+									echo '</div>'."\n";
+									echo $art_content;
 								echo '</div>'."\n";
+
+								// clean
+							//	unset($art_public);
+								unset($tags); unset($tag);
+								unset($art_style);
 							//}
 							//else
 							//	$loop_ind--;

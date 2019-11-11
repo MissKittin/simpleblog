@@ -184,15 +184,19 @@
 					<head>
 						<title>Preview</title>
 						<meta charset="utf-8">
-						<link rel="shortcut icon" type="image/icon" href="' . $cms_root . '/favicon.ico">
-						<link rel="stylesheet" type="text/css" href="' . $cms_root . '/style?root=' . $cms_root . '">
+						'; include $cms_root_php . '/htmlheaders.php'; echo '
 					</head>
 					<body>
-						<div id="articles">
-							<div class="article">';
-				echo '<div class="art-tags">'.$art_tags.'</div><div class="art-date">'.$art_date.'</div><div class="art-title"><h2>'.$art_title.'</h2></div>';
-				echo "$art_content";
-			echo '</div></div></body></html>';
+						<div id="articles">'."\n";
+							if(isset($art_style['article'])) echo '<div class="article" style="' . $art_style['article'] . '">'."\n"; else echo '<div class="article">'."\n";
+								if(isset($art_style['tags'])) echo '<div class="art-tags" style="' . $art_style['tags'] . '">'.$art_tags.'</div>'; else echo '<div class="art-tags">'.$art_tags.'</div>';
+								if(isset($art_style['date'])) echo '<div class="art-date" style="' . $art_style['date'] . '">'.$art_date.'</div>'."\n"; else echo '<div class="art-date">'.$art_date.'</div>'."\n";
+								if(isset($art_style['title'])) echo '<div class="art-title" style="' . $art_style['title'] . '">'; else echo '<div class="art-title">';
+									if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
+								echo '</div>'."\n";
+								echo $art_content;
+							echo '</div>'."\n";
+			echo '</div></body></html>';
 			exit();
 		}
 ?>
