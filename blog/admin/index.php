@@ -1,265 +1,251 @@
-<?php if(php_sapi_name() != 'cli-server') include '../settings.php'; ?>
 <?php
-	// Admin page
-	// 25.09.2019
+	// Admin panel for simpleblog
+	// 12-13.11.2019
+	$module['id']='main';
 
-	// setup
-	chdir($cms_root_php . '/articles');
+	// import settings
+	include 'admin-settings.php';
 
-	// primitive security
-	if(file_exists($cms_root_php . '/admin/disabled.php'))
+	// login subsystem
+	include $adminpanel['root_php'] . '/lib/login/login.php';
+
+	// count articles
+	function adminpanel_countArticles($dir)
 	{
-		include $cms_root_php . '/admin/disabled.php';
-		exit();
-	}
+		// counters
+		$returnArray['published']=0; $returnArray['hidden']=0;
 
-	// lock
-	if(isset($_GET['lock']))
-	{
-		if(isset($_GET['sure']))
-		{
-			chdir($cms_root_php . '/admin');
-			$files=scandir('.');
-			foreach($files as $file)
-				if(($file != '.') && ($file != '..') && ($file != 'index.php'))
-				{
-					rename($file, 'disabled.php');
-				}
-			include $cms_root_php . '/admin/disabled.php';
-			exit();
-		}
-		else
-		{
-			echo '<!DOCTYPE html><head><title>Confirm</title><meta charset="utf-8"></head><body><h1>Are you sure?</h1><a href="?lock&sure">Yes</a></body></html>';
-			exit();
-		}
-	}
+		// cache
+		global $adminpanel;
+		if(empty($adminpanel['cache']['core_files']))
+			$adminpanel['cache']['core_files']=scandir($dir); // dump filelist
+		$files=$adminpanel['cache']['core_files'];
 
-	// view source
-	if(isset($_GET['source']))
-		if(file_exists($_GET['source']))
-		{
-			header('Content-Type: text/plain;');
-			if(preg_match('/\//i', $_GET['source'])) // if string contains '/' character
+		foreach($files as $file)
+			if(($file != '.') && ($file != '..'))
 			{
-				echo 'Denied!';
-				exit();
-			}
-			echo file_get_contents($_GET['source']);
-			exit();
-		}
-?>
-<?php if(isset($_GET['new'])) { if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset(); ?>
-	<?php
-		// save new article
-		if(isset($_POST['save_new']))
-		{
-			$file_content='<?php' . "\n";
-			$file_content=$file_content . "\t" . '$art_title=' . "'" . $_POST['art_title'] . "';\n";
-			$file_content=$file_content . "\t" . '$art_date=' . "'" . $_GET['date'] . "';\n";
-			$file_content=$file_content . "\t" . '$art_tags=' . "'" . $_POST['art_tags'] . "';\n";
-			if($_GET['public'])
-				$file_content=$file_content . "\t" . '$art_public=true;' . "\n";
-			else
-				$file_content=$file_content . "\t" . '$art_public=false;' . "\n";
-			$file_content=$file_content . "\t" . '$art_content=' . "'\n" . $_POST['art_content'] . "\n\t';\n";
-			$file_content=$file_content . '?>';
-			file_put_contents($_GET['filename'], $file_content);
-		}
-	?>
-	<!DOCTYPE html>
-	<html>
-		<head>
-			<title>New article</title>
-			<meta charset="utf-8">
-		</head>
-		<body>
-			<h1>Write new article</h1>
-			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>/admin">Back</a></div>
-			<?php
-				if(isset($_GET['filename']))
-					$filename=$_GET['filename'];
+				if(substr($file, 0, 6) === 'public')
+					$returnArray['published']++;
 				else
+					$returnArray['hidden']++;
+			}
+
+		return $returnArray;
+	}
+
+	// count tags
+	function adminpanel_countTags($dir)
+	{
+		// counter
+		$returnCount=0;
+
+		// cache
+		global $adminpanel;
+		if(empty($adminpanel['cache']['core_files']))
+			$adminpanel['cache']['core_files']=scandir($dir); // dump filelist
+		$files=$adminpanel['cache']['core_files'];
+
+		$tags=array();
+		foreach($files as $file)
+			if(substr($file, 0, 6) === 'public')
+			{
+				include $dir . '/' . $file;
+				foreach(explode('#', $art_tags) as $tag)
 				{
-					$out_of_space=false;
-
-					$filename=array_reverse(scandir('.'));
-					if(substr($filename[0], 0, 6) === 'public')
-						$filename['data']=str_replace('.php', '', str_replace('public_', '', $filename[0]));
-					else
-						$filename['data']=str_replace('.php', '', str_replace('private_', '', $filename[0]));
-					$filename['length']=strlen($filename['data']);
-					$filename['data']=$filename['data']+1;
-					$filename['length']=$filename['length']-strlen($filename['data']);
-					if($filename['length'] < 0)
-						$out_of_space=true;
-					for($i=1; $i<=$filename['length']; $i++)
-						$filename['data']='0' . $filename['data'];
-					$filename='private_' . $filename['data'] . '.php';
-
-					if($out_of_space)
+					$tag=trim($tag); // remove space at the end
+					if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
 					{
-						echo '<span style="font-weight: bold; color: #cc0000;">! No address space available</span>';
-						echo '</body></html>';
-						exit();
+						$returnCount++;
+						array_push($tags, $tag);
 					}
 				}
+			}
 
-				$file_exists=false;
-				$art_public=true;
-				$art_date=date('d.m.o');
-				if(file_exists($filename))
-				{
-					$file_exists=true;
-					include $filename;
-				}
-			?>
-			<div style="margin-top: 10px;">
-				<form action="?new&filename=<?php echo $filename; ?>&date=<?php echo $art_date; ?>&public=<?php echo $art_public; ?>" method="post">
-					Title: <input type="text" name="art_title" <?php if($file_exists) echo 'value="' . $art_title . '"'; ?>><br><br>
-					Tags: <input type="text" name="art_tags" <?php if($file_exists) echo 'value="' . $art_tags . '"'; ?>><br><br>
-					Content: <div><textarea name="art_content" rows="30" cols="80"><?php if($file_exists) echo $art_content; ?></textarea><div><br>
-					<input type="submit" name="save_new" value="Save"> <?php if($file_exists) echo '<a style="text-decoration: none;" target="_blank" href="?show=' . $filename . '">Preview</a> <a style="text-decoration: none;" target="_blank" href="?source=' . $filename . '">Source</a>'; ?>
-				</form>
-			</div>
-		</body>
-	</html>
-<?php exit(); } ?>
-<?php if(isset($_GET['edit'])) { if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset(); ?>
-	<?php
-		// save edited article
-		if(isset($_POST['save_edited']))
+		return $returnCount;
+	}
+
+	// count pages
+	function adminpanel_countPages($dir)
+	{
+		// counter
+		$returnCount=0;
+
+		// cache
+		global $adminpanel;
+		if(empty($adminpanel['cache']['core_pages']))
+			$adminpanel['cache']['core_pages']=scandir($dir); // dump filelist
+		$files=$adminpanel['cache']['core_pages'];
+
+		foreach($files as $file)
+			if(($file != '.') && ($file != '..') && (is_dir($dir . '/' . $file)))
+				$returnCount++;
+
+		return $returnCount;
+	}
+
+	// count media
+	function adminpanel_countMedia($dir)
+	{
+		// counters
+		$returnArray['count']=0; $returnArray['size']='';
+
+		// cache
+		global $adminpanel;
+		if(empty($adminpanel['cache']['core_media']))
+			$adminpanel['cache']['core_media']=scandir($dir); // dump filelist
+		$files=$adminpanel['cache']['core_media'];
+
+		// count items
+		foreach($files as $file)
+			if(($file != '.') && ($file != '..') && ($file != 'index.php') && ($file != 'index.html'))
+				$returnArray['count']++;
+
+		// count size
+		foreach(new DirectoryIterator($dir) as $file)
+			if(($file->isFile()) && ($file != 'index.php') && ($file != 'index.html'))
+				$returnArray['size']+=$file->getSize();
+
+		// size as MB
+		$returnArray['size']=round(($returnArray['size']/1024)/1024) . 'MB';
+
+		return $returnArray;
+	}
+
+	// count cron tasks
+	function adminpanel_countCron($dir)
+	{
+		// check if tmp folder exists
+		if(file_exists($dir))
 		{
-			$file_content='<?php' . "\n";
-			$file_content=$file_content . "\t" . '$art_title=' . "'" . $_POST['art_title'] . "';\n";
-			$file_content=$file_content . "\t" . '$art_date=' . "'" . $_GET['date'] . "';\n";
-			$file_content=$file_content . "\t" . '$art_tags=' . "'" . $_POST['art_tags'] . "';\n";
-			if($_GET['public'])
-				$file_content=$file_content . "\t" . '$art_public=true;' . "\n";
-			else
-				$file_content=$file_content . "\t" . '$art_public=false;' . "\n";
-			$file_content=$file_content . "\t" . '$art_content=' . "'\n" . $_POST['art_content'] . "\n\t';\n";
-			$file_content=$file_content . '?>';
-			file_put_contents($_GET['edit'], $file_content);
-		}
-	?>
-	<!DOCTYPE html>
-	<html>
-		<head>
-			<title>Edit article</title>
-			<meta charset="utf-8">
-		</head>
-		<body>
-			<h1>Edit article</h1>
-			<div><a style="text-decoration: none;" href="<?php echo $cms_root; ?>/admin">Back</a></div>
-			<?php
-				if(!file_exists($_GET['edit']))
+			// counters
+			$returnArray['enabled']=0; $returnArray['disabled']=0;
+
+			// cache
+			global $adminpanel;
+			if(empty($adminpanel['cache']['core_cron']))
+				$adminpanel['cache']['core_cron']=scandir($dir); // dump filelist
+			$files=$adminpanel['cache']['core_cron'];
+
+			foreach($files as $file)
+				if(($file != '.') && ($file != '..'))
 				{
-					echo '<span style="font-weight: bold; color: #cc0000;">! File not exists</span>';
-					echo '</body></html>';
-					exit();
+					if(substr($file, 0, 3) === 'on_')
+						$returnArray['enabled']++;
+					else
+						$returnArray['disabled']++;
 				}
-				include $_GET['edit'];
-			?>
-			<div style="margin-top: 10px;">
-				<form action="?edit=<?php echo $_GET['edit']; ?>&date=<?php echo $art_date; ?>&public=<?php echo $art_public; ?>" method="post">
-					Title: <input type="text" name="art_title" <?php echo 'value="' . $art_title . '"'; ?>><br><br>
-					Tags: <input type="text" name="art_tags" <?php echo 'value="' . $art_tags . '"'; ?>><br><br>
-					Content: <div><textarea name="art_content" rows="30" cols="80"><?php echo $art_content; ?></textarea><div><br>
-					<input type="submit" name="save_edited" value="Save"> <?php echo '<a style="text-decoration: none;" target="_blank" href="?show=' . $_GET['edit'] . '">Preview</a> <a style="text-decoration: none;" target="_blank" href="?source=' . $_GET['edit'] . '">Source</a>'; ?>
-				</form>
-			</div>
-		</body>
-	</html>
-<?php exit(); }  // main page ?>
-<?php
-	// show rendered article
-	if(isset($_GET['show']))
-		if(file_exists($_GET['show']))
-		{
-			include $_GET['show'];
-			// header
-			echo '<!DOCTYPE html>
-				<html>
-					<head>
-						<title>Preview</title>
-						<meta charset="utf-8">
-						'; include $cms_root_php . '/htmlheaders.php'; echo '
-					</head>
-					<body>
-						<div id="articles">'."\n";
-							if(isset($art_style['article'])) echo '<div class="article" style="' . $art_style['article'] . '">'."\n"; else echo '<div class="article">'."\n";
-								if(isset($art_style['tags'])) echo '<div class="art-tags" style="' . $art_style['tags'] . '">'.$art_tags.'</div>'; else echo '<div class="art-tags">'.$art_tags.'</div>';
-								if(isset($art_style['date'])) echo '<div class="art-date" style="' . $art_style['date'] . '">'.$art_date.'</div>'."\n"; else echo '<div class="art-date">'.$art_date.'</div>'."\n";
-								if(isset($art_style['title'])) echo '<div class="art-title" style="' . $art_style['title'] . '">'; else echo '<div class="art-title">';
-									if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
-								echo '</div>'."\n";
-								echo $art_content;
-							echo '</div>'."\n";
-			echo '</div></body></html>';
-			exit();
+
+			return $returnArray;
 		}
+		return false;
+	}
+
+	// count temps
+	function adminpanel_countTemps($dir)
+	{
+		// check if tmp folder exists
+		if(file_exists($dir))
+		{
+			// counters
+			$returnArray['count']=0; $returnArray['size']='';
+
+			// cache
+			global $adminpanel;
+			if(empty($adminpanel['cache']['core_temp']))
+				$adminpanel['cache']['core_temp']=scandir($dir); // dump filelist
+			$files=$adminpanel['cache']['core_temp'];
+
+			// count items
+			foreach($files as $file)
+				if(($file != '.') && ($file != '..') && ($file != 'index.php') && ($file != 'index.html'))
+					$returnArray['count']++;
+
+			// count size
+			foreach(new DirectoryIterator($dir) as $file)
+				if(($file->isFile()) && ($file != 'index.php') && ($file != 'index.html'))
+					$returnArray['size']+=$file->getSize();
+
+			// size as KB
+			$returnArray['size']=round(($returnArray['size']/1024)) . 'KB';
+
+			return $returnArray;
+		}
+		return false;
+	}
+
+	// functions
+	function adminpanel_stats()
+	{
+		global $adminpanel;
+
+		// collect stats
+		$stats['articles']=adminpanel_countArticles($adminpanel['path']['articles']);
+		$stats['tags']=adminpanel_countTags($adminpanel['path']['articles']);
+		$stats['pages']=adminpanel_countPages($adminpanel['path']['pages']);
+		$stats['media']=adminpanel_countMedia($adminpanel['path']['media']);
+		$stats['cron']=adminpanel_countCron($adminpanel['path']['cron']);
+		$stats['tmp']=adminpanel_countTemps($adminpanel['path']['tmp']);
+
+		// display ?>
+		<h3>Stats</h3>
+		<ul>
+			<li>Articles published: <?php echo $stats['articles']['published']; ?>, hidden: <?php echo $stats['articles']['hidden']; ?></li>
+			<li>Defined tags: <?php echo $stats['tags']; ?></li>
+			<li>Pages: <?php echo $stats['pages']; ?></li>
+			<li>Media: <?php echo $stats['media']['count']; ?> (<?php echo $stats['media']['size']; ?>)</li>
+			<?php if($stats['cron'] != false) echo '<li>Cron tasks: ' . $stats['cron']['enabled'] . ' enabled, ' . $stats['cron']['disabled'] . ' disabled</li>'; ?>
+			<?php if($stats['tmp'] != false) echo '<li>Temporary files: ' . $stats['tmp']['count'] . ' (' . $stats['tmp']['size'] . ')</li>'; ?>
+		</ul><?php
+	}
+	function adminpanel_serverInfo()
+	{
+		global $simpleblog;
+
+		?>
+		<h3>Server</h3>
+		HTTP Server: <?php echo $_SERVER['SERVER_SOFTWARE']; ?><br>
+		PHP version: <?php echo phpversion(); ?><br>
+		<?php
+			if(file_exists($simpleblog['root_php'] . '/settings.php'))
+				echo 'Simpleblog configured for Apache'."\n";
+			elseif((file_exists($simpleblog['root_php'] . '/router.php')) || (file_exists($simpleblog['root_php'] . '/.router.php')))
+				echo 'Simpleblog configured for PHP built-in server'."\n";
+		?>
+		<?php
+	}
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Admin</title>
+		<title>Admin panel</title>
 		<meta charset="utf-8">
-		<style>
-			table, tr, th, td {
-				border: 1px solid #000000;
-				border-collapse: collapse;
-			}
-		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
 	</head>
 	<body>
-		<?php
-			// 'publish' link
-			if(isset($_GET['publish']))
-				if(file_exists($_GET['publish']))
-				{
-					rename($_GET['publish'], str_replace('private', 'public', $_GET['publish']));
-				}
-			// 'hide' link
-			if(isset($_GET['hide']))
-				if(file_exists($_GET['hide']))
-				{
-					rename($_GET['hide'], str_replace('public', 'private', $_GET['hide']));
-				}
-		?>
-		<h1>Articles</h1>
-		<a href="?new">Write new article</a>
-		<table>
-			<tr><th>File name</th><th>Title</th><th>Date</th><th>Tags</th><th>Public flag</th></tr>
-			<?php
-				// list and count articles
-				$articles_indicator=0;
-				$public_articles_indicator=0;
-				$files=scandir('.');
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..'))
-					{
-						echo '<tr><td><a style="text-decoration: none;" href="?show=' . $file . '">' . $file . '</a></td>';
-						include $file;
-						if(substr($file, 0, 6) === 'public')
-						{
-							$public_articles_indicator++;
-							$publish_get_param='hide';
-							$publish_get_title="Hide";
-						}
-						else
-						{
-							$publish_get_param='publish';
-							$publish_get_title="Publish";
-						}
-						$published=$art_public ? 'Yes' : 'No';
-						echo '<td>' . $art_title . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td style="text-align: center;">' . $published . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td></tr>' . "\n";
-						$articles_indicator++;
-						unset($published);
-					}
-			?>
-		</table>
-		<h3>All articles: <?php echo $articles_indicator; ?>, Published: <?php echo $public_articles_indicator; ?></h3>
-		<a href="?lock">Disable administation</a>
+		<div id="header">
+			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
+		</div>
+		<div id="headlinks">
+			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+		</div>
+		<div id="content_header">
+			<h3>CMS Status</h3>
+		</div>
+		<div id="content">
+
+			<?php adminpanel_stats(); ?>
+
+			<?php adminpanel_serverInfo(); ?>
+
+			<h3>About</h3>
+			Admin panel for Simpleblog v2<br>
+			Version 1.0<br>
+			<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin">MissKittin</a>@<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin/simpleblog">GitHub</a><br>
+			Licensed under <a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0</a>
+		</div>
+		<div id="footer">
+			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>
+		</div>
 	</body>
 </html>

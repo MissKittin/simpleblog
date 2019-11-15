@@ -8,20 +8,30 @@
 			if($cron['checkDate']('09.11.2019'))
 				if($cron['article']('public', '000125')) $cron['disable']();
 		?>
+	   where date is in DD.MM.YYYY format
 	   task with on_ prefix is enabled, with off_ - disabled
 	   remember to refresh opcache after adding a new task
 	*/
 
+	// deny direct access - for apache
+	if(php_sapi_name() != 'cli-server')
+		if(!isset($simpleblog))
+		{
+			include 'prevent-index.php'; exit();
+		}
+
+	// deny direct access - for php-cli server
+	if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/core.php')
+	{
+		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
+	}
+
 	// settings
 	$cron['enabled']=true;
-	$cron['location']['html']=$cms_root . '/cron'; // for html
-	$cron['location']['php']=$cms_root_php . '/cron'; // for php scripts
-
-	// deny direct access
-	if(strtok($_SERVER['REQUEST_URI'], '?') === $cms_root . '/cron.php')
-	{
-		include $cms_root_php . '/prevent-index.php'; exit();
-	}
+	$cron['location']['html']=$simpleblog['root_html'] . '/cron'; // for html
+	$cron['location']['php']=$simpleblog['root_php'] . '/cron'; // for php scripts
+	$cron['location']['bin']=$simpleblog['root_html'] . '/lib/cron.php'; // this script
+	$cron['location']['articles']=$simpleblog['root_php'] . '/articles'; // location of articles
 
 	// check if cron is enabled
 	if($cron['enabled'])
@@ -38,17 +48,17 @@
 		};
 		$cron['article']=function($action, $id) // $cron['article']('public' || 'hide', $articleID)
 		{
-			global $cms_root_php;
+			global $simpleblog;
 			switch($action)
 			{
 				case 'public':
-					if(!file_exists($cms_root_php . '/articles/private_' . $id . '.php')) return false;
-					if(!rename($cms_root_php . '/articles/private_' . $id . '.php', $cms_root_php . '/articles/public_' . $id . '.php')) return false;
+					if(!file_exists($cron['location']['articles'] . '/private_' . $id . '.php')) return false;
+					if(!rename($cron['location']['articles'] . '/private_' . $id . '.php', $cron['location']['articles'] . '/public_' . $id . '.php')) return false;
 					return true;
 				break;
 				case 'hide':
-					if(!file_exists($cms_root_php . '/articles/public_' . $id . '.php')) return false;
-					if(!rename($cms_root_php . '/articles/public_' . $id . '.php', $cms_root_php . '/articles/private_' . $id . '.php')) return false;
+					if(!file_exists($cron['location']['articles'] . '/public_' . $id . '.php')) return false;
+					if(!rename($cron['location']['articles'] . '/public_' . $id . '.php', $cron['location']['articles'] . '/private_' . $id . '.php')) return false;
 					return true;
 				break;
 			}

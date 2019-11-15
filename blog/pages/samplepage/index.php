@@ -2,23 +2,24 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php echo "$page_title"; ?></title>
+		<title><?php echo $simpleblog['title']; ?></title>
 		<meta charset="utf-8">
-		<?php include $cms_root_php . '/htmlheaders.php'; ?>
+		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
-			<?php include $cms_root_php . '/header.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $cms_root_php . '/headlinks.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<h1 style="text-align: center;">Sample page</h1>
 			<div style="text-align: center;">Sample text on this page</div>
 		</div>
 		<div id="footer">
-			<?php include $cms_root_php . '/footer.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/footer.php'; ?>
 		</div>
 	</body>
 </html>
+<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time in seconds: ' . (microtime(true) - $simpleblog['execTime']), 0); ?>

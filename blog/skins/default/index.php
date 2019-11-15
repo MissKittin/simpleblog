@@ -3,18 +3,19 @@
 	if(php_sapi_name() === 'cli-server')
 		if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/')
 		{
-			include $cms_root_php . '/prevent-index.php';
+			include $simpleblog['root_php'] . '/lib/prevent-index.php';
 			exit();
 		}
 
 	if(!isset($_GET['root']))
 	{
-		include $cms_root_php . '/prevent-index.php';
+		include $simpleblog['root_php'] . '/lib/prevent-index.php';
 		exit();
 	}
 
 	header("Content-Type: text/css; X-Content-Type-Options: nosniff;");
 ?>
+
 
 /* default skin */
 

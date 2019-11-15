@@ -1,154 +1,57 @@
-<?php if(php_sapi_name() != 'cli-server') include 'settings.php'; ?>
 <?php
-	// Blog page renderer
-	// 13.04.2019 - 15.04.2019
-	// count_pages and articles naming patch 25.09.2019
-	// taglinks 29.09.2019 switch 18.10.2019
-	// code redesign 01.11.2019
-	// apache mod  02.11.2019
-	// customizable html headers 03.11.2019
-	// added cms_root_php 06.11.2019
-	// added local article styles 11.11.2019
+	// Simpleblog v2 - main page
+	// 11.11.2019
+?>
+<?php
+	// import apache settings
+	if(php_sapi_name() != 'cli-server') include 'settings.php';
 
-	//isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page, old concept
+	// import core functions
+	include $simpleblog['root_php'] . '/lib/core.php';
 
-	$loop_start=1;
-	if(isset($_GET['page'])) // is_int() protection
-		if(is_numeric($_GET['page']))
-			$loop_start=$_GET['page'];
-	settype($loop_start, 'integer');
-
-	// pages counter
-	function count_pages()
+	// set page number
+	if(isset($_GET['page']))
 	{
-		global $entries_per_page; // in settings.php
-		$pages_count=1;
-		$pages_ind=0;
-
-		$current_page='1';
-		if(isset($_GET['page']))
-			$current_page=$_GET['page'];
-
-		global $files; // used in div articles before executing function
-		foreach(array_reverse($files) as $file)
+		if(is_numeric($_GET['page']))
 		{
-			if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
-			{
-				// check if article is public (old naming)
-				//if(strpos(file_get_contents('articles/' . $file), '$art_public=true;'))
-				//{
-					// count how many pages are available
-					if($pages_ind === $entries_per_page)
-					{
-						$pages_count++;
-						$pages_ind=1; // must reset this
-					}
-					else
-						$pages_ind++;
-				//}
-			}
-
-		}
-
-		$i=1; // loop indicator
-		while($i <= $pages_count)
-		{
-			if($i == $current_page)
-				echo '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render current
-			else
-				echo '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
-			$i++;
+			$simpleblog['page']['current_page']=$_GET['page'];
+			settype($simpleblog['page']['current_page'], 'integer');
 		}
 	}
+	else
+		$simpleblog['page']['current_page']=1;
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php echo "$page_title"; ?></title>
+		<title><?php echo $simpleblog['title']; ?></title>
 		<meta charset="utf-8">
-		<?php include $cms_root_php . '/htmlheaders.php'; ?>
+		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
-			<?php include $cms_root_php . '/header.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $cms_root_php . '/headlinks.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/headlinks.php'; ?>
 		</div>
 		<div id="articles">
 			<?php
-				$loop_ind=1; // first if in foreach
-				$files=scandir($cms_root_php . '/articles/');
-				foreach(array_reverse($files) as $file)
+				$emptyDatabase=true;
+				foreach(simpleblog_engineIndex($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $simpleblog['page']['current_article'])
 				{
-					// debug
-					//if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
-					//	echo '<!-- processing article ' . ltrim(preg_replace('/\.[^.]+$/', '', $file), '0') . ' -->' . "\n";
-
-					/* Wait a sec!
-						"omit" loop doesn't check if article is public or private
-						articles may be duplicated on next page [SOLVED]
-					*/
-
-					if($loop_ind >= ($loop_start*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-					{
-						if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
-						{
-							include 'articles/' . $file;
-
-							// check if article is public (old naming)
-							//if($art_public)
-							//{
-								// render tags if enabled
-								if($taglinks)
-								{
-									$tags='';
-									foreach(explode('#', $art_tags) as $tag)
-										if($tag != '')
-										{
-											$tag=trim($tag);
-											if(isset($art_style['taglink']))
-												$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '" style="' . $art_style['taglink'] . '">#' . $tag . '</a>';
-											else
-												$tags=$tags . ' <a href="' . $cms_root . '/tag?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a>';
-										}
-									$art_tags=$tags;
-								}
-
-								// render article
-								if(isset($art_style['article'])) echo '<div class="article" style="' . $art_style['article'] . '">'."\n"; else echo '<div class="article">'."\n";
-									if(isset($art_style['tags'])) echo '<div class="art-tags" style="' . $art_style['tags'] . '">'.$art_tags.'</div>'; else echo '<div class="art-tags">'.$art_tags.'</div>';
-									if(isset($art_style['date'])) echo '<div class="art-date" style="' . $art_style['date'] . '">'.$art_date.'</div>'."\n"; else echo '<div class="art-date">'.$art_date.'</div>'."\n";
-									if(isset($art_style['title'])) echo '<div class="art-title" style="' . $art_style['title'] . '">'; else echo '<div class="art-title">';
-										if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
-									echo '</div>'."\n";
-									echo $art_content;
-								echo '</div>'."\n";
-
-								// clean
-							//	unset($art_public);
-								unset($tags); unset($tag);
-								unset($art_style);
-							//}
-							//else
-							//	$loop_ind--;
-						}
-
-						if($loop_ind === $loop_start*$entries_per_page) // break if the maximum number of entries has been reached
-							break;
-						else
-							$loop_ind++;
-					}
-					else
-						$loop_ind++; // if entry is unwanted
+					$emptyDatabase=false;
+					simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks']);
 				}
+				if($emptyDatabase) echo '<h1 style="text-align: center;">Empty</h1>';
 			?>
 		</div>
 		<div id="pages">
-			<?php count_pages(); echo "\n"; ?>
+			<?php if(!$emptyDatabase) echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n"; ?>
 		</div>
 		<div id="footer">
-			<?php include $cms_root_php . '/footer.php'; ?>
+			<?php include $simpleblog['root_php'] . '/lib/footer.php'; ?>
 		</div>
 	</body>
 </html>
+<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time in seconds: ' . (microtime(true) - $simpleblog['execTime']), 0); ?>
