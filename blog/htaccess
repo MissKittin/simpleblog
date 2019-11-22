@@ -20,3 +20,6 @@ RewriteRule ^tmp/* - [F,L]
 	Order allow,deny
 	Deny from all
 </FilesMatch>
+
+# Remove errors
+php_flag display_errors off
