@@ -49,6 +49,42 @@ textarea {
 	resize: none;
 	outline: none;
 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+	white-space: nowrap;
+}
+input[type=text], input[type=password] {
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid #9e9e9e;
+	height: 48px;
+	width: 100%;
+	margin: 0 0 15px 0;
+	padding: 0;
+	outline: none;
+}
+input[type=text]:focus, input[type=password]:focus {
+	border-bottom: 1px solid #4caf50;
+}
+label {
+	color: #9e9e9e;
+	position: relative;
+	top: 0; left: 0.75rem;
+	font-size: 0.8rem;
+	cursor: text;
+}
+
+/* tables */
+table a, table a:hover, table a:visited {
+	text-decoration: none;
+	color: #0000ff;
+}
+table {
+	border-collapse: collapse;
+}
+table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+table td {
+	white-space: nowrap;
 }
 
 /* header */

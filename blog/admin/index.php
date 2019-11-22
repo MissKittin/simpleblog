@@ -36,6 +36,11 @@
 	// count tags
 	function adminpanel_countTags($dir)
 	{
+		// globals
+		global $simpleblog;
+		global $cms_root;
+		global $cms_root_php;
+
 		// counter
 		$returnCount=0;
 
@@ -166,17 +171,48 @@
 					$returnArray['size']+=$file->getSize();
 
 			// size as KB
-			$returnArray['size']=round(($returnArray['size']/1024)) . 'KB';
+			$returnArray['size']=round($returnArray['size']/1024) . 'KB';
 
 			return $returnArray;
 		}
 		return false;
 	}
 
+	// count cms size
+	function adminpanel_countCmsSize($dir, $action)
+	{
+		$returnCount=0;
+		switch($action)
+		{
+			case 'size':
+				foreach(new DirectoryIterator($dir) as $file)
+					if(($file != '.') && ($file != '..'))
+					{
+						if(is_dir($dir . '/' . $file))
+							$returnCount+=adminpanel_countCmsSize($dir . '/' . $file, 'size');
+						else
+							$returnCount+=$file->getSize();
+					}
+				break;
+			case 'count':
+				foreach(scandir($dir) as $file)
+					if(($file != '.') && ($file != '..'))
+					{
+						if(is_dir($dir . '/' . $file))
+							$returnCount+=adminpanel_countCmsSize($dir . '/' . $file, 'count');
+						else
+							$returnCount++;
+					}
+				break;
+		}
+		return $returnCount;
+	}
+
 	// functions
 	function adminpanel_stats()
 	{
 		global $adminpanel;
+		global $simpleblog;
 
 		// collect stats
 		$stats['articles']=adminpanel_countArticles($adminpanel['path']['articles']);
@@ -195,6 +231,7 @@
 			<li>Media: <?php echo $stats['media']['count']; ?> (<?php echo $stats['media']['size']; ?>)</li>
 			<?php if($stats['cron'] != false) echo '<li>Cron tasks: ' . $stats['cron']['enabled'] . ' enabled, ' . $stats['cron']['disabled'] . ' disabled</li>'; ?>
 			<?php if($stats['tmp'] != false) echo '<li>Temporary files: ' . $stats['tmp']['count'] . ' (' . $stats['tmp']['size'] . ')</li>'; ?>
+			<li>CMS size: <?php echo adminpanel_countCmsSize($simpleblog['root_php'], 'count'); ?> files (<?php echo round((adminpanel_countCmsSize($simpleblog['root_php'], 'size')/1024)/1024); ?>MB)</li>
 		</ul><?php
 	}
 	function adminpanel_serverInfo()

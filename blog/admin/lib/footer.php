@@ -5,4 +5,4 @@
 		include 'prevent-index.php'; exit();
 	}
 ?>
-<span id="footerText">2019, MissKittin@GitHub</span>
+<span id="footerText"><span style="display:inline-block; transform: rotate(180deg);">&copy;</span> MissKittin@GitHub, 2019</span>

@@ -107,15 +107,15 @@
 					}
 				}
 			?>
-			<form action="admin-articles?write&filename=<?php echo $filename; ?>" method="post">
-				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo file_get_contents($adminpanel['path']['articles'] . '/' . $filename); ?></textarea>
+			<form action="?write&filename=<?php echo $filename; ?>" method="post">
+				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo file_get_contents($adminpanel['path']['articles'] . '/' . $filename); else echo '<?php' . "\n\t" . '$art_title=\'\';' . "\n\t" . '$art_date=\'' . date('d.m.Y') . '\';' . "\n\t" . '$art_tags=\'\';' . "\n" . "\n\t" . '//$art_style[\'article\']=\'\';' . "\n\t" . '//$art_style[\'tags\']=\'\';' . "\n\t" . '//$art_style[\'taglink\']=\'\';' . "\n\t" . '//$art_style[\'date\']=\'\';' . "\n\t" . '//$art_style[\'title\']=\'\';' . "\n\t" . '//$art_style[\'title-header\']=false;' . "\n\n\t" . '$art_content=\'' . "\n\t\t\n\t" . '\';' . "\n" . '?>'; ?></textarea>
 				<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo '<div style="float: left;" class="button"><a href="?show=' . $_GET['filename'] . '" target="_blank">Preview</a></div>'; ?> <input type="submit" class="button" value="Save">
 			</form>
 			<h3>Cheat sheet</h3>
 			// article meta<br>
 			$art_title='Article title';<br>
 			$art_date='DD.MM.YYYY';<br>
-			$art_tags='#sample_tag';<br><br>
+			$art_tags='#sample tag #sample second tag';<br><br>
 			// article styles<br>
 			$art_style['article']=''; // div id article<br>
 			$art_style['tags']=''; // div id art-tags<br>
@@ -160,7 +160,7 @@
 			<h3>Edit article</h3>
 		</div>
 		<div id="content">
-			<form action="admin-articles?edit=<?php echo $_GET['edit']; ?>" method="post">
+			<form action="?edit=<?php echo $_GET['edit']; ?>" method="post">
 				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($adminpanel['path']['articles'] . '/' . $_GET['edit']); ?></textarea>
 				<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <div style="float: left;" class="button"><a href="?show=<?php echo $_GET['edit']; ?>" target="_blank">Preview</a></div> <input type="submit" class="button" value="Save">
 			</form>
@@ -168,7 +168,7 @@
 			// article meta<br>
 			$art_title='Article title';<br>
 			$art_date='DD.MM.YYYY';<br>
-			$art_tags='#sample_tag';<br><br>
+			$art_tags='#sample tag #sample second tag';<br><br>
 			// article styles<br>
 			$art_style['article']=''; // div id article<br>
 			$art_style['tags']=''; // div id art-tags<br>
@@ -191,7 +191,7 @@
 	if(isset($_GET['show']))
 		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['show'])) && (!preg_match('/\//i', $_GET['source'])))
 		{
-			echo '<!DOCTYPE html><html><head><title>Preview</title><meta charset="utf-8">'; include $simpleblog['root_php'] . '/lib/htmlheaders.php'; echo '<head><body><div id="articles">'."\n";
+			echo '<!DOCTYPE html><html><head><title>Preview</title><meta charset="utf-8">'; include $adminpanel['path']['htmlheaders']; echo '<head><body><div id="articles">'."\n";
 			simpleblog_engineCore($adminpanel['path']['articles'] . '/' . $_GET['show'], true);
 			echo '</div></body></html>';
 			exit();
@@ -231,15 +231,6 @@
 	<head>
 		<title>Articles</title>
 		<?php adminArticles_htmlheaders(); ?>
-		<style>
-			a, a:hover, a:visited {
-				text-decoration: none;
-				color: #0000ff;
-			}
-			td {
-				white-space: nowrap;
-			}
-		</style>
 	</head>
 	<body>
 		<div id="header">
@@ -280,7 +271,7 @@
 				?>
 			</table>
 			<h3>All articles: <?php echo $articles_indicator; ?>, Published: <?php echo $public_articles_indicator; ?></h3>
-			<div style="width: 50px;" class="button"><a href="?write=cos">Write</a></div>
+			<div style="width: 50px;" class="button"><a href="?write">Write</a></div>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

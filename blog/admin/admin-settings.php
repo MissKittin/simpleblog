@@ -30,10 +30,21 @@
 	$adminpanel['root_php']=$simpleblog['root_php'] . '/admin';
 	$adminpanel['skin']='material-green';
 
-	// paths
+	// paths - dirs
 	$adminpanel['path']['articles']=$simpleblog['root_php'] . '/articles';
 	$adminpanel['path']['pages']=$simpleblog['root_php'] . '/pages';
+	$adminpanel['path']['pages_html']=$simpleblog['root_html'] . '/pages';
 	$adminpanel['path']['media']=$simpleblog['root_php'] . '/media';
 	$adminpanel['path']['cron']=$simpleblog['root_php'] . '/cron';
 	$adminpanel['path']['tmp']=$simpleblog['root_php'] . '/tmp';
+	$adminpanel['path']['favicon']=$simpleblog['root_php'] . '/lib/favicon';
+	$adminpanel['path']['favicon_html']=$simpleblog['root_html'] . '/lib/favicon';
+	$adminpanel['path']['skins']=$simpleblog['root_php'] . '/skins';
+	$adminpanel['path']['skins_html']=$simpleblog['root_html'] . '/skins';
+
+	// paths - files
+	$adminpanel['path']['header']=$simpleblog['root_php'] . '/lib/header.php';
+	$adminpanel['path']['headlinks']=$simpleblog['root_php'] . '/lib/headlinks.php';
+	$adminpanel['path']['footer']=$simpleblog['root_php'] . '/lib/footer.php';
+	$adminpanel['path']['htmlheaders']=$simpleblog['root_php'] . '/lib/htmlheaders.php';
 ?>

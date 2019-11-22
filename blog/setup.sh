@@ -112,11 +112,11 @@ while true; do
 	fi
 done
 
-#echo; echo 'setup.bat'
-#rm setup.bat
+echo; echo 'setup.bat'
+rm setup.bat
 
-#echo 'setup-links.bat'
-#rm setup-links.bat
+echo 'setup-links.bat'
+rm setup-links.bat
 
 echo 'setup.sh'
 rm setup.sh
