@@ -7,11 +7,12 @@ No cookies(\*\*), no sessions(\*\*) and conventional database, with tags, custom
 <br><br>
 
 But first:<br>
-1. enter into blog/
-2. run setup.sh (setup.bat or setup-links.bat on windows\*)
-3. edit files indicated by the setup script
-4. copy blog/skins/default and create your own.
-5. upload cms to server
+1. you can rename `blog` to another name
+2. enter into blog/
+3. run setup.sh (setup.bat or setup-links.bat on windows\*)
+4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
+5. copy blog/skins/default and create your own.
+6. upload `blog` to server
 <br><br>
 
 \*setup.bat is based on copy, setup-links.bat is based on mklink
