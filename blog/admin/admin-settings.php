@@ -22,13 +22,15 @@
 ?>
 <?php
 	// credentials
-	$adminpanel_credentials['login']='YOUR_USERNAME';
-	$adminpanel_credentials['password']='YOUR_PASSWORD';
+	$adminpanel_credentials['login']='simpleblog';
+	$adminpanel_credentials['password']='$2y$10$ykZDBBYmmBDBuRtZMkjKuefeqUB2IdOc5B2G/Zr8pLibuibLLkPs2';
 
 	// settings for admin panel
 	$adminpanel['root_html']=$simpleblog['root_html'] . '/admin';
 	$adminpanel['root_php']=$simpleblog['root_php'] . '/admin';
 	$adminpanel['skin']='material-green';
+	$adminpanel['menu_module']='material';
+	$adminpanel['login_form']='material';
 
 	// paths - dirs
 	$adminpanel['path']['articles']=$simpleblog['root_php'] . '/articles';

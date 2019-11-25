@@ -86,7 +86,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Edit article</h3>
@@ -154,7 +154,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Edit article</h3>
@@ -219,7 +219,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left; width: 50px;" class="button"><a href="admin-articles">Back</a></div> <div style="float: left; width: 60px;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -237,7 +237,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Articles</h3>
@@ -271,7 +271,7 @@
 				?>
 			</table>
 			<h3>All articles: <?php echo $articles_indicator; ?>, Published: <?php echo $public_articles_indicator; ?></h3>
-			<div style="width: 50px;" class="button"><a href="?write">Write</a></div>
+			<div style="float: left;" class="button"><a href="?write">Write</a></div>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

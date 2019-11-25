@@ -35,7 +35,7 @@
 							<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 						</div>
 						<div id="headlinks">
-							<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+							<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 						</div>
 						<div id="content_header">
 							<h3>Upload</h3>
@@ -71,7 +71,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . '<br>Are you sure?</h1>
-							<div style="float: left; width: 50px;" class="button"><a href="admin-media">Back</a></div> <div style="float: left; width: 60px;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="admin-media">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -91,7 +91,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Media</h3>
@@ -104,7 +104,7 @@
 							echo '<tr><td>' . $file . '</td><td>' . round(($file->getSize())/1024) . 'KB</td><td><a style="color: #0000ff; text-decoration: none;" href="' . $simpleblog['root_html'] . '/media/' . $file . '" target="_blank">View</a></td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file) . '">Delete</a></td></tr>';
 				?>
 			</table>
-			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left; width: 58px;" class="button"><a href="?upload">Upload</a></div><?php } ?>
+			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload">Upload</a></div><?php } ?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

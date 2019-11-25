@@ -80,6 +80,7 @@ body {
 	color: #ffffff;
 	padding: 20px;
 	margin-top: 5px;
+	text-transform: uppercase;
 }
 
 /* Loading... text */

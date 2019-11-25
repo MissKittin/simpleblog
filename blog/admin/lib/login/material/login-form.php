@@ -2,7 +2,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/login-form.php')
 	{
-		include '../prevent-index.php'; exit();
+		include '../../prevent-index.php'; exit();
 	}
 ?>
 <!DOCTYPE html>
@@ -26,7 +26,7 @@
 						<input type="password" name="password">
 					</div>
 					<div id="input_buttons">
-						<input type="submit" value="LOGIN" class="button">
+						<input type="submit" value="Login" class="button">
 					</div>
 				</form>
 			</div>

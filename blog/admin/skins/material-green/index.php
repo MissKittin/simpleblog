@@ -69,7 +69,6 @@ label {
 	position: relative;
 	top: 0; left: 0.75rem;
 	font-size: 0.8rem;
-	cursor: text;
 }
 
 /* tables */
@@ -85,6 +84,70 @@ table tr:nth-child(even) {
 }
 table td {
 	white-space: nowrap;
+}
+
+/* switches (checkboxes) */
+label input[type=checkbox] {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+label input[type=checkbox]:checked + .lever {
+	background-color: #84c7c1;
+}
+
+label input[type=checkbox]:checked + .lever:before, label input[type=checkbox]:checked + .lever:after {
+	left: 18px;
+}
+
+label input[type=checkbox]:checked + .lever:after {
+	background-color: #26a69a;
+}
+
+label .lever {
+	content: "";
+	display: inline-block;
+	position: relative;
+	width: 36px;
+	height: 14px;
+	background-color: rgba(0, 0, 0, 0.38);
+	border-radius: 15px;
+	margin-right: 10px;
+	transition: background 0.3s ease;
+	vertical-align: middle;
+	margin-bottom: 2px;
+}
+
+label .lever:before, label .lever:after {
+	content: "";
+	position: absolute;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	left: 0;
+	top: -3px;
+	transition: left 0.3s ease, background .3s ease, box-shadow 0.1s ease, transform .1s ease;
+}
+
+label .lever:before {
+	background-color: rgba(38, 166, 154, 0.15);
+}
+
+label .lever:after {
+	background-color: #F1F1F1;
+	box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+input[type=checkbox]:checked:not(:disabled) ~ .lever:active::before, input[type=checkbox]:checked:not(:disabled).tabbed:focus ~ .lever::before {
+	transform: scale(2.4);
+	background-color: rgba(38, 166, 154, 0.15);
+}
+
+input[type=checkbox]:not(:disabled) ~ .lever:active:before, input[type=checkbox]:not(:disabled).tabbed:focus ~ .lever::before {
+	transform: scale(2.4);
+	background-color: rgba(0, 0, 0, 0.08);
 }
 
 /* header */

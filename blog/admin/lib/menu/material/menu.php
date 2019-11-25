@@ -1,12 +1,12 @@
 <?php
-	// admin panel - menu module
+	// admin panel - menu module for material-green theme
 	// 13.11.2019
 ?>
 <?php
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/menu.php')
 	{
-		include '../prevent-index.php'; exit();
+		include '../../prevent-index.php'; exit();
 	}
 ?>
 <?php

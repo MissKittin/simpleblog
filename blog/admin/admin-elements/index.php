@@ -1,7 +1,7 @@
 <?php header('X-XSS-Protection:0'); ?>
 <?php
-	// Admin panel for simpleblog - pages section
-	// 20.11.2019
+	// Admin panel for simpleblog - elements section
+	// 22.11.2019
 	$module['id']='admin-elements';
 
 	// import settings
@@ -25,7 +25,7 @@
 		<div>
 			<form action="?edit=favicon&file=<?php echo $_GET['file']; ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($file); ?></textarea>
-				<div style="float: left; width: 50px;" class="button"><a href="?edit=favicon">Back</a></div> <input type="submit" class="button" value="Save">
+				<div style="float: left;" class="button"><a href="?edit=favicon">Back</a></div> <input type="submit" class="button" value="Save">
 			</form>
 		</div>
 	<?php }
@@ -44,7 +44,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Page elemens</h3>
@@ -103,7 +103,7 @@
 										unlink($adminpanel['path']['favicon'] . '/' . $_GET['delete']);
 									else
 									{
-										echo '<div style="overflow: auto;"><h1>' . $_GET['delete'] . ' - Are you sure?</h1><div style="float: left; width: 50px;" class="button"><a href="?edit=favicon">Back</a></div> <div style="float: left; width: 60px;" class="button"><a href="?edit=' . $_GET['edit'] . '&delete=' . $_GET['delete'] . '&yes">Delete</a></div></div>';
+										echo '<div style="overflow: auto;"><h1>' . $_GET['delete'] . ' - Are you sure?</h1><div style="float: left;" class="button"><a href="?edit=favicon">Back</a></div> <div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&delete=' . $_GET['delete'] . '&yes">Delete</a></div></div>';
 										break;
 									}
 								}

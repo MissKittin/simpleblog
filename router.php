@@ -7,7 +7,7 @@
 	$router_cache['substr']=substr($router_cache['strtok'], $router_cache['strrpos'] + 1);
 
 	// import custom router.php
-	$routerscan['filename']='router.php'; // set file name here
+	$routerscan['filename']='.router.php'; // set file name here
 	$routerscan['data']=explode('/', substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/')));
 	$routerscan['elements']=count($routerscan['data'])-1;
 	$routerscan['rendered']='/';

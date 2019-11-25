@@ -1,6 +1,7 @@
 <?php
 	// Maintenace break pattern
 	// 09.11.2019
+	// admin update 23.11.2019
 
 	// deny direct access - for apache
 	if(php_sapi_name() != 'cli-server')
@@ -29,7 +30,8 @@
 		if(
 			(explode('/', substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html'])))[2] != 'favicon') &&
 			(explode('/', substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html'])))[1] != 'media') &&
-			(explode('/', substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html'])))[1] != 'skins')
+			(explode('/', substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html'])))[1] != 'skins') &&
+			(explode('/', substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html'])))[1] != 'admin')
 		)
 		{
 /* pattern start */ ?>

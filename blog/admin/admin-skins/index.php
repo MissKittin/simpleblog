@@ -1,6 +1,6 @@
 <?php header('X-XSS-Protection:0'); ?>
 <?php
-	// Admin panel for simpleblog - pages section
+	// Admin panel for simpleblog - skins section
 	// 20.11.2019
 	$module['id']='admin-skins';
 
@@ -100,7 +100,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['deleteFile'] . ' - Are you sure?</h1>
-							<div style="float: left; width: 50px;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Back</a></div> <div style="float: left; width: 60px;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $_GET['deleteFile'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Back</a></div> <div style="float: left;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $_GET['deleteFile'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -135,12 +135,34 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left; width: 50px;" class="button"><a href="admin-skins">Back</a></div> <div style="float: left; width: 60px;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="admin-skins">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
 			}
 		}
+
+	// install skin
+	if((isset($_GET['installSkin'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1))
+	{
+		$skinpack=new ZipArchive;
+		$skinpack->open($_FILES['file']['tmp_name'][0]);
+		$skinpack->extractTo($adminpanel['path']['skins']);
+		$skinpack->close();
+		unlink($_FILES['file']['tmp_name'][0]);
+	}
+
+	// upload file
+	if((isset($_GET['upload'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1))
+	{
+		$countfiles=count($_FILES['file']['name']);
+		if(isset($_GET['dir']))
+			for($i=0; $i<$countfiles; $i++)
+				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['dir'] . '/' . $_FILES['file']['name'][$i]);
+		else
+			for($i=0; $i<$countfiles; $i++)
+				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_FILES['file']['name'][$i]);
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -155,10 +177,15 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
-			<h3>Skins</h3>
+			<?php
+				if(isset($_GET['edit']))
+					echo '<h3>Browse skin</h3>';
+				else
+					echo '<h3>Skins</h3>';
+			?>
 		</div>
 		<div id="content">
 			<table>
@@ -195,8 +222,10 @@
 			<?php
 				/* for browse skin  - back button */
 				if(isset($_GET['edit']))
+				{
 					if(isset($_GET['dir']))
 					{
+						// back button with $_GET['dir']
 						$editBackButton['display']=false;
 						$editBackButton['explode']=explode('/', $_GET['dir']);
 						$editBackButton['count']=count($editBackButton['explode'])-1;
@@ -215,9 +244,55 @@
 							echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&dir=' . $editBackButton['link'] . '">Back</a></div>';
 						else
 							echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '">Back</a></div>';
+
+						// upload button
+						if(ini_get('file_uploads') == 1)
+						{
+							if(isset($_GET['upload']))
+								echo '<br><br><br><br>
+									<form action="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload&yes" method="post" enctype="multipart/form-data">
+										<input type="file" name="file[]" id="file" multiple>
+										<input class="button" type="submit" value="Upload">
+									</form>
+								';
+							else
+								echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload">Upload</a></div>';
+						}
 					}
+					else
+						if(ini_get('file_uploads') == 1) // only upload button
+						{
+							if(isset($_GET['upload']))
+								echo '
+									<form action="?edit=' . $_GET['edit'] . '&upload&yes" method="post" enctype="multipart/form-data">
+										<input type="file" name="file[]" id="file" multiple>
+										<input class="button" type="submit" value="Upload">
+									</form>
+								';
+							else
+								echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&upload">Upload</a></div>';
+						}
+				}
 			?>
-			<?php /* for list skins - current skin info */ if(!isset($_GET['edit'])) { ?><h3>Current skin: <?php echo $simpleblog['skin']; ?></h3><?php } ?>
+			<?php
+				/* for list skins - current skin info and install button */
+				if(!isset($_GET['edit']))
+				{
+					echo '<h3>Current skin: ' . $simpleblog['skin'] . '</h3>';
+					if(ini_get('file_uploads') == 1)
+					{
+				 		if(isset($_GET['installSkin']))
+							echo '
+								<form action="?installSkin&yes" method="post" enctype="multipart/form-data">
+									<input type="file" name="file[]" id="file" accept=".zip">
+									<input class="button" type="submit" value="Install">
+								</form>
+							';
+						else
+							echo '<div class="button" style="float: left;"><a href="?installSkin">Install</a></div>';
+					}
+				}
+			?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

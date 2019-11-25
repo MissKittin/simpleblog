@@ -18,7 +18,7 @@
 			<?php include $adminpanel['root_php'] . '/lib/header.php'; ?>
 		</div>
 		<div id="headlinks">
-			<?php include $adminpanel['root_php'] . '/lib/menu/menu.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
 			<h3>Upload</h3>

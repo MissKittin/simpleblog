@@ -32,42 +32,42 @@ while true; do
 	if [ "$apanswer" = 'y' ]; then
 		echo 'admin/prevent-index'
 		cd ./admin/lib
-		cp ../../lib/prevent-index.php ./prevent-index.php
-		cp ./prevent-index.php ./index.php
+		ln -s ../../lib/prevent-index.php ./prevent-index.php
+		ln -s ./prevent-index.php ./index.php
 
 		echo 'admin/core'
-		cp ../../lib/core.php ./core.php
+		ln -s ../../lib/core.php ./core.php
 
 		echo 'admin/login'
 		cd login
-		cp ../prevent-index.php ./index.php
+		ln -s ../prevent-index.php ./index.php
 		cd ..
 
 		echo 'admin/login/material'
 		cd login/material
-		cp ../../prevent-index.php ./index.php
+		ln -s ../../prevent-index.php ./index.php
 		cd ../..
 
 		echo 'admin/menu'
 		cd menu
-		cp ../prevent-index.php ./index.php
+		ln -s ../prevent-index.php ./index.php
 		cd ..
 
 		echo 'admin/menu/material'
 		cd menu/material
-		cp ../../prevent-index.php ./index.php
+		ln -s ../../prevent-index.php ./index.php
 		cd ../..
 
 		echo 'admin/skins'
 		cd ../skins
-		cp ../lib/prevent-index.php ./index.php
+		ln -s ../lib/prevent-index.php ./index.php
 		cd ..
 
 		echo 'admin\passwordChangeRequired'
 		cp ./lib/prevent-index.php ./passwordChangeRequired.php
 
 		echo 'admin/disabled'
-		cp ./lib/prevent-index.php ./disabled.php
+		ln -s ./lib/prevent-index.php ./disabled.php
 
 		cd ..
 		break
@@ -80,28 +80,28 @@ done
 
 echo ''; echo 'lib'
 cd lib
-cp prevent-index.php index.php
+ln -s prevent-index.php index.php
 cd ..
 
 echo 'lib/favicon'
 cd lib/favicon
-cp ../prevent-index.php index.php
+ln -s ../prevent-index.php index.php
 cd ../..
 
 echo 'media'
 mkdir media
 cd media
-cp ../lib/prevent-index.php index.php
+ln -s ../lib/prevent-index.php index.php
 cd ..
 
 echo 'skins'
 cd skins
-cp ../lib/prevent-index.php index.php
+ln -s ../lib/prevent-index.php index.php
 cd ..
 
 echo 'pages'
 cd pages
-cp ../lib/prevent-index.php index.php
+ln -s ../lib/prevent-index.php index.php
 cd ..
 
 echo ''
@@ -134,10 +134,10 @@ rm setup.bat
 echo 'setup-links.bat'
 rm setup-links.bat
 
-echo 'setup-links.sh'
-rm setup-links.sh
-
 echo 'setup.sh'
 rm setup.sh
+
+echo 'setup-links.sh'
+rm setup-links.sh
 
 exit 0

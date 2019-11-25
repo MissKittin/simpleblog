@@ -16,6 +16,7 @@ goto postcron
 
 :cron
 del lib\cron.php
+rmdir admin\admin-cron /S /Q
 
 :postcron
 
@@ -49,18 +50,35 @@ cd login
 mklink index.php ..\prevent-index.php > NUL
 cd ..
 
+echo admin\login\material
+cd login
+cd material
+mklink index.php ..\..\prevent-index.php > NUL
+cd ..
+cd ..
+
 echo admin\menu
 cd menu
 mklink index.php ..\prevent-index.php > NUL
+cd ..
+
+echo admin\menu\material
+cd menu
+cd material
+mklink index.php ..\..\prevent-index.php > NUL
+cd ..
 cd ..
 
 echo admin\skins
 cd ..
 cd skins
 mklink index.php ..\lib\prevent-index.php > NUL
+cd ..
+
+echo admin\passwordChangeRequired
+copy lib\prevent-index.php passwordChangeRequired.php > NUL
 
 echo admin\disabled
-cd ..
 mklink disabled.php lib\prevent-index.php > NUL
 cd ..
 
@@ -97,6 +115,8 @@ echo:
 set /p phpcli="will you use simpleblog on php built-in server? (y/[n]) "
 if /i "%phpcli%" neq "y" goto apache
 
+echo .router.php
+move router.php .router.php > NUL
 echo htaccess
 del htaccess > NUL
 echo settings.php
@@ -115,6 +135,9 @@ echo fill the settings in settings.php and .htaccess
 echo:
 echo setup.sh
 del setup.sh > NUL
+
+echo setup-links.sh
+del setup-links.sh > NUL
 
 echo setup.bat
 del setup.bat > NUL
