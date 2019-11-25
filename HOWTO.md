@@ -1,3 +1,53 @@
+# First steps after clone
+1. you can rename `blog` to another name
+2. enter into `blog`
+3. run setup.sh or setup-links.sh (setup.bat or setup-links.bat on windows)\*
+4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
+5. copy blog/skins/default and create your own.
+6. upload `blog` to server
+<br><br>\*setup is based on copy, setup-links is based on ln/mklink
+<br><br>
+
+# How to write articles
+Copy `public_000001.php` to `public_000002.php`, open it and change variables content.<br>
+`$art_date` is in DD.MM.YYYY format.<br>
+If you want style article uncomment `$art_style['something']`, where
+* $art_style['article']='content'; adds inline style to `<div class="article" style="content">`
+* $art_style['tags']='content'; adds inline style to `<div class="art-tags" style="content">`
+* $art_style['taglink']='content'; adds inline style to `<div class="art-tags"><a style="content">#tag</a></div>`
+* $art_style['date']='content'; adds inline style to `<div class="art-date" style="content">`
+* $art_style['title']='content'; adds inline style to `<div class="art-title" style="content">`
+* $art_style['title-header']=false; disables `<h2>` tag in `<div class="art-title">`
+<br><br>
+
+# How to write pages
+Copy `samplepage` to `your_page_link`, upload images, styles, fonts etc to this dir and edit `index.php`.
+<br><br>
+
+# Editing header.php, footer.php and headlinks.php
+Don't touch first `<?php` block of code. Write content below `?>`.
+<br><br>
+
+# How to create skins
+Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
+<br><br>
+
+# How to allow javascript
+Change https://github.com/MissKittin/simpleblog/blob/master/blog/lib/htmlheaders.php#L3 to<br>
+`<meta http-equiv="Content-Security-Policy" content="script-src 'self';">`<br>
+This prevent inline script executing, but allow js files from your website.<br>
+**Achtung!** Allow inline styles or you breaks $art_style
+<br><br>
+
+# Articles addressing scope
+Articles are addressed from `000001` to `999999`. You can increase scope by adding zeros at the begin of number, eg `0000999999`<br>
+**Achtung!** You must add zeros in all articles! (bash automation soon)
+<br><br>
+
+# Supported HTTP servers
+PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.
+<br><br>
+
 # How it works
 The simpleblog is divided into two parts: main page and tags. Tags can be detached by setting `$simpleblog['taglinks']` to false.
 <br><br>
