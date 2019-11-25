@@ -6,16 +6,7 @@ No cookies(\*\*), no sessions(\*\*) and conventional database, with tags, custom
 \*\* cookies and sessions for login, javascript in TabManager.js
 <br><br>
 
-But first:<br>
-1. you can rename `blog` to another name
-2. enter into `blog`
-3. run setup.sh or setup-links.sh (setup.bat or setup-links.bat on windows)\*
-4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
-5. copy blog/skins/default and create your own.
-6. upload `blog` to server
-<br><br>
-
-\*setup is based on copy, setup-links is based on ln/mklink
+But first read manual.
 <br><br>
 
 # manual
