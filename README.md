@@ -18,17 +18,13 @@ But first:<br>
 \*setup is based on copy, setup-links is based on ln/mklink
 <br><br>
 
+# manual
+https://github.com/MissKittin/simpleblog/blob/master/HOWTO.md
+<br><br>
+
 # admin panel
 default login and password is `simpleblog`<br>
 admin/disabled.php completely disables the panel - remove this file
-<br><br>
-
-# cron
-read https://github.com/MissKittin/simpleblog/blob/master/blog/lib/cron.php#L5
-<br><br>
-
-# maintenace break pattern
-edit settings.php: enable/disable switch and one ip on which the pattern isn't displayed
 <br><br>
 
 # additional functions
