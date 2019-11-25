@@ -28,6 +28,7 @@ The Simpleblog has a modular structure
 ### admin panel (optional)
 Basic script set that allow manage the Simpleblog from a web browser.<br>
 Default login and password is `simpleblog`.<br>
+`admin/disabled.php` completely disables the panel.<br>
 **Achtung!** It contains one library that is GPL2 licensed. If you don't agree with GPL2, remove `blog/admin/lib/zip.lib.php`
 <br>
 
