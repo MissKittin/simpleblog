@@ -1,4 +1,4 @@
-# Simple blog renderer v2 beta
+# Simple blog v2 beta
 I wanted a wordpress on my linux server, but without javascript. So I wrote <del>simple script</del> CMS, that render my short posts.
 <br><br>
 
@@ -8,19 +8,19 @@ No cookies(\*\*), no sessions(\*\*) and conventional database, with tags, custom
 
 But first:<br>
 1. you can rename `blog` to another name
-2. enter into blog/
-3. run setup.sh (setup.bat or setup-links.bat on windows\*)
+2. enter into `blog`
+3. run setup.sh or setup-links.sh (setup.bat or setup-links.bat on windows)\*
 4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
 5. copy blog/skins/default and create your own.
 6. upload `blog` to server
 <br><br>
 
-\*setup.bat is based on copy, setup-links.bat is based on mklink
+\*setup is based on copy, setup-links is based on ln/mklink
 <br><br>
 
 # admin panel
-edit admin/admin-settings.php line 25 and 26<br>
-admin/disabled.php completely disables the panel
+default login and password is `simpleblog`<br>
+admin/disabled.php completely disables the panel - remove this file
 <br><br>
 
 # cron
@@ -38,5 +38,4 @@ checkEaster.php -> checkDate for Easter - calculates the first day of Easter and
 
 # skurkawudka czorno
 standard skin with "allsaints" customization<br>
-![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/preview_main.png)
-<br><br>
+![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/screenshots/preview_main.png)
