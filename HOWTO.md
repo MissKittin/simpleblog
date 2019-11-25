@@ -12,12 +12,12 @@
 Copy `public_000001.php` to `public_000002.php`, open it and change variables content.<br>
 `$art_date` is in DD.MM.YYYY format.<br>
 If you want style article uncomment `$art_style['something']`, where
-* $art_style['article']='content'; adds inline style to `<div class="article" style="content">`
-* $art_style['tags']='content'; adds inline style to `<div class="art-tags" style="content">`
-* $art_style['taglink']='content'; adds inline style to `<div class="art-tags"><a style="content">#tag</a></div>`
-* $art_style['date']='content'; adds inline style to `<div class="art-date" style="content">`
-* $art_style['title']='content'; adds inline style to `<div class="art-title" style="content">`
-* $art_style['title-header']=false; disables `<h2>` tag in `<div class="art-title">`
+* `$art_style['article']='content';` adds inline style to `<div class="article" style="content">`
+* `$art_style['tags']='content';` adds inline style to `<div class="art-tags" style="content">`
+* `$art_style['taglink']='content';` adds inline style to `<div class="art-tags"><a style="content">#tag</a></div>`
+* `$art_style['date']='content';` adds inline style to `<div class="art-date" style="content">`
+* `$art_style['title']='content';` adds inline style to `<div class="art-title" style="content">`
+* `$art_style['title-header']=false;` disables `<h2>` tag in `<div class="art-title">`
 <br><br>
 
 # How to write pages
