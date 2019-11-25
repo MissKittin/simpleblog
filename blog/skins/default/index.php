@@ -15,6 +15,9 @@
 
 	header("Content-Type: text/css; X-Content-Type-Options: nosniff;");
 ?>
+<?php
+	echo '@import "' . $_GET['root'] . '/skins/' . $simpleblog['skin'] . '/sample_addon?root=' . $_GET['root'] . '";';
+?>
 
 
 /* default skin */
