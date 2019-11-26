@@ -134,7 +134,7 @@
 <?php
 	// article editor
 	if(isset($_GET['edit']))
-		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['source'])) && (!preg_match('/\//i', $_GET['source']))) // && if not string contains '/' character
+		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['edit'])) && (!preg_match('/\//i', $_GET['edit']))) // && if not string contains '/' character
 		{
 			if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 ?>
@@ -189,7 +189,7 @@
 
 	// show article
 	if(isset($_GET['show']))
-		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['show'])) && (!preg_match('/\//i', $_GET['source'])))
+		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['show'])) && (!preg_match('/\//i', $_GET['show'])))
 		{
 			echo '<!DOCTYPE html><html><head><title>Preview</title><meta charset="utf-8">'; include $adminpanel['path']['htmlheaders']; echo '<head><body><div id="articles">'."\n";
 			simpleblog_engineCore($adminpanel['path']['articles'] . '/' . $_GET['show'], true);
