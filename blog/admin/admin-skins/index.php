@@ -135,7 +135,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="admin-skins">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();

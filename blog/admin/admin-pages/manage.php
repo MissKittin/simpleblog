@@ -31,7 +31,7 @@
 							echo '<tr><td><a href="' . $adminpanel['path']['pages_html'] . '/' . $_GET['manage'] . '/' . $file . '" target="_blank">' . $file . '</a></td><td style="text-align: center;">' . $file->getSize() . 'B</td><td><a href="?manage=' . $_GET['manage'] . '&edit=' . $file . '">Edit</a></td><td><a href="?manage=' . $_GET['manage'] . '&delete=' . $file . '">Delete</a></td></tr>';
 				?>
 			</table>
-			<div style="float: left;" class="button"><a href="admin-pages">Back</a></div> <?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&upload">Upload</a></div><?php } ?> <div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&create">Create</a></div>
+			<div style="float: left;" class="button"><a href="?">Back</a></div> <?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&upload">Upload</a></div><?php } ?> <div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&create">Create</a></div>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

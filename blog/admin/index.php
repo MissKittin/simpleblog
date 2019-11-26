@@ -245,7 +245,7 @@
 		<?php
 			if(file_exists($simpleblog['root_php'] . '/settings.php'))
 				echo 'Simpleblog is configured for Apache'."\n";
-			elseif((file_exists($simpleblog['root_php'] . '/router.php')) || (file_exists($simpleblog['root_php'] . '/.router.php')))
+			elseif(file_exists($simpleblog['root_php'] . '/.router.php'))
 				echo 'Simpleblog is configured for PHP built-in server'."\n";
 		?>
 		<?php

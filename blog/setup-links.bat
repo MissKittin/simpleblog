@@ -28,6 +28,8 @@ goto postmbp
 
 :mbp
 del lib\maintenace-break.php
+del lib\maintenace-break-pattern.php
+del admin\admin-cms\mbpedit.php
 
 :postmbp
 

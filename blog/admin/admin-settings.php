@@ -49,4 +49,5 @@
 	$adminpanel['path']['headlinks']=$simpleblog['root_php'] . '/lib/headlinks.php';
 	$adminpanel['path']['footer']=$simpleblog['root_php'] . '/lib/footer.php';
 	$adminpanel['path']['htmlheaders']=$simpleblog['root_php'] . '/lib/htmlheaders.php';
+	$adminpanel['path']['mbp']=$simpleblog['root_php'] . '/lib/maintenace-break-pattern.php';
 ?>

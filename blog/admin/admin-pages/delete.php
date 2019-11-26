@@ -16,7 +16,7 @@
 	<body>
 		<div id="content" style="padding-bottom: 30px;">
 			<h1><?php echo $_GET['delete']; ?> - Are you sure?</h1>
-			<div style="float: left;" class="button"><a href="admin-pages">Back</a></div> <div style="float: left;" class="button"><a href="?delete=<?php echo $_GET['delete']; ?>&yes">Delete</a></div>
+			<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=<?php echo $_GET['delete']; ?>&yes">Delete</a></div>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

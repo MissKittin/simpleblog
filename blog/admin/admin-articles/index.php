@@ -109,7 +109,7 @@
 			?>
 			<form action="?write&filename=<?php echo $filename; ?>" method="post">
 				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo file_get_contents($adminpanel['path']['articles'] . '/' . $filename); else echo '<?php' . "\n\t" . '$art_title=\'\';' . "\n\t" . '$art_date=\'' . date('d.m.Y') . '\';' . "\n\t" . '$art_tags=\'\';' . "\n" . "\n\t" . '//$art_style[\'article\']=\'\';' . "\n\t" . '//$art_style[\'tags\']=\'\';' . "\n\t" . '//$art_style[\'taglink\']=\'\';' . "\n\t" . '//$art_style[\'date\']=\'\';' . "\n\t" . '//$art_style[\'title\']=\'\';' . "\n\t" . '//$art_style[\'title-header\']=false;' . "\n\n\t" . '$art_content=\'' . "\n\t\t\n\t" . '\';' . "\n" . '?>'; ?></textarea>
-				<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo '<div style="float: left;" class="button"><a href="?show=' . $_GET['filename'] . '" target="_blank">Preview</a></div>'; ?> <input type="submit" class="button" value="Save">
+				<div style="float: left;" class="button"><a href="?">Back</a></div> <?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo '<div style="float: left;" class="button"><a href="?show=' . $_GET['filename'] . '" target="_blank">Preview</a></div>'; ?> <input type="submit" class="button" value="Save">
 			</form>
 			<h3>Cheat sheet</h3>
 			// article meta<br>
@@ -162,7 +162,7 @@
 		<div id="content">
 			<form action="?edit=<?php echo $_GET['edit']; ?>" method="post">
 				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($adminpanel['path']['articles'] . '/' . $_GET['edit']); ?></textarea>
-				<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <div style="float: left;" class="button"><a href="?show=<?php echo $_GET['edit']; ?>" target="_blank">Preview</a></div> <input type="submit" class="button" value="Save">
+				<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?show=<?php echo $_GET['edit']; ?>" target="_blank">Preview</a></div> <input type="submit" class="button" value="Save">
 			</form>
 			<h3>Cheat sheet</h3>
 			// article meta<br>
@@ -219,7 +219,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="admin-articles">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();

@@ -29,7 +29,7 @@
 	function reload()
 	{
 		global $adminpanel;
-		echo '<!DOCTYPE html><html><head><title>Skins</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '"><meta http-equiv="refresh" content="0; url=admin-cms"></head></html>';
+		echo '<!DOCTYPE html><html><head><title>Skins</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '"><meta http-equiv="refresh" content="0; url=?"></head></html>';
 		exit();
 	}
 	function adminpanel_backupSearchRecursive($dir, $prefix)
@@ -78,7 +78,12 @@
 				file_put_contents($settings_file, str_replace('$simpleblog[\'taglinks\']=true', '$simpleblog[\'taglinks\']=false', file_get_contents($settings_file)));				
 		}
 
-		// maintenace break patterm
+		reload();
+	}
+
+	// maintenace break pattern
+	if(isset($_GET['applymbp']))
+	{
 		if(isset($_POST['mbenabled']))
 		{
 			if(!$maintenace_break['enabled'])
@@ -95,6 +100,20 @@
 				file_put_contents($settings_file, str_replace('$maintenace_break[\'allowed_ip\']=\'' . $maintenace_break['allowed_ip'] . '\'', '$maintenace_break[\'allowed_ip\']=\'' . $_POST['mballowedip'] . '\'', file_get_contents($settings_file)));
 
 		reload();
+	}
+
+	if(isset($_GET['mbpedit']))
+	{
+		if(isset($_POST['file_content']))
+		{
+			if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+			file_put_contents($adminpanel['path']['mbp'], $_POST['file_content']);
+			include 'mbpedit.php'; exit();
+		}
+		else
+		{
+			include 'mbpedit.php'; exit();
+		}
 	}
 
 	// reset credentials
@@ -244,7 +263,7 @@
 
 			<?php if(file_exists($simpleblog['root_php'] . '/lib/maintenace-break.php')) { ?>
 			<h3>Maintenace break pattern</h3>
-			<form action="?apply" method="post">
+			<form action="?applymbp" method="post">
 				Enabled
 				<label class="checkbox">
 					<?php
@@ -260,7 +279,7 @@
 				<label for="mballowedip">Allowed IP</label>
 				<input type="text" name="mballowedip" value="<?php echo $maintenace_break['allowed_ip']; ?>">
 
-				<input type="submit" class="button" value="Apply">
+				<div class="button" style="float: left;"><a href="?mbpedit">Edit pattern</a></div> <input type="submit" class="button" value="Apply">
 			</form>
 			<?php } ?>
 
