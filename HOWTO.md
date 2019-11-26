@@ -30,6 +30,8 @@ Don't touch first `<?php` block of code. Write content below `?>`.
 
 # How to create skins
 Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
+<br>
+To create an installation package, just zip the directory with your theme.
 <br><br>
 
 # How to allow javascript
