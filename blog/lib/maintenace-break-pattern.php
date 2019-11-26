@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title><?php echo "$page_title"; ?></title>
+		<title><?php echo $simpleblog['title']; ?></title>
 		<meta charset="utf-8">
 		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
 		<style>
