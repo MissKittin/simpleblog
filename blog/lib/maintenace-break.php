@@ -9,7 +9,7 @@
 	//$maintenace_break['enabled']=false;
 	//$maintenace_break['allowed_ip']='127.0.0.1';
 	$maintenace_break['bin']=$simpleblog['root_html'] . '/lib/maintenace-break.php';
-	$maintenace_break['pattern']=$simpleblog['root_html'] . '/lib/maintenace-break-pattern.php';
+	$maintenace_break['pattern']=$simpleblog['root_php'] . '/lib/maintenace-break-pattern.php';
 
 	// deny direct access - for apache
 	if(php_sapi_name() != 'cli-server')
