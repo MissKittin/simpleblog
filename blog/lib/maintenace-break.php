@@ -34,7 +34,7 @@
 	// set client_ip variable
 	if(!isset($maintenace_break['client_ip'])) $maintenace_break['client_ip']=$_SERVER['REMOTE_ADDR'];
 
-	// 
+	// new explode function
 	$maintenace_break['explode']=function($a, $b, $offset)
 	{
 		$array=explode($a, $b);
