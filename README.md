@@ -1,4 +1,4 @@
-# Simple blog v2 beta
+# Simple blog v2 RC1
 I wanted a wordpress on my linux server, but without javascript. So I wrote <del>simple script</del> CMS, that render my short posts.
 <br><br>
 
