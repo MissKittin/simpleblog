@@ -25,5 +25,5 @@ checkEaster.php -> checkDate for Easter - calculates the first day of Easter and
 <br><br>
 
 # skurkawudka czorno
-standard skin with "allsaints" customization<br>
+skin of my blog with "allsaints" customization (only for me :-)<br>
 ![preview](https://raw.githubusercontent.com/MissKittin/simpleblog/master/screenshots/preview_main.png)
