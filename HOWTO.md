@@ -50,6 +50,14 @@ Articles are addressed from `000001` to `999999`. You can increase scope by addi
 PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.
 <br><br>
 
+# How to upgrade
+1. Merge `favicon`, `footer.php`, `header.php`, `headlinks.php`, `htmlheaders.php` content to new files in `lib`
+2. Merge `settings.php` or `router.php` settings, uncomment backward compatibility options
+3. Move maintenace break pattern from old `maintenace-break.php` to new `lib/maintenace-break-pattern.php`
+4. Remove all files from old version except `articles`, `cron`, `media`, `pages` and `skins`
+5. Merge new version with old version
+<br><br>
+
 # How it works
 The simpleblog is divided into two parts: main page and tags. Tags can be detached by setting `$simpleblog['taglinks']` to false.
 <br><br>
