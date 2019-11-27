@@ -264,7 +264,7 @@
 							{
 								$publish_get_param='publish'; $publish_get_title="Publish";
 							}
-							echo '<td>' . $art_title . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td><td><a style="text-decoration: none;" href="?delete=' . $file . '">Delete</a></td></tr>' . "\n";
+							echo '<td>' . str_replace(['<', '>'], ['&lt;', '&gt;'], $art_title) . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td><td><a style="text-decoration: none;" href="?delete=' . $file . '">Delete</a></td></tr>' . "\n";
 							$articles_indicator++;
 							unset($art_title); unset($art_date); unset($art_tags); unset($art_style); unset($art_content);
 						}

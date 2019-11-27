@@ -8,7 +8,7 @@
 		include $adminpanel['root_php'] . '/lib/prevent-index.php'; exit();
 	}
 ?>
-<?php header("Content-Type: text/css; X-Content-Type-Options: nosniff;"); ?>
+<?php header('Content-Type: text/css; X-Content-Type-Options: nosniff;'); ?>
 
 /* material design theme for simpleblog admin panel - login page */
 /* 13.11.2019 */

@@ -13,7 +13,7 @@
 		exit();
 	}
 
-	header("Content-Type: text/css; X-Content-Type-Options: nosniff;");
+	header('Content-Type: text/css; X-Content-Type-Options: nosniff;');
 ?>
 
 
