@@ -20,6 +20,12 @@ If you want style article uncomment `$art_style['something']`, where
 * `$art_style['title-header']=false;` disables `<h2>` tag in `<div class="art-title">`
 <br><br>
 
+# How to write articles with many resources
+Create new page, divide the article into parts, add switches on the page.<br>
+Create standalone article, put in this article a little bit of full article and add link to page with full article.<br>
+Problem solved!
+<br><br>
+
 # How to write pages
 Copy `samplepage` to `your_page_link`, upload images, styles, fonts etc to this dir and edit `index.php`.
 <br><br>
