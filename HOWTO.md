@@ -37,7 +37,31 @@ Don't touch first `<?php` block of code. Write content below `?>`.
 # How to create skins
 Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
 <br>
-To create an installation package, just zip the directory with your theme.
+To create an installation package, just zip the directory with your theme.<br>
+
+Common CSS classes and ids in cms:
+* #header -> header.php content
+* #headlinks -> headlinks.php content
+	* .headlink -> link class
+* #articles -> page content
+* #footer -> footer.php content
+<br>
+
+Main page:
+* #articles
+	* .article -> article box, rendered by `simpleblog_engineCore()`
+		* .art-tags -> box with tags, links inside (if taglinks enabled)
+		* .art-date -> box with date
+		* .art-title -> box with title
+<br>
+
+Tag:
+* #articles
+	* #taglinks -> list with published tags, rendered by `simpleblog_engineTag()`
+		* .taglink -> link with tag, rendered by `simpleblog_engineTag()`
+<br>
+
+Pages use commons ids and classes.
 <br><br>
 
 # How to allow javascript
