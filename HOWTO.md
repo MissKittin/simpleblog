@@ -43,7 +43,58 @@ This prevent inline script executing, but allow js files from your website.<br>
 
 # Articles addressing scope
 Articles are addressed from `000001` to `999999`. You can increase scope by adding zeros at the begin of number, eg `0000999999`<br>
-**Achtung!** You must add zeros in all articles! (bash automation soon)
+**Achtung!** You must add zeros in all articles!<br>
+Automation: edit `$simpleblog_path`, put this file on your server, and run it in browser.<br>
+**Remember to delete this file after the operation!**
+```
+<?php
+	// path
+	$simpleblog_path='/path/to/blog'; // without $_SERVER['DOCUMENT_ROOT'] path
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Grow Scope</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+	<?php
+		if(isset($_POST['howManyZeros']))
+		{
+			$prefix='';
+
+			for($i=0; $i<$_POST['howManyZeros']; $i++)
+				$prefix=$prefix.'0';
+
+			foreach(scandir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_path . '/articles') as $file)
+				if(($file != '.') && ($file != '..'))
+				{
+					if(substr($file, 0, 6) === 'public')
+					{
+						rename($_SERVER['DOCUMENT_ROOT'] . $simpleblog_path . '/articles/' . $file, $_SERVER['DOCUMENT_ROOT'] . $simpleblog_path . '/articles/public_' . $prefix . substr($file, strlen('public_')));
+						echo '<h2>' . $file . ' -&gt; ' . 'public_' . $prefix . substr($file, strlen('public_')) . '</h2>';
+					}
+					if(substr($file, 0, 7) === 'private')
+					{
+						rename($_SERVER['DOCUMENT_ROOT'] . $simpleblog_path . '/articles/' . $file, $_SERVER['DOCUMENT_ROOT'] . $simpleblog_path . '/articles/private_' . $prefix . substr($file, strlen('private_')));
+						echo '<h2>' . $file . ' -&gt; ' . 'private_' . $prefix . substr($file, strlen('private_')) . '</h2>';
+					}
+				}
+
+			echo '<h1>Done!</h1>';
+		}
+		else
+		{ ?>
+			<h1>Grow Simpleblog articles scope</h1>
+			<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
+				<input type="number" name="howManyZeros" required>
+				<input type="submit" value="Jump into large rabbit hole">
+			</form>
+		<?php }
+	?>
+	</body>
+</html>
+```
 <br><br>
 
 # Supported HTTP servers
