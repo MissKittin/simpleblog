@@ -55,10 +55,17 @@ Main page:
 		* .art-title -> box with title
 <br>
 
-Tag:
+Tag (list):
 * #articles
 	* #taglinks -> list with published tags, rendered by `simpleblog_engineTag()`
 		* .taglink -> link with tag, rendered by `simpleblog_engineTag()`
+-------------------------------------
+Tag (articles):
+* #articles
+	* .article -> article box, rendered by `simpleblog_engineCore()`
+		* .art-tags -> box with tags, links inside (if taglinks enabled)
+		* .art-date -> box with date
+		* .art-title -> box with title
 <br>
 
 Pages use commons ids and classes.
