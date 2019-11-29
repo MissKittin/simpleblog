@@ -124,6 +124,8 @@
 			$art_style['title']=''; // div id art-title<br>
 			$art_style['title-header']=false; // disable h2 in art-title<br><br>
 			$art_content='Article content';
+			<br><h3>Add from media</h3>
+			&lt;img src="' . $simpleblog['root_html'] . '/media/image.img" alt="image"&gt;
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>
@@ -177,6 +179,8 @@
 			$art_style['title']=''; // div id art-title<br>
 			$art_style['title-header']=false; // disable h2 in art-title<br><br>
 			$art_content='Article content';
+			<br><h3>Add from media</h3>
+			&lt;img src="' . $simpleblog['root_html'] . '/media/image.img" alt="image"&gt;
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

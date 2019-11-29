@@ -118,6 +118,40 @@
 			}
 		}
 	}
+
+	// edit link
+	if(isset($_GET['edit']))
+	{
+		if(isset($_GET['dir']))
+		{
+			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit']))) // '..' hack
+			{
+				if(isset($_POST['file_content']))
+				{
+					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+					file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit'], $_POST['file_content']);
+					include 'edit.php'; exit();
+				}
+				else
+				{
+					include 'edit.php'; exit();
+				}
+			}
+		}
+		else
+		{
+			if(isset($_POST['file_content']))
+			{
+				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+				file_put_contents($simpleblog['root_php'] . '/' . $_GET['edit'], $_POST['file_content']);
+				include 'edit.php'; exit();
+			}
+			else
+			{
+				include 'edit.php'; exit();
+			}
+		}
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -162,7 +196,7 @@
 							}
 							else
 							{
-								echo '<tr><td><li class="file"></li></td><td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file . '" target="_blank">' . $file . '</a></td><td>' . round(($file->getSize())/1024) . 'kB</td><td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td><!-- <td><a href="">Move</a></td> --><td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td></tr>';
+								echo '<tr><td><li class="file"></li></td><td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file . '" target="_blank">' . $file . '</a></td><td>' . round(($file->getSize())/1024) . 'kB</td><td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td><!-- <td><a href="">Move</a></td> --><td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td><td><a href="?edit=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td></tr>';
 							}
 						}
 				?>
