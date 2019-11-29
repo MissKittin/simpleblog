@@ -68,7 +68,7 @@ Tag (articles):
 		* .art-title -> box with title
 <br>
 
-Pages use commons ids and classes.
+Pages uses commons ids and classes.
 <br><br>
 
 # How to allow javascript
