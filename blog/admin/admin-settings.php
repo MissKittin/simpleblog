@@ -50,4 +50,5 @@
 	$adminpanel['path']['footer']=$simpleblog['root_php'] . '/lib/footer.php';
 	$adminpanel['path']['htmlheaders']=$simpleblog['root_php'] . '/lib/htmlheaders.php';
 	$adminpanel['path']['mbp']=$simpleblog['root_php'] . '/lib/maintenace-break-pattern.php';
+	$adminpanel['path']['cron_bin']=$simpleblog['root_php'] . '/lib/cron.php';
 ?>

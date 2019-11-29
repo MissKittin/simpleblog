@@ -166,11 +166,18 @@
 									$size+=$fil->getSize();
 									$countfiles++;
 								}
-							echo '<tr><td>' . $file . '</td><td style="text-align: center">' . $countfiles . '</td><td style="text-align: center">' . round($size/1024) . 'KB</td><td><a href="?manage=' . $file . '">Manage</a></td><td><a href="?delete=' . $file . '">Delete</a></td></tr>';
+							echo '<tr><td>' . $file . '</td><td style="text-align: center">' . $countfiles . '</td><td style="text-align: center">' . round($size/1024) . 'KB</td><td><a href="?manage=' . $file . '">Manage</a></td><td><a href="?delete=' . $file . '">Delete</a></td><td><a href="?link=' . $file . '">Link</a></td></tr>';
 						}
 				?>
 			</table>
 			<div style="float: left;" class="button"><a href="?create">Create</a></div>
+			<?php
+				if(isset($_GET['link']))
+				{
+					echo '<br><br><h3>Generated link</h3>';
+					echo '&lt;a class="headlink" href="&lt;?php echo $simpleblog[\'root_html\']; ?&gt;/pages/' . $_GET['link'] . '"&gt;Page title&lt;/a&gt;<br>';
+				}
+			?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

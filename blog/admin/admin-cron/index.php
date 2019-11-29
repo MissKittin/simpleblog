@@ -9,8 +9,35 @@
 
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
+
+	// restore $cron
+	foreach(explode(PHP_EOL, file_get_contents($adminpanel['path']['cron_bin'])) as $cronLine)
+	{
+		$cronLine=trim($cronLine);
+		$cronLineVarname=strstr($cronLine, '=', true);
+		if($cronLineVarname == '$cron[\'enabled\']')
+			eval($cronLine);
+	}
 ?>
 <?php
+	// disable or enable cron
+	if(isset($_GET['apply']))
+	{
+		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+		if(isset($_POST['cronenabled']))
+		{
+			if(!$cron['enabled'])
+				file_put_contents($adminpanel['path']['cron_bin'], str_replace('$cron[\'enabled\']=false', '$cron[\'enabled\']=true', file_get_contents($adminpanel['path']['cron_bin'])));
+		}
+		else
+		{
+			if($cron['enabled'])
+				file_put_contents($adminpanel['path']['cron_bin'], str_replace('$cron[\'enabled\']=true', '$cron[\'enabled\']=false', file_get_contents($adminpanel['path']['cron_bin'])));		
+		}
+		echo '<!DOCTYPE html><html><head><title>Cron</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '"><meta http-equiv="refresh" content="0; url=?"></head></html>';
+		exit();
+	}
+
 	// enable or disable task
 	if((isset($_GET['setState'])) && isset($_GET['task']))
 		if(file_exists($adminpanel['path']['cron'] . '/' . $_GET['task']))
@@ -72,6 +99,19 @@
 			<h3>Cron</h3>
 		</div>
 		<div id="content">
+			<form action="?apply" method="post">
+				Enabled
+				<label class="checkbox">
+					<?php
+						if($cron['enabled'])
+							echo '<input type="checkbox" name="cronenabled" value="true" checked>';
+						else
+							echo '<input type="checkbox" name="cronenabled" value="true">';
+					?>
+					<span class="lever"></span>
+				</label>
+				<input type="submit" class="button" value="Set">
+			</form>
 			<table>
 				<tr><th>Name</th><th>State</th></tr>
 				<?php
