@@ -101,7 +101,7 @@
 				<?php
 					foreach(new DirectoryIterator($adminpanel['path']['media']) as $file)
 						if(($file != '.') && ($file != '..') && ($file != 'index.php'))
-							echo '<tr><td>' . $file . '</td><td>' . round(($file->getSize())/1024) . 'KB</td><td><a style="color: #0000ff; text-decoration: none;" href="' . $simpleblog['root_html'] . '/media/' . $file . '" target="_blank">View</a></td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file) . '">Delete</a></td></tr>';
+							echo '<tr><td><a style="color: #0000ff; text-decoration: none;" href="' . $adminpanel['path']['media_html'] . '/' . $file . '" target="_blank">' . $file . '</a></td><td>' . round(($file->getSize())/1024) . 'KB</td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file) . '">Delete</a></td></tr>';
 				?>
 			</table>
 			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload">Upload</a></div><?php } ?>

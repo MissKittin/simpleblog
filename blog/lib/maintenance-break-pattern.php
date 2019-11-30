@@ -1,13 +1,18 @@
 <?php
-	// deny access if settings not imported
-	if(php_sapi_name() != 'cli-server')
-		if(!isset($simpleblog))
-			include 'prevent-index.php';
-
 	// deny direct access
-	if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/maintenace-break-pattern.php')
+	if(php_sapi_name() === 'cli-server')
 	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
+		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/maintenance-break-pattern.php')
+		{
+			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
+		}
+	}
+	else
+	{
+		if(!isset($simpleblog))
+		{
+			include 'prevent-index.php'; exit();
+		}
 	}
 ?>
 <!DOCTYPE html>
@@ -17,14 +22,14 @@
 		<meta charset="utf-8">
 		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
 		<style>
-			#maintenaceBreak {
+			#maintenanceBreak {
 				width: 300px;
 				margin-left: auto; margin-right: auto;
 				text-align: center;
 			}
-			#maintenaceBreakContent {
+			#maintenanceBreakContent {
 				position: absolute;
-				top: 40%;
+				top: 30%;
 			}
 		</style>
 	</head>
@@ -32,9 +37,9 @@
 		<div id="header">
 			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
 		</div>
-		<div id="maintenaceBreak">
-			<div id="maintenaceBreakContent">
-				<h1>Maintenace Break</h1>
+		<div id="maintenanceBreak">
+			<div id="maintenanceBreakContent">
+				<h1>Maintenance Break</h1>
 			</div>
 		</div>
 	</body>

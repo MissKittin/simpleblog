@@ -16,9 +16,9 @@
 	$simpleblog['skin']='default'; // skin name
 	$simpleblog['fake_notfound']=true; // use http_response_code(404)
 
-	// settings - maintenace break pattern
-	$maintenace_break['enabled']=false;
-	$maintenace_break['allowed_ip']='127.0.0.1';
+	// settings - maintenance break pattern
+	$maintenance_break['enabled']=false;
+	$maintenance_break['allowed_ip']='127.0.0.1';
 
 	// backward compatibility with v1
 	// uncomment three lines below if you have old skins or articles
@@ -27,8 +27,8 @@
 	//$page_title=$simpleblog['title'];
 ?>
 <?php
-	// include maintenace break pattern
-	if(file_exists($simpleblog['root_php'] . '/lib/maintenace-break.php')) { include $simpleblog['root_php'] . '/lib/maintenace-break.php'; unset($maintenace_break); }
+	// include maintenance break pattern
+	if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { include $simpleblog['root_php'] . '/lib/maintenance-break.php'; unset($maintenance_break); }
 
 	// execute cron tasks
 	if(file_exists($simpleblog['root_php'] . '/lib/cron.php')) include $simpleblog['root_php'] . '/lib/cron.php';

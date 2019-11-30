@@ -1,6 +1,4 @@
 <?php
-	// TODO: Move function
-
 	// Admin panel for simpleblog - file manager
 	// 26.11.2019
 	// uses $simpleblog array
@@ -41,11 +39,14 @@
 	{
 		if(isset($_GET['dir']))
 		{
-			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
+			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_POST['newfile_name']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
 				file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['newfile_name'], '');
 		}
 		else
-			file_put_contents($simpleblog['root_php'] . '/' . $_POST['newfile_name'], '');
+		{
+			if(!in_array('..', explode('/', $_POST['newfile_name'])))
+				file_put_contents($simpleblog['root_php'] . '/' . $_POST['newfile_name'], '');
+		}
 	}
 
 	// make directory
@@ -53,11 +54,14 @@
 	{
 		if(isset($_GET['dir']))
 		{
-			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
+			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_POST['newdir_name']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
 				mkdir($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['newdir_name']);
 		}
 		else
-			mkdir($simpleblog['root_php'] . '/' . $_POST['newdir_name']);
+		{
+			if(!in_array('..', explode('/', $_POST['newdir_name'])))
+				mkdir($simpleblog['root_php'] . '/' . $_POST['newdir_name']);
+		}
 	}
 
 	// upload
@@ -75,17 +79,17 @@
 				move_uploaded_file($_FILES['file']['tmp_name'][$i], $simpleblog['root_php'] . '/' . $_FILES['file']['name'][$i]);
 	}
 
-	// rename link
+	// rename link (move function by '..' in file name)
 	if(isset($_POST['rename']))
 	{
 		if(isset($_GET['dir']))
 		{
-			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['oldname']))) // '..' hack
+			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['oldname']))) // '..' hack ($_GET['dir'] only)
 				rename($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['oldname'], $simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['rename']);
 		}
 		else
 		{
-			if(file_exists($simpleblog['root_php'] . '/' . $_GET['oldname']))
+			if((!in_array('..', explode('/', $_POST['rename']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['oldname']))) // '..' hack (full)
 				rename($simpleblog['root_php'] . '/' . $_GET['oldname'], $simpleblog['root_php'] . '/' . $_POST['rename']);
 		}	
 	}
@@ -97,7 +101,7 @@
 		{
 			if(isset($_GET['yes']))
 			{
-				if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['delete']))) // '..' hack
+				if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_GET['delete']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['delete']))) // '..' hack
 					adminpanel_rmr($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['delete'], true);
 			}
 			else
@@ -109,7 +113,7 @@
 		{
 			if(isset($_GET['yes']))
 			{
-				if(file_exists($simpleblog['root_php'] . '/' . $_GET['delete']))
+				if((!in_array('..', explode('/', $_GET['delete']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['delete'])))
 					adminpanel_rmr($simpleblog['root_php'] . '/' . $_GET['delete'], true);
 			}
 			else
@@ -124,7 +128,7 @@
 	{
 		if(isset($_GET['dir']))
 		{
-			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit']))) // '..' hack
+			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_GET['edit']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit']))) // '..' hack
 			{
 				if(isset($_POST['file_content']))
 				{
@@ -140,15 +144,18 @@
 		}
 		else
 		{
-			if(isset($_POST['file_content']))
+			if(!in_array('..', explode('/', $_GET['edit'])))
 			{
-				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
-				file_put_contents($simpleblog['root_php'] . '/' . $_GET['edit'], $_POST['file_content']);
-				include 'edit.php'; exit();
-			}
-			else
-			{
-				include 'edit.php'; exit();
+				if(isset($_POST['file_content']))
+				{
+					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+					file_put_contents($simpleblog['root_php'] . '/' . $_GET['edit'], $_POST['file_content']);
+					include 'edit.php'; exit();
+				}
+				else
+				{
+					include 'edit.php'; exit();
+				}
 			}
 		}
 	}
@@ -192,11 +199,25 @@
 						{
 							if(is_dir($simpleblog['root_php'] . '/' . $dir . $file))
 							{
-								echo '<tr><td><li class="folder"></li></td><td><a href="?dir=' . $dir . $file . '">' . $file . '</a></td><td></td><td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td><!-- <td><a href="">Move</a></td> --><td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td></tr>';
+								echo '<tr>
+									<td><li class="folder"></li></td>
+									<td><a href="?dir=' . $dir . $file . '">' . $file . '</a></td>
+									<td></td>
+									<td></td>
+									<td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
+									<td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
+								</tr>';
 							}
 							else
 							{
-								echo '<tr><td><li class="file"></li></td><td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file . '" target="_blank">' . $file . '</a></td><td>' . round(($file->getSize())/1024) . 'kB</td><td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td><!-- <td><a href="">Move</a></td> --><td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td><td><a href="?edit=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td></tr>';
+								echo '<tr>
+									<td><li class="file"></li></td>
+									<td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file . '" target="_blank">' . $file . '</a></td>
+									<td>' . round(($file->getSize())/1024) . 'kB</td>
+									<td><a href="?edit=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td>
+									<td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
+									<td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
+								</tr>';
 							}
 						}
 				?>
@@ -239,7 +260,7 @@
 					echo '
 						<form action="?oldname=' . $_GET['rename']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '" method="post">
 							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
-							<input type="text" name="rename" required>
+							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
 							<input type="submit" class="button" value="Rename">
 						</form>
 					';
@@ -252,6 +273,7 @@
 			<div style="float: left;" class="button"><a href="?create<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Create</a></div>
 			<div style="float: left;" class="button"><a href="?mkdir<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">mkdir</a></div>
 			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Upload</a></div><?php } ?>
+			<br><br><h3>Move function: click rename and add ../ before name to move upper</h3>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

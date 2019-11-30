@@ -16,12 +16,12 @@ done
 
 echo ''
 while true; do
-	echo -n 'install maintenace break pattern? [y/n] '
+	echo -n 'install maintenance break pattern? [y/n] '
 	read mbanswer
 	[ "$mbanswer" = 'y' ] && break
 	if [ "$mbanswer" = 'n' ]; then
-		rm ./lib/maintenace-break.php
-		rm ./lib/maintenace-break-pattern.php
+		rm ./lib/maintenance-break.php
+		rm ./lib/maintenance-break-pattern.php
 		rm ./admin/admin-cms/mbpedit.php
 		break
 	fi

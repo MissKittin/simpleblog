@@ -16,12 +16,12 @@
 	else
 		$settings_file=$simpleblog['root_php'] . '/settings.php';
 
-	// restore $maintenace_break array
+	// restore $maintenance_break array
 	foreach(explode(PHP_EOL, file_get_contents($settings_file)) as $mbLine)
 	{
 		$mbLine=trim($mbLine);
 		$mbLineVarname=strstr($mbLine, '=', true);
-		if(($mbLineVarname == '$maintenace_break[\'enabled\']') || ($mbLineVarname == '$maintenace_break[\'allowed_ip\']'))
+		if(($mbLineVarname == '$maintenance_break[\'enabled\']') || ($mbLineVarname == '$maintenance_break[\'allowed_ip\']'))
 			eval($mbLine);
 	}
 
@@ -81,23 +81,25 @@
 		reload();
 	}
 
-	// maintenace break pattern
+	// maintenance break pattern
 	if(isset($_GET['applymbp']))
 	{
+		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+
 		if(isset($_POST['mbenabled']))
 		{
-			if(!$maintenace_break['enabled'])
-				file_put_contents($settings_file, str_replace('$maintenace_break[\'enabled\']=false', '$maintenace_break[\'enabled\']=true', file_get_contents($settings_file)));
+			if(!$maintenance_break['enabled'])
+				file_put_contents($settings_file, str_replace('$maintenance_break[\'enabled\']=false', '$maintenance_break[\'enabled\']=true', file_get_contents($settings_file)));
 		}
 		else
 		{
-			if($maintenace_break['enabled'])
-				file_put_contents($settings_file, str_replace('$maintenace_break[\'enabled\']=true', '$maintenace_break[\'enabled\']=false', file_get_contents($settings_file)));		
+			if($maintenance_break['enabled'])
+				file_put_contents($settings_file, str_replace('$maintenance_break[\'enabled\']=true', '$maintenance_break[\'enabled\']=false', file_get_contents($settings_file)));		
 		}
 
 		if(isset($_POST['mballowedip']))
-			if($_POST['mballowedip'] !== $maintenace_break['allowed_ip'])
-				file_put_contents($settings_file, str_replace('$maintenace_break[\'allowed_ip\']=\'' . $maintenace_break['allowed_ip'] . '\'', '$maintenace_break[\'allowed_ip\']=\'' . $_POST['mballowedip'] . '\'', file_get_contents($settings_file)));
+			if($_POST['mballowedip'] !== $maintenance_break['allowed_ip'])
+				file_put_contents($settings_file, str_replace('$maintenance_break[\'allowed_ip\']=\'' . $maintenance_break['allowed_ip'] . '\'', '$maintenance_break[\'allowed_ip\']=\'' . $_POST['mballowedip'] . '\'', file_get_contents($settings_file)));
 
 		reload();
 	}
@@ -162,9 +164,9 @@
 			else
 				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/settings.php'), 'settings.php');
 
-			// dump maintenace break pattern
-			if(file_exists($simpleblog['root_php'] . '/lib/maintenace-break.php'))
-				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/lib/maintenace-break.php'), 'lib/maintenace-break.php');
+			// dump maintenance break pattern
+			if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php'))
+				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/lib/maintenance-break.php'), 'lib/maintenance-break.php');
 
 			// dump favicons
 			foreach(scandir($adminpanel['path']['favicon']) as $faviconFile)
@@ -261,13 +263,13 @@
 				</label>
 			</form>
 
-			<?php if(file_exists($simpleblog['root_php'] . '/lib/maintenace-break.php')) { ?>
-			<h3>Maintenace break pattern</h3>
+			<?php if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { ?>
+			<h3>Maintenance break pattern</h3>
 			<form action="?applymbp" method="post">
 				Enabled
 				<label class="checkbox">
 					<?php
-						if($maintenace_break['enabled'])
+						if($maintenance_break['enabled'])
 							echo '<input type="checkbox" name="mbenabled" value="true" checked>';
 						else
 							echo '<input type="checkbox" name="mbenabled" value="true">';
@@ -277,7 +279,7 @@
 				<br><br>
 
 				<label for="mballowedip">Allowed IP</label>
-				<input type="text" name="mballowedip" value="<?php echo $maintenace_break['allowed_ip']; ?>">
+				<input type="text" name="mballowedip" value="<?php echo $maintenance_break['allowed_ip']; ?>">
 
 				<div class="button" style="float: left;"><a href="?mbpedit">Edit pattern</a></div> <input type="submit" class="button" value="Apply">
 			</form>

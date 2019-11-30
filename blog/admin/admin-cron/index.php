@@ -53,8 +53,8 @@
 		file_put_contents($adminpanel['path']['cron'] . '/off_' . $_POST['file_name'], '');
 
 	// delete task
-	if((isset($_GET['delete'])) && isset($_GET['task']))
-		if(file_exists($adminpanel['path']['cron'] . '/' . $_GET['task']))
+	if((isset($_GET['delete'])) && (isset($_GET['task'])))
+		if((file_exists($adminpanel['path']['cron'] . '/' . $_GET['task'])) && (!preg_match('/\//i', $_GET['task']))) // && if not string contains '/' character
 		{
 			if(isset($_GET['yes']))
 				unlink($adminpanel['path']['cron'] . '/' . $_GET['task']);
@@ -66,7 +66,7 @@
 
 	// edit task
 	if((isset($_GET['edit'])) && isset($_GET['task']))
-		if(file_exists($adminpanel['path']['cron'] . '/' . $_GET['task']))
+		if((file_exists($adminpanel['path']['cron'] . '/' . $_GET['task'])) && (!preg_match('/\//i', $_GET['task']))) // && if not string contains '/' character
 		{
 			if(isset($_POST['file_content']))
 			{

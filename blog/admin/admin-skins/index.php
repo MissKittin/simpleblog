@@ -58,7 +58,7 @@
 <?php
 	// edit file
 	if(isset($_GET['fileEdit']))
-		if(file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'])) && (!in_array('..', explode('/', $_GET['edit'] . '/' . $_GET['fileEdit']))))
 		{
 			if(isset($_POST['file_content']))
 			{
@@ -75,12 +75,12 @@
 	// delete file
 	if(isset($_GET['deleteFile']))
 	{
+		$currentDir='';
 		if(isset($_GET['dir']))
-		   $currentDir=$_GET['dir'] . '/';
-		else
-			$currentDir='';
+			if(!preg_match('/\//i', $_GET['dir']))
+				$currentDir=$_GET['dir'] . '/';
 
-		if(file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))  && (!preg_match('/\//i', $_GET['edit'])) && (!preg_match('/\//i', $_GET['deleteFile'])))
 		{
 			if(isset($_GET['yes']))
 			{
@@ -120,7 +120,7 @@
 
 	// delete skin
 	if(isset($_GET['delete']))
-		if(file_exists($adminpanel['path']['skins'] . '/' . $_GET['delete']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
 			if(isset($_GET['yes']))
 				adminpanel_removeSkin($adminpanel['path']['skins'] . '/' . $_GET['delete'], true);

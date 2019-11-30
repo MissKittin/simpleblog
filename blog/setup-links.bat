@@ -21,14 +21,14 @@ rmdir admin\admin-cron /S /Q
 :postcron
 
 echo:
-set /p mbp="install maintenace break pattern? (y/[n]) "
+set /p mbp="install maintenance break pattern? (y/[n]) "
 if /i "%mbp%" neq "y" goto mbp
 
 goto postmbp
 
 :mbp
-del lib\maintenace-break.php
-del lib\maintenace-break-pattern.php
+del lib\maintenance-break.php
+del lib\maintenance-break-pattern.php
 del admin\admin-cms\mbpedit.php
 
 :postmbp

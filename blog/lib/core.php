@@ -3,17 +3,20 @@
 	// for main page and tag subsystem
 	// 11.11.2019
 
-	// deny direct access - for apache
-	if(php_sapi_name() != 'cli-server')
+	// deny direct access
+	if(php_sapi_name() === 'cli-server')
+	{
+		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/core.php')
+		{
+			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
+		}
+	}
+	else
+	{
 		if(!isset($simpleblog))
 		{
 			include 'prevent-index.php'; exit();
 		}
-
-	// deny direct access - for php-cli server
-	if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/core.php')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
 	}
 
 	// count articles for main page

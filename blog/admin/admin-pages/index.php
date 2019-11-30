@@ -17,7 +17,7 @@
 			if(isset($_GET['delete']))
 			{
 				// delete file link
-				if(file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['delete']))
+				if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['delete']))  && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['delete'])))
 				{
 					if(isset($_GET['yes']))
 					{
@@ -37,7 +37,7 @@
 			else if(isset($_GET['edit']))
 			{
 				// file editor
-				if(file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit']))
+				if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['edit'])))
 				{
 					if(isset($_POST['file_content']))
 					{
@@ -83,7 +83,7 @@
 				// create file button
 				if(isset($_POST['create']))
 				{
-					if(!file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create']))
+					if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['create'])))
 						file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'], '');
 					include('manage.php'); exit();
 				}
@@ -95,13 +95,16 @@
 			else
 			{
 				// manage page
-				include('manage.php'); exit();
+				if((!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['edit'])))
+				{
+					include('manage.php'); exit();
+				}
 			}
 		}
 
 	// delete link
 	if(isset($_GET['delete']))
-		if(file_exists($adminpanel['path']['pages'] . '/' . $_GET['delete']))
+		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
 			if(isset($_GET['yes']))
 			{
@@ -126,7 +129,7 @@
 			exit();
 		}
 		else
-			if(!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create']))
+			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])))
 			{
 				mkdir($adminpanel['path']['pages'] . '/' . $_GET['create']);
 				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php if(php_sapi_name() != \'cli-server\') include \'../../settings.php\'; ?>'."\n".'<!DOCTYPE html>'."\n".'<html>'."\n\t".'<head>'."\n\t\t".'<title><?php echo $simpleblog[\'title\']; ?></title>'."\n\t\t".'<meta charset="utf-8">'."\n\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/htmlheaders.php\'; ?>'."\n\t".'</head>'."\n\t".'<body>'."\n\t\t".'<div id="header">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/header.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="headlinks">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/headlinks.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="articles">'."\n\t\t\t\n\t\t".'</div>'."\n\t\t".'<div id="footer">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/footer.php\'; ?>'."\n\t\t".'</div>'."\n\t".'</body>'."\n".'</html>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time in seconds: \' . (microtime(true) - $simpleblog[\'execTime\']), 0); ?>');

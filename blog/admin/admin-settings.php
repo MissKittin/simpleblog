@@ -37,6 +37,7 @@
 	$adminpanel['path']['pages']=$simpleblog['root_php'] . '/pages';
 	$adminpanel['path']['pages_html']=$simpleblog['root_html'] . '/pages';
 	$adminpanel['path']['media']=$simpleblog['root_php'] . '/media';
+	$adminpanel['path']['media_html']=$simpleblog['root_html'] . '/media';
 	$adminpanel['path']['cron']=$simpleblog['root_php'] . '/cron';
 	$adminpanel['path']['tmp']=$simpleblog['root_php'] . '/tmp';
 	$adminpanel['path']['favicon']=$simpleblog['root_php'] . '/lib/favicon';
@@ -49,6 +50,6 @@
 	$adminpanel['path']['headlinks']=$simpleblog['root_php'] . '/lib/headlinks.php';
 	$adminpanel['path']['footer']=$simpleblog['root_php'] . '/lib/footer.php';
 	$adminpanel['path']['htmlheaders']=$simpleblog['root_php'] . '/lib/htmlheaders.php';
-	$adminpanel['path']['mbp']=$simpleblog['root_php'] . '/lib/maintenace-break-pattern.php';
+	$adminpanel['path']['mbp']=$simpleblog['root_php'] . '/lib/maintenance-break-pattern.php';
 	$adminpanel['path']['cron_bin']=$simpleblog['root_php'] . '/lib/cron.php';
 ?>
