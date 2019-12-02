@@ -130,6 +130,9 @@
 	if(isset($_GET['doBackup']))
 		if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
 		{
+			// set memory limit
+			ini_set('memory_limit','256M');
+
 			// create new zip
 			include $adminpanel['root_php'] . '/lib/zip.lib.php';
 			$zip=new zipfile();
@@ -160,7 +163,7 @@
 
 			// dump settings
 			if(php_sapi_name() === 'cli-server')
-				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/router.php'), 'router.php');
+				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/.router.php'), '.router.php');
 			else
 				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/settings.php'), 'settings.php');
 
@@ -178,6 +181,24 @@
 			$zip->addFile(file_get_contents($simpleblog['root_php'] . '/lib/header.php'), 'lib/header.php');
 			$zip->addFile(file_get_contents($simpleblog['root_php'] . '/lib/headlinks.php'), 'lib/headlinks.php');
 			$zip->addFile(file_get_contents($simpleblog['root_php'] . '/lib/htmlheaders.php'), 'lib/htmlheaders.php');
+
+			// user's files in root
+			foreach(scandir($simpleblog['root_php']) as $customFile)
+				if(($customFile != '.') && ($customFile != '..') &&
+					($customFile != 'admin') &&
+					($customFile != 'articles') &&
+					($customFile != 'cron') &&
+					($customFile != 'index.php') &&
+					($customFile != 'lib') &&
+					($customFile != 'media') &&
+					($customFile != 'pages') &&
+					($customFile != '.router.php') &&
+					($customFile != 'settings.php') &&
+					($customFile != 'skins') &&
+					($customFile != 'tag') &&
+					($customFile != 'tmp')
+				)
+					$zip->addFile(file_get_contents($simpleblog['root_php'] . '/' . $customFile), $customFile);
 
 			// send
 			header("Content-type: application/octet-stream"); header("Content-Disposition: attachment; filename=simpleblog_backup_" . date('d-m-Y') . ".zip"); header("Content-Description: Simpleblog backup");
