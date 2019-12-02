@@ -151,6 +151,26 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:before, input[type=checkbox]
 	background-color: rgba(0, 0, 0, 0.08);
 }
 
+/* file upload */
+input[type=file]::-webkit-file-upload-button {
+	visibility: hidden;
+}
+input[type=file]::before {
+	content: 'Add files';
+	/* clone from .button */
+	color: #ffffff;
+	background-color: #26a69a;
+	letter-spacing: .5px;
+	font-size: 14px;
+	text-align: center;
+	text-transform: uppercase;
+	border-radius: 2px;
+	line-height: 36px;
+	margin-left: 2px;
+	padding: 0 5px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
 /* header */
 #header {
 	color: #ffffff;
