@@ -19,5 +19,6 @@
 	$art_content='
 		Welcome!
 		<div class="quotation">This is the recording...</div>
+		<div style="text-align: right;"><a style="color: #0000ff; text-decoration: none;" href="' . $simpleblog['root_html'] . '/pages/sample_multipage">Read more</a></div>
 	';
 ?>
