@@ -12,6 +12,7 @@
 
 /* material design theme for simpleblog admin panel - pages */
 /* 12.11.2019 */
+/* sources: https://materializecss.com/ https://github.com/vinyanalista/material-jekyll-plus */
 
 /* Commons */
 body {
