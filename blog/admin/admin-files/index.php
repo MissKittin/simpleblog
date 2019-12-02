@@ -79,6 +79,26 @@
 				move_uploaded_file($_FILES['file']['tmp_name'][$i], $simpleblog['root_php'] . '/' . $_FILES['file']['name'][$i]);
 	}
 
+	// curl
+	if(isset($_POST['curl']))
+	{
+		$curl=curl_init();
+		curl_setopt($curl, CURLOPT_URL, $_POST['curl']);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_VERBOSE, true);
+		$downloadedFile=curl_exec($curl);
+		if(isset($_GET['dir']))
+		{
+			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_POST['curlFilename']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'])) && (!file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename']))) // '..' hack
+				file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename'], $downloadedFile);
+		}
+		else
+			if((!preg_match('/\//i', $_POST['curlFilename'])) && (!file_exists($simpleblog['root_php'] . '/' . $_POST['curlFilename']))) // '..' hack
+				file_put_contents($simpleblog['root_php'] . '/' . $_POST['curlFilename'], $downloadedFile);
+
+		curl_close($curl);
+	}
+
 	// rename link (move function by '..' in file name)
 	if(isset($_POST['rename']))
 	{
@@ -266,6 +286,19 @@
 					';
 				}
 
+				if(isset($_GET['curl']))
+				{
+					echo '
+						<form action="?'; if(isset($_GET['dir'])) echo 'dir=' . $_GET['dir']; echo '" method="post">
+							<label for="curl">URL</label>
+							<input type="text" name="curl" required>
+							<label for="curlFilename">File name</label>
+							<input type="text" name="curlFilename" required>
+							<input type="submit" class="button" value="Download">
+						</form>
+					';
+				}
+
 				if(isset($_GET['dir']))
 					if($_GET['dir'] != '')
 						echo '<div style="float: left;" class="button"><a href="?dir=' . substr($_GET['dir'], 0, strrpos($_GET['dir'], '/')) . '">Back</a></div>';
@@ -273,6 +306,7 @@
 			<div style="float: left;" class="button"><a href="?create<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Create</a></div>
 			<div style="float: left;" class="button"><a href="?mkdir<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">mkdir</a></div>
 			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Upload</a></div><?php } ?>
+			<?php if(function_exists('curl_init')) { ?><div style="float: left;" class="button"><a href="?curl<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">curl</a></div><?php } ?>
 			<br><br><h3>Move function: click rename and add ../ before name to move upper</h3>
 		</div>
 		<div id="footer">
