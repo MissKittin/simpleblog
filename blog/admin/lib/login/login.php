@@ -1,6 +1,7 @@
 <?php
 	// admin panel login library
 	// bcrypt password and change credentials 24.11.2019
+	// session security 02.12.2019
 ?>
 <?php
 	// prevent direct
@@ -17,6 +18,7 @@
 		while(!file_exists($search_settings))
 			$search_settings='../' . $search_settings;
 		include $search_settings;
+		unset($search_settings);
 	}
 
 	// check if disable.php exists
@@ -56,7 +58,7 @@
 	};
 
 	//header
-	session_name('SESSID');
+	session_name('SIMPLEBLOGSESSID');
 	session_start();
 	if(!isset($_SESSION['logged']))
 		$_SESSION['logged']=false;
@@ -76,6 +78,28 @@
 	{
 		if(!isset($session_regenerate)) // disable session regenerating (set it in script before include)
 			session_regenerate_id(true); // cookie attack prevention
+
+		// session expired check
+		if(strtotime('now') > $_SESSION['expired'])
+		{
+			$_SESSION['logged']=false;
+			session_destroy();
+			session_regenerate_id(false); // reset session
+			$reload();
+			exit();
+		}
+		$_SESSION['expired']=strtotime('now')+86400; // renew expired time, 24h
+		
+
+		// detect cookie attack
+		if(($_SESSION['logged_ip'] != $_SERVER['REMOTE_ADDR']) || ($_SESSION['user_agent'] != $_SERVER['HTTP_USER_AGENT']))
+		{
+			$_SESSION['logged']=false;
+			session_destroy();
+			session_regenerate_id(false); // reset session
+			$reload();
+			exit();
+		}
 
 		// password change prompt
 		if((isset($_POST['newusername'])) && (isset($_POST['newpassword'])))
@@ -98,7 +122,9 @@
 				{
 					$_SESSION['logged_user']=$adminpanel_credentials['login'];
 					$_SESSION['logged']=true; // success!!!
-					$_SESSION['logged_ip']=$_SERVER['REMOTE_ADDR'];
+					$_SESSION['logged_ip']=$_SERVER['REMOTE_ADDR']; // log for cookie attack detection
+					$_SESSION['user_agent']=$_SERVER['HTTP_USER_AGENT']; // log for cookie attack detection
+					$_SESSION['expired']=strtotime('now')+86400; // 24h
 					$reload();
 					exit();
 				}
