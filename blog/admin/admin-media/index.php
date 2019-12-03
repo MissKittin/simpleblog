@@ -8,6 +8,18 @@
 
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
+
+	// directoryIteratorSort
+	function directoryIteratorSort($path)
+	{
+		function compareByName($a, $b) { return strcmp($a['name'], $b['name']); }
+		$returnArray=array();
+		$arrayIndicator=0;
+		foreach(new directoryIterator($path) as $file)
+			$returnArray[$file->getFilename()]=array('name' => $file->getFilename(), 'size' => $file->getSize());
+		uksort($returnArray, 'compareByName');
+		return $returnArray;
+	}
 ?>
 <?php
 	// upload button
@@ -99,9 +111,9 @@
 		<div id="content">
 			<table>
 				<?php
-					foreach(new DirectoryIterator($adminpanel['path']['media']) as $file)
-						if(($file != '.') && ($file != '..') && ($file != 'index.php'))
-							echo '<tr><td><a style="color: #0000ff; text-decoration: none;" href="' . $adminpanel['path']['media_html'] . '/' . $file . '" target="_blank">' . $file . '</a></td><td>' . round(($file->getSize())/1024) . 'KB</td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file) . '">Delete</a></td></tr>';
+					foreach(directoryIteratorSort($adminpanel['path']['media']) as $file)
+						if(($file['name'] != '.') && ($file['name'] != '..') && ($file['name'] != 'index.php'))
+							echo '<tr><td><a style="color: #0000ff; text-decoration: none;" href="' . $adminpanel['path']['media_html'] . '/' . $file['name'] . '" target="_blank">' . $file['name'] . '</a></td><td>' . round($file['size']/1024) . 'kB</td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file['name']) . '">Delete</a></td></tr>';
 				?>
 			</table>
 			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload">Upload</a></div><?php } ?>

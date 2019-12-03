@@ -32,6 +32,16 @@
 		else
 			unlink($dir);
 	}
+	function directoryIteratorSort($path)
+	{
+		function compareByName($a, $b) { return strcmp($a['name'], $b['name']); }
+		$returnArray=array();
+		$arrayIndicator=0;
+		foreach(new directoryIterator($path) as $file)
+			$returnArray[$file->getFilename()]=array('name' => $file->getFilename(), 'size' => $file->getSize(), 'ctime' => $file->getCTime());
+		uksort($returnArray, 'compareByName');
+		return $returnArray;
+	}
 ?>
 <?php
 	// create file
@@ -214,29 +224,31 @@
 						if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
 							$dir=$_GET['dir'] . '/';
 
-					foreach(new directoryIterator($simpleblog['root_php'] . '/' . $dir) as $file)
-						if(($file != '.') && ($file != '..'))
+					foreach(directoryIteratorSort($simpleblog['root_php'] . '/' . $dir) as $file)
+						if(($file['name'] != '.') && ($file['name'] != '..'))
 						{
-							if(is_dir($simpleblog['root_php'] . '/' . $dir . $file))
+							if(is_dir($simpleblog['root_php'] . '/' . $dir . $file['name']))
 							{
 								echo '<tr>
 									<td><li class="folder"></li></td>
-									<td><a href="?dir=' . $dir . $file . '">' . $file . '</a></td>
+									<td><a href="?dir=' . $dir . $file['name'] . '">' . $file['name'] . '</a></td>
 									<td></td>
+									<td>' . gmdate('d.m.Y', $file['ctime']) . '</td>
 									<td></td>
-									<td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
-									<td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
+									<td><a href="?rename=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
+									<td><a href="?delete=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
 								</tr>';
 							}
 							else
 							{
 								echo '<tr>
 									<td><li class="file"></li></td>
-									<td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file . '" target="_blank">' . $file . '</a></td>
-									<td>' . round(($file->getSize())/1024) . 'kB</td>
-									<td><a href="?edit=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td>
-									<td><a href="?rename=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
-									<td><a href="?delete=' . $file; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
+									<td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file['name'] . '" target="_blank">' . $file['name'] . '</a></td>
+									<td>' . round($file['size']/1024) . 'kB</td>
+									<td>' . gmdate('d.m.Y', $file['ctime']) . '</td>
+									<td><a href="?edit=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td>
+									<td><a href="?rename=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>
+									<td><a href="?delete=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Delete</a></td>
 								</tr>';
 							}
 						}
