@@ -142,7 +142,7 @@ PHP built-in server and Apache. If you want run the Simpleblog on other server, 
 # How to upgrade
 1. Merge `favicon`, `footer.php`, `header.php`, `headlinks.php`, `htmlheaders.php` content to new files in `lib`
 2. Merge `settings.php` or `router.php` settings, uncomment backward compatibility options
-3. Move maintenace break pattern from old `maintenace-break.php` to new `lib/maintenace-break-pattern.php`
+3. Move maintenance break pattern from old `maintenance-break.php` to new `lib/maintenance-break-pattern.php`
 4. Remove all files from old version except `articles`, `cron`, `media`, `pages` and `skins`
 5. Merge new version with old version
 <br><br>
@@ -179,6 +179,23 @@ Basic script set that allow manage the Simpleblog from a web browser.<br>
 Default login and password is `simpleblog`.<br>
 `admin/disabled.php` completely disables the panel.<br>
 To enable backup function, read https://github.com/MissKittin/simpleblog/tree/master/zip.lib
+<br><br>
+Admin panel modules:
+* core modules:
+	* `admin-settings.php` -> admin panel configuration and credentials, don't touch this (change password on first login)
+	* `footer.php`, `header.php`
+	* `menu` (material installed by default)
+	* `login` (material forms installed by default)
+	* `skins` (material-green installed by default)
+* Status (`index.php` in `admin`)
+* Articles -> manage articles
+* CMS -> edit simpleblog settings, html titles, maintenance break settings, change login credentials and create backup
+* Cron -> manage cron tasks
+* Elements -> edit `header.php`, `headlinks.php`, `footer.php`, `htmlheaders.php` and manage favicons
+* Files -> simple file manager
+* Media -> manage uploaded media files
+* Pages -> manage pages
+* Skins -> install, uninstall, edit and change current skin
 <br>
 
 ### cron (optional)
@@ -186,9 +203,9 @@ Executes defined tasks, see https://github.com/MissKittin/simpleblog/blob/master
 You can detach cron from Simpleblog, just comment https://github.com/MissKittin/simpleblog/blob/master/blog/router.php#L89 or https://github.com/MissKittin/simpleblog/blob/master/blog/settings.php#L34
 <br>
 
-### maintenace break pattern (optional)
+### maintenance break pattern (optional)
 Edit .router.php or settings.php: enable/disable switch and one ip on which the pattern isn't displayed<br>
-See https://github.com/MissKittin/simpleblog/blob/master/blog/lib/maintenace-break.php
+See https://github.com/MissKittin/simpleblog/blob/master/blog/lib/maintenance-break.php
 <br>
 
 ### pages (optional, enabled by default)
