@@ -57,8 +57,8 @@ Main page:
 * #articles
 	* .article -> article box, rendered by `simpleblog_engineCore()`
 		* .art-tags -> box with tags, links inside (if taglinks enabled)
-		* .art-date -> box with date
-		* .art-title -> box with title
+		* .art-date -> box with date, links inside (if datelinks enabled)
+		* .art-title -> box with title, links and placeholder inside (if postlinks enabled)
 <br>
 
 Tag (list):
