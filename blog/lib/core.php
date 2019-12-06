@@ -1,6 +1,6 @@
 <?php
 	// Simpleblog v2 core functions
-	// for main page and tag subsystem
+	// article renderer
 	// 11.11.2019
 
 	// deny direct access
@@ -19,116 +19,11 @@
 		}
 	}
 
-	// count articles for main page
-	function simpleblog_engineIndex($dir, $current_page, $entries_per_page)
-	{
-		// Usage: simpleblog_engineIndex($simpleblog['root_php'] . '/articles', $current_page, $simpleblog['entries_per_page'])
-
-		$returnArray=array(); // output
-
-		// cache
-		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
-		$files=$simpleblog['cache']['core_files'];
-
-		$loop_ind=1; // first if in foreach
-		foreach(array_reverse($files) as $file)
-		{
-			if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-				if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0)) // include only items with public_ prefix
-					array_push($returnArray, $dir . '/' . $file);
-
-			if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
-				break;
-			else
-				$loop_ind++;
-		}
-
-		return $returnArray;
-	}
-
-	// count pages for tag
-	function simpleblog_engineTag($dir, $action, $selected_tag)
-	{
-		// Usage: simpleblog_engineTag($simpleblog['root_php'] . '/articles', 'render', $_GET['tag'])
-		// or
-		// simpleblog_engineTag($simpleblog['root_php'] . '/articles', 'list', 'tag-not-defined-yet_not-needed')
-
-		// import variables
-		global $simpleblog;
-		global $cms_root;
-		global $cms_root_php;
-
-		$returnArray=array(); // output
-
-		// cache
-		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
-		$files=$simpleblog['cache']['core_files'];
-
-		switch($action)
-		{
-			case 'list':
-				$no_tags=true; // if there are no tags in database
-				$tags=array(); $i=0; // bypass if tag is already listed
-
-				echo '<div id="taglinks">';
-
-				foreach(array_reverse($files) as $file)
-					if(substr($file, 0, 6) === 'public')
-					{
-						include $dir . '/' . $file;
-						foreach(explode('#', $art_tags) as $tag)
-						{
-							$tag=trim($tag); // remove space at the end
-							if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
-							{
-								echo '<a class="taglink" href="?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a><br>';
-								$tags[$i]=$tag; $i++;
-								$no_tags=false; // dont print 'Empty'
-							}
-						}
-					}
-
-				if($no_tags)
-					echo '<h1 style="text-align: center;">Empty</h1>';
-
-				echo '</div>';
-
-				break;
-			case 'render':
-				$empty_tag=true;
-				foreach(array_reverse($files) as $file)
-					if(substr($file, 0, 6) === 'public') // include only items with public_ prefix
-					{
-						include $dir . '/' . $file;
-						foreach(explode('#', $art_tags) as $tag)
-						{
-							$tag=trim($tag); // remove space at the end
-							if('#' . $tag === $selected_tag)
-							{
-								array_push($returnArray, $dir . '/' . $file);
-								$empty_tag=false;
-							}
-						}
-					}
-
-				if($empty_tag)
-					echo '<h1 style="text-align: center;">Empty</h1>';
-
-				break;
-		}
-
-		return $returnArray;
-	}
-
 	// render articles
-	function simpleblog_engineCore($article, $taglinks)
+	function simpleblog_engineCore($article, $taglinks, $postlinks, $datelinks)
 	{
-		// Usage: simpleblog_engineCore($article, $simpleblog['taglinks'])
-		// where $simpleblog['taglinks'] is boolean
+		// Usage: simpleblog_engineCore($article, $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks'])
+		// where $simpleblog['taglinks'], $simpleblog['postlinks'] and $simpleblog['datelinks'] are boolean
 
 		// import variables
 		global $simpleblog;
@@ -154,60 +49,26 @@
 			$art_tags=$tags;
 		}
 
+		// render date if enabled
+		if($datelinks)
+		{
+			$art_date=explode('.', $art_date);
+			if(isset($art_style['date']))
+				$art_date='<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[0] . '.' . $art_date[1] . '.' . $art_date[2] . '" style="' . $art_style['date'] . '">' . $art_date[0] . '</a>.<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[1] . '.' . $art_date[2] . '" style="' . $art_style['date'] . '">' . $art_date[1] . '</a>.<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[2] . '" style="' . $art_style['date'] . '">' . $art_date[2] . '</a>';
+			else
+				$art_date='<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[0] . '.' . $art_date[1] . '.' . $art_date[2] . '">' . $art_date[0] . '</a>.<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[1] . '.' . $art_date[2] . '">' . $art_date[1] . '</a>.<a href="' . $simpleblog['root_html'] . '/post?date=' . $art_date[2] . '">' . $art_date[2] . '</a>';
+		}
+
 		// render article
 		if(isset($art_style['article'])) echo '<div class="article" style="' . $art_style['article'] . '">'."\n"; else echo '<div class="article">'."\n";
 			if(isset($art_style['tags'])) echo '<div class="art-tags" style="' . $art_style['tags'] . '">'.$art_tags.'</div>'; else echo '<div class="art-tags">'.$art_tags.'</div>';
 			if(isset($art_style['date'])) echo '<div class="art-date" style="' . $art_style['date'] . '">'.$art_date.'</div>'."\n"; else echo '<div class="art-date">'.$art_date.'</div>'."\n";
 			if(isset($art_style['title'])) echo '<div class="art-title" style="' . $art_style['title'] . '">'; else echo '<div class="art-title">';
-				if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
+				if($postlinks) echo '<a href="' . $simpleblog['root_html'] . '/post?id=' . (int)str_replace('public_', '', pathinfo($article, PATHINFO_FILENAME)) . '"><span class="placeholder_link_to_article">PLACEHOLDER_LINK_TO_ARTICLE</span>';
+					if(isset($art_style['title-header'])) { if(($art_style['title-header'] === '') || ($art_style['title-header'])) echo '<h2>'.$art_title.'</h2>'; else echo $art_title; } else echo '<h2>'.$art_title.'</h2>';
+				if($postlinks) echo '</a>';
 			echo '</div>'."\n";
 			echo $art_content;
 		echo '</div>'."\n";
-	}
-
-	// count pages
-	function simpleblog_countPages($dir, $current_page, $entries_per_page)
-	{
-		// Usage: echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $current_page, $simpleblog['entries_per_page']) . "\n"
-
-		// initialize indicators
-		$pages_count=1;
-		$pages_ind=0;
-
-		$return=''; // output
-
-		// cache
-		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
-		$files=$simpleblog['cache']['core_files'];
-
-		foreach(array_reverse($files) as $file)
-		{
-			if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
-			{
-				// count how many pages are available
-				if($pages_ind === $entries_per_page)
-				{
-					$pages_count++;
-					$pages_ind=1; // must reset this
-				}
-				else
-				$pages_ind++;
-			}
-		}
-
-		$i=1; // loop indicator
-		while($i <= $pages_count)
-		{
-			if($i == $current_page)
-				$return=$return . '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>';// render current
-			else
-				$return=$return . '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
-
-			$i++;
-		}
-
-		return $return;
 	}
 ?>

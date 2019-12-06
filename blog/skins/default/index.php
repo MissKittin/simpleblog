@@ -32,7 +32,7 @@ body { /* colors */
 	width: 800px;
 	overflow: auto;
 }
-div#headlinks a:link, div#headlinks a:hover, div#headlinks a:visited {
+#headlinks a:link, #headlinks a:hover, #headlinks a:visited {
 	text-decoration: none;
 	color: #ffffff;
 	font-size: 16px;
@@ -48,6 +48,7 @@ div#headlinks a:link, div#headlinks a:hover, div#headlinks a:visited {
 	float: right;
 	text-align: center;
 }
+
 #articles {
 	margin: 0 auto;
 	padding: 10px;
@@ -74,6 +75,24 @@ div.art-tags a:link, div.art-tags a:hover, div.art-tags a:visited {
 .art-date {
 	text-align: right;
 }
+.art-date a, .art-date a:hover, .art-date a:visited {
+	color: #000000;  /* the same as in body */
+	text-decoration: none;
+}
+.art-title a, .art-title a:hover, .art-title a:visited { /* link - article title */
+	color: #000000;  /* the same as in body */
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+}
+.art-title .placeholder_link_to_article { /* placeholder if title is empty */
+	color: transparent;
+	position: absolute;
+}
+.art-title .placeholder_link_to_article::selection {
+	color: transparent;
+	position: absolute;
+}
+
 .quotation { /* text formatting */
 	text-align: center;
 	font-style: italic;
@@ -85,6 +104,7 @@ del {
 img, video {
 	max-width: 100%;
 }
+
 #pages { /* page switches */
 	margin: 0 auto;
 	width: 800px;
@@ -124,7 +144,7 @@ div#current_page a:link, div#current_page a:hover, div#current_page a:visited {
 	text-align: center;
 	margin-bottom: 2px;
 }
-div#taglinks a:link, div#taglinks a:hover, div#taglinks a:visited {
+#taglinks a:link, #taglinks a:hover, #taglinks a:visited {
 	text-decoration: none;
 	color: #550000;
 	font-size: 16px;

@@ -1,6 +1,6 @@
 <?php
-	// Simpleblog v2 - main page
-	// 11.11.2019
+	// Simpleblog v2.1 - main page
+	// 03.12.2019
 ?>
 <?php
 	// import apache settings
@@ -8,6 +8,9 @@
 
 	// import core functions
 	include $simpleblog['root_php'] . '/lib/core.php';
+
+	// import coreIndex functions
+	include $simpleblog['root_php'] . '/lib/coreIndex.php';
 
 	// set page number
 	if(isset($_GET['page']))
@@ -41,9 +44,9 @@
 				foreach(simpleblog_engineIndex($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $simpleblog['page']['current_article'])
 				{
 					$emptyDatabase=false;
-					simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks']);
+					simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
 				}
-				if($emptyDatabase) echo '<h1 style="text-align: center;">Empty</h1>';
+				if($emptyDatabase) echo $simpleblog['emptyLabel'];
 			?>
 		</div>
 		<div id="pages">

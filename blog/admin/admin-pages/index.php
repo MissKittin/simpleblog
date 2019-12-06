@@ -8,6 +8,9 @@
 
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
+
+	// convertBytes library
+	include $adminpanel['root_php'] . '/lib/convertBytes.php';
 ?>
 <?php
 	// manage link - section
@@ -54,6 +57,19 @@
 				{
 					include('manage.php'); exit();
 				}
+			}
+			else if(isset($_POST['rename']))
+			{
+				// rename link
+				if(!preg_match('/\//i', $_POST['rename'])) // '..' hack
+				{
+					rename($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['oldname'], $adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['rename']);
+					include('manage.php'); exit();
+				}
+				else
+				{
+					include('manage.php'); exit();
+				}	
 			}
 			else if(isset($_GET['upload']))
 			{
@@ -120,6 +136,25 @@
 			}
 		}
 
+	// rename link
+	if(isset($_POST['rename']))
+	{
+		if(!preg_match('/\//i', $_POST['rename'])) // '..' hack
+			rename($adminpanel['path']['pages'] . '/' . $_GET['oldname'], $adminpanel['path']['pages'] . '/' . $_POST['rename']);
+	}
+
+	// disable/enable link
+	if(isset($_GET['disable']))
+		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'])) && (!file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['disable'])))
+		{
+			copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['path']['pages'] . '/' . $_GET['disable'] . '/disabled.php');
+		}
+	if(isset($_GET['enable']))
+		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['enable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['enable'])))
+		{
+			unlink($adminpanel['path']['pages'] . '/' . $_GET['enable'] . '/disabled.php');
+		}
+
 	// create button
 	if(isset($_GET['create']))
 	{
@@ -132,7 +167,8 @@
 			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])))
 			{
 				mkdir($adminpanel['path']['pages'] . '/' . $_GET['create']);
-				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php if(php_sapi_name() != \'cli-server\') include \'../../settings.php\'; ?>'."\n".'<!DOCTYPE html>'."\n".'<html>'."\n\t".'<head>'."\n\t\t".'<title><?php echo $simpleblog[\'title\']; ?></title>'."\n\t\t".'<meta charset="utf-8">'."\n\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/htmlheaders.php\'; ?>'."\n\t".'</head>'."\n\t".'<body>'."\n\t\t".'<div id="header">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/header.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="headlinks">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/headlinks.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="articles">'."\n\t\t\t\n\t\t".'</div>'."\n\t\t".'<div id="footer">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/footer.php\'; ?>'."\n\t\t".'</div>'."\n\t".'</body>'."\n".'</html>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time in seconds: \' . (microtime(true) - $simpleblog[\'execTime\']), 0); ?>');
+				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php if(php_sapi_name() != \'cli-server\') include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n".'<!DOCTYPE html>'."\n".'<html>'."\n\t".'<head>'."\n\t\t".'<title><?php echo $simpleblog[\'title\']; ?></title>'."\n\t\t".'<meta charset="utf-8">'."\n\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/htmlheaders.php\'; ?>'."\n\t".'</head>'."\n\t".'<body>'."\n\t\t".'<div id="header">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/header.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="headlinks">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/headlinks.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="articles">'."\n\t\t\t\n\t\t".'</div>'."\n\t\t".'<div id="footer">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/footer.php\'; ?>'."\n\t\t".'</div>'."\n\t".'</body>'."\n".'</html>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time in seconds: \' . (microtime(true) - $simpleblog[\'execTime\']), 0); ?>');
+				copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['path']['pages'] . '/' . $_GET['create'] . '/disabled.php');
 			}
 	}
 ?>
@@ -169,16 +205,42 @@
 									$size+=$fil->getSize();
 									$countfiles++;
 								}
-							echo '<tr><td>' . $file . '</td><td style="text-align: center">' . $countfiles . '</td><td style="text-align: center">' . round($size/1024) . 'KB</td><td><a href="?manage=' . $file . '">Manage</a></td><td><a href="?delete=' . $file . '">Delete</a></td><td><a href="?link=' . $file . '">Link</a></td></tr>';
+
+							if(file_exists($adminpanel['path']['pages'] . '/' . $file . '/disabled.php'))
+								$disableLink='<a href="?enable=' . $file . '">Enable</a>';
+							else
+								$disableLink='<a href="?disable=' . $file . '">Disable</a>';
+
+							echo '<tr>
+								<td><a href="' . $adminpanel['path']['pages_html'] . '/' . $file . '" target="_blank">' . $file . '</a></td>
+								<td style="text-align: center">' . $countfiles . '</td>
+								<td style="text-align: center">' . adminpanel_convertBytes($size) . '</td>
+								<td><a href="?manage=' . $file . '">Manage</a></td>
+								<td><a href="?delete=' . $file . '">Delete</a></td>
+								<td><a href="?rename=' . $file . '">Rename</a></td>
+								<td><a href="?link=' . $file . '">Link</a></td><td>' . $disableLink . '</td>
+							</tr>';
 						}
 				?>
 			</table>
 			<div style="float: left;" class="button"><a href="?create">Create</a></div>
 			<?php
+				if(isset($_GET['rename']))
+				{
+					echo '<br><br><br>
+						<form action="?oldname=' . $_GET['rename'] . '" method="post">
+							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
+							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
+							<input type="submit" class="button" value="Rename">
+						</form>
+					';
+				}
+
 				if(isset($_GET['link']))
 				{
 					echo '<br><br><h3>Generated link</h3>';
-					echo '&lt;a class="headlink" href="&lt;?php echo $simpleblog[\'root_html\']; ?&gt;/pages/' . $_GET['link'] . '"&gt;Page title&lt;/a&gt;<br>';
+					echo '&lt;a class="headlink" href="&lt;?php echo $simpleblog[\'root_html\']; ?&gt;/pages/' . $_GET['link'] . '"&gt;Page title&lt;/a&gt;<br><br>';
+					echo '<div style="float: left;" class="button"><a href="' . $adminpanel['root_html'] . '/admin-elements?edit=headlinks">Go to editor</a></div>';
 				}
 			?>
 		</div>

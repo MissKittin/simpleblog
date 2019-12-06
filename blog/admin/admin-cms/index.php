@@ -67,6 +67,10 @@
 				if(filter_var($_POST['entriesperpage'], FILTER_VALIDATE_INT) !== false)
 					file_put_contents($settings_file, str_replace('$simpleblog[\'entries_per_page\']=' . $simpleblog['entries_per_page'], '$simpleblog[\'entries_per_page\']=' . $_POST['entriesperpage'], file_get_contents($settings_file)));
 
+		if(isset($_POST['emptylabel']))
+			if($_POST['emptylabel'] !== $simpleblog['emptyLabel'])
+				file_put_contents($settings_file, str_replace('$simpleblog[\'emptyLabel\']=\'' . $simpleblog['emptyLabel'] . '\'', '$simpleblog[\'emptyLabel\']=\'' . str_replace(['&lt;', '&gt;', "'"], ['<', '>', '"'], $_POST['emptylabel']) . '\'', file_get_contents($settings_file)));
+
 		if(isset($_POST['taglinks']))
 		{
 			if(!$simpleblog['taglinks'])
@@ -76,6 +80,28 @@
 		{
 			if($simpleblog['taglinks'])
 				file_put_contents($settings_file, str_replace('$simpleblog[\'taglinks\']=true', '$simpleblog[\'taglinks\']=false', file_get_contents($settings_file)));				
+		}
+
+		if(isset($_POST['postlinks']))
+		{
+			if(!$simpleblog['postlinks'])
+				file_put_contents($settings_file, str_replace('$simpleblog[\'postlinks\']=false', '$simpleblog[\'postlinks\']=true', file_get_contents($settings_file)));
+		}
+		else
+		{
+			if($simpleblog['postlinks'])
+				file_put_contents($settings_file, str_replace('$simpleblog[\'postlinks\']=true', '$simpleblog[\'postlinks\']=false', file_get_contents($settings_file)));				
+		}
+
+		if(isset($_POST['datelinks']))
+		{
+			if(!$simpleblog['datelinks'])
+				file_put_contents($settings_file, str_replace('$simpleblog[\'datelinks\']=false', '$simpleblog[\'datelinks\']=true', file_get_contents($settings_file)));
+		}
+		else
+		{
+			if($simpleblog['datelinks'])
+				file_put_contents($settings_file, str_replace('$simpleblog[\'datelinks\']=true', '$simpleblog[\'datelinks\']=false', file_get_contents($settings_file)));				
 		}
 
 		reload();
@@ -207,6 +233,18 @@
 			exit();
 		}
 
+	// patch cms
+	if((isset($_GET['patch'])) && (isset($_POST['confirmPatch'])) && (ini_get('file_uploads') == 1))
+	{
+		$skinpack=new ZipArchive;
+		$skinpack->open($_FILES['file']['tmp_name'][0]);
+		$skinpack->extractTo($simpleblog['root_php']);
+		$skinpack->close();
+		unlink($_FILES['file']['tmp_name'][0]);
+		reload();
+	}
+		
+
 	// lockdown button
 	/* if(isset($_GET['lockdown']))
 	{
@@ -248,6 +286,9 @@
 				<label for="entriesperpage">Entries per page</label>
 				<input type="text" name="entriesperpage" pattern="\d+" required value="<?php echo $simpleblog['entries_per_page']; ?>">
 
+				<label for="emptylabel">Empty label</label>
+				<input type="text" name="emptylabel" required value="<?php echo str_replace(['<', '>', '"'], ['&lt;', '&gt;', "'"], $simpleblog['emptyLabel']); ?>">
+
 				Taglinks
 				<label>
 					<?php
@@ -255,6 +296,30 @@
 							echo '<input type="checkbox" name="taglinks" value="true" checked>';
 						else
 							echo '<input type="checkbox" name="taglinks" value="true">';
+					?>
+					<span class="lever"></span>
+				</label>
+				<br><br>
+
+				Postlinks
+				<label>
+					<?php
+						if($simpleblog['postlinks'])
+							echo '<input type="checkbox" name="postlinks" value="true" checked>';
+						else
+							echo '<input type="checkbox" name="postlinks" value="true">';
+					?>
+					<span class="lever"></span>
+				</label>
+				<br><br>
+
+				Datelinks
+				<label>
+					<?php
+						if($simpleblog['datelinks'])
+							echo '<input type="checkbox" name="datelinks" value="true" checked>';
+						else
+							echo '<input type="checkbox" name="datelinks" value="true">';
 					?>
 					<span class="lever"></span>
 				</label>
@@ -312,6 +377,21 @@
 					echo '<h3>Backup</h3>';
 					echo '<div class="button" style="float: left;"><a href="?doBackup" target="_blank">Dump content</a></div>';
 					echo '<br><br>';
+				}
+			?>
+
+			<?php
+				if(ini_get('file_uploads') == 1)
+				{
+					echo '<h3>Patch CMS</h3>
+						<form action="?patch" method="post" enctype="multipart/form-data">
+							<input type="file" name="file[]" id="file" multiple>
+							<input class="button" type="submit" value="Apply patch">
+							<label>
+								<input type="checkbox" name="confirmPatch" value="true">
+								<span class="lever"></span>
+							</label>
+						</form>';
 				}
 			?>
 

@@ -27,11 +27,29 @@
 			<table>
 				<?php
 					foreach(new DirectoryIterator($adminpanel['path']['pages'] . '/' . $_GET['manage']) as $file)
-						if(($file != '.') && ($file != '..'))
-							echo '<tr><td><a href="' . $adminpanel['path']['pages_html'] . '/' . $_GET['manage'] . '/' . $file . '" target="_blank">' . $file . '</a></td><td style="text-align: center;">' . $file->getSize() . 'B</td><td><a href="?manage=' . $_GET['manage'] . '&edit=' . $file . '">Edit</a></td><td><a href="?manage=' . $_GET['manage'] . '&delete=' . $file . '">Delete</a></td></tr>';
+						if(($file != '.') && ($file != '..') && ($file != 'disabled.php'))
+							echo '<tr>
+								<td><a href="' . $adminpanel['path']['pages_html'] . '/' . $_GET['manage'] . '/' . $file . '" target="_blank">' . $file . '</a></td>
+								<td style="text-align: center;">' . adminpanel_convertBytes($file->getSize()) . '</td>
+								<td><a href="?manage=' . $_GET['manage'] . '&edit=' . $file . '">Edit</a></td>
+								<td><a href="?manage=' . $_GET['manage'] . '&delete=' . $file . '">Delete</a></td>
+								<td><a href="?manage=' . $_GET['manage'] . '&rename=' . $file . '">Rename</a></td>
+							</tr>';
 				?>
 			</table>
 			<div style="float: left;" class="button"><a href="?">Back</a></div> <?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&upload">Upload</a></div><?php } ?> <div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&create">Create</a></div>
+			<?php
+				if(isset($_GET['rename']))
+				{
+					echo '<br><br><br>
+						<form action="?manage=' . $_GET['manage'] . '&oldname=' . $_GET['rename'] . '" method="post">
+							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
+							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
+							<input type="submit" class="button" value="Rename">
+						</form>
+					';
+				}
+			?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

@@ -10,6 +10,12 @@
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
 
+	// convertBytes library
+	include $adminpanel['root_php'] . '/lib/convertBytes.php';
+
+	// directoryIteratorSort library
+	include $adminpanel['root_php'] . '/lib/directoryIteratorSort.php';
+
 	// functions
 	function adminpanel_rmr($dir, $first)
 	{
@@ -31,16 +37,6 @@
 		}
 		else
 			unlink($dir);
-	}
-	function directoryIteratorSort($path)
-	{
-		function compareByName($a, $b) { return strcmp($a['name'], $b['name']); }
-		$returnArray=array();
-		$arrayIndicator=0;
-		foreach(new directoryIterator($path) as $file)
-			$returnArray[$file->getFilename()]=array('name' => $file->getFilename(), 'size' => $file->getSize(), 'ctime' => $file->getCTime());
-		uksort($returnArray, 'compareByName');
-		return $returnArray;
 	}
 ?>
 <?php
@@ -224,7 +220,7 @@
 						if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
 							$dir=$_GET['dir'] . '/';
 
-					foreach(directoryIteratorSort($simpleblog['root_php'] . '/' . $dir) as $file)
+					foreach(adminpanel_directoryIteratorSort($simpleblog['root_php'] . '/' . $dir) as $file)
 						if(($file['name'] != '.') && ($file['name'] != '..'))
 						{
 							if(is_dir($simpleblog['root_php'] . '/' . $dir . $file['name']))
@@ -244,7 +240,7 @@
 								echo '<tr>
 									<td><li class="file"></li></td>
 									<td><a href="' . $simpleblog['root_html'] . '/' . $dir . $file['name'] . '" target="_blank">' . $file['name'] . '</a></td>
-									<td>' . round($file['size']/1024) . 'kB</td>
+									<td style="text-align: center;">' . adminpanel_convertBytes($file['size']) . '</td>
 									<td>' . gmdate('d.m.Y', $file['ctime']) . '</td>
 									<td><a href="?edit=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Edit</a></td>
 									<td><a href="?rename=' . $file['name']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Rename</a></td>

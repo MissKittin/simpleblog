@@ -276,8 +276,8 @@
 			<?php adminpanel_serverInfo(); ?>
 
 			<h3>About</h3>
-			Admin panel for Simpleblog v2<br>
-			Version 1.0<br>
+			Admin panel for Simpleblog v2.1<br>
+			Version 1.1<br>
 			<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin">MissKittin</a>@<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin/simpleblog">GitHub</a><br>
 			Licensed under <a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0</a>
 		</div>
