@@ -9,6 +9,9 @@
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
 
+	// convertBytes library
+	include $adminpanel['root_php'] . '/lib/convertBytes.php';
+
 	// count articles
 	function adminpanel_countArticles($dir)
 	{
@@ -111,7 +114,7 @@
 				$returnArray['size']+=$file->getSize();
 
 		// size as MB
-		$returnArray['size']=round(($returnArray['size']/1024)/1024) . 'MB';
+		$returnArray['size']=adminpanel_convertBytes($returnArray['size']);
 
 		return $returnArray;
 	}
@@ -231,7 +234,7 @@
 			<li>Media: <?php echo $stats['media']['count']; ?> (<?php echo $stats['media']['size']; ?>)</li>
 			<?php if($stats['cron'] != false) echo '<li>Cron tasks: ' . $stats['cron']['enabled'] . ' enabled, ' . $stats['cron']['disabled'] . ' disabled</li>'; ?>
 			<?php if($stats['tmp'] != false) echo '<li>Temporary files: ' . $stats['tmp']['count'] . ' (' . $stats['tmp']['size'] . ')</li>'; ?>
-			<li>CMS size: <?php echo adminpanel_countCmsSize($simpleblog['root_php'], 'count'); ?> files (<?php echo round((adminpanel_countCmsSize($simpleblog['root_php'], 'size')/1024)/1024); ?>MB)</li>
+			<li>CMS size: <?php echo adminpanel_countCmsSize($simpleblog['root_php'], 'count'); ?> files (<?php echo adminpanel_convertBytes(adminpanel_countCmsSize($simpleblog['root_php'], 'size')); ?>)</li>
 		</ul><?php
 	}
 	function adminpanel_serverInfo()
