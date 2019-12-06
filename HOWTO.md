@@ -8,6 +8,11 @@
 <br><br>\*setup is based on copy, setup-links is based on ln/mklink
 <br><br>
 
+# $simpleblog['root_html'] vs $simpleblog['root_php']
+In normal way `$simpleblog['root_php'] = $_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']`, and it's ok: eg path for server is `/var/www/blog` and for browser is `/blog`.<br>
+But if you use http proxy script, path for browser is `/proxy/blog` and it's not `/var/www/proxy/blog`. In this case you have to change: `$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . '/blog'` and `$simpleblog['root_html']='/proxy/blog'`. Problem solved.
+<br><br>
+
 # How to write articles
 Copy `public_000001.php` to `public_000002.php`, open it and change variables content.<br>
 `$art_date` is in DD.MM.YYYY format.<br>
@@ -36,7 +41,7 @@ Don't touch first `<?php` block of code. Write content below `?>`.
 <br><br>
 
 # How to create skins
-Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
+Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
 <br>
 To create an installation package, just zip the directory with your theme.<br>
 
@@ -65,10 +70,11 @@ Tag (articles):
 * #articles
 	* .article -> article box, rendered by `simpleblog_engineCore()`
 		* .art-tags -> box with tags, links inside (if taglinks enabled)
-		* .art-date -> box with date
-		* .art-title -> box with title
+		* .art-date -> box with date, links inside (if datelinks enabled)
+		* .art-title -> box with title, links and placeholder inside (if postlinks enabled)
 <br>
 
+.art-title link placeholder is invisible link, that keeps postlink functionality if title is empty. It's styled in skin file.<br>
 Pages uses commons ids and classes.
 <br><br>
 
@@ -148,11 +154,18 @@ PHP built-in server and Apache. If you want run the Simpleblog on other server, 
 <br><br>
 
 # How it works
-The simpleblog is divided into two parts: main page and tags. Tags can be detached by setting `$simpleblog['taglinks']` to false.
+The simpleblog is divided into three parts: main page, tags and post. Tags/Post can be detached by setting `$simpleblog['taglinks']`/`$simpleblog['postlinks']` and `$simpleblog['datelinks']` to false.<br>
+After that you can remove:
+* for tag: `tag` directory and `lib/coreTag.php`
+* for post: `post` directory and `lib/corePost.php`
 <br><br>
 
 ## Core
-The heart of the Simpleblog is the `core.php` file. This file contains functions that prepare, groups and render articles.
+The heart of the Simpleblog is divided into four parts:
+* `core.php` -> contains function that render articles.
+* `coreIndex.php` -> contains functions that prepare and groups articles for main page
+* `coreTag.php` -> the same as `coreIndex.php` but for tag part
+* `corePost.php` -> the same as `coreIndex.php` but for post part
 <br>
 
 ## Frontend
@@ -176,8 +189,9 @@ The Simpleblog has a modular structure
 
 ### admin panel (optional)
 Basic script set that allow manage the Simpleblog from a web browser.<br>
+Requires PHP >= 5.5.0 (whole cms is developed on PHP v7)<br>
 Default login and password is `simpleblog`.<br>
-`admin/disabled.php` completely disables the panel.<br>
+`admin/disabled.php` completely disables the panel ("panic button"). Remove this file if you want use admin panel.<br>
 To enable backup function, read https://github.com/MissKittin/simpleblog/tree/master/zip.lib
 <br><br>
 Admin panel modules:
