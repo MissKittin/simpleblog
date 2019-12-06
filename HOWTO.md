@@ -1,3 +1,30 @@
+# Table of contents
+* [First steps after clone](#first-steps-after-clone)
+* [root_html vs root_php](#simpleblogroot_html-vs-simpleblogroot_php)
+* [How to write articles](#how-to-write-articles)
+* [How to write articles with a lot of resources](#how-to-write-articles-with-a-lot-of-resources)
+* [How to write pages](#how-to-write-pages)
+* [Editing header.php, footer.php and headlinks.php](#editing-headerphp-footerphp-and-headlinksphp)
+* [How to create skins](#how-to-create-skins)
+* [How to allow javascript](#how-to-allow-javascript)
+* [Articles addressing scope](#articles-addressing-scope)
+* [Supported HTTP servers](#supported-http-servers)
+* [How to upgrade](#how-to-upgrade)
+* [How it works](#how-it-works)
+	* [Core](#core)
+	* [Frontend](#frontend)
+	* [Settings](#settings)
+	* [Administration](#administration)
+	* [Modules](#modules)
+		* [admin panel](#admin-panel-optional)
+		* [cron](#cron-optional)
+		* [maintenance break pattern](#maintenance-break-pattern-optional)
+		* [pages](#pages-optional-enabled-by-default)
+		* [prevent-index.php](#prevent-indexphp-required)
+		* [temporary files](#temporary-files-not-installed-by-default)
+* [Why?](#why)
+<br><br>
+
 # First steps after clone
 1. you can rename `blog` to another name
 2. enter into `blog`
