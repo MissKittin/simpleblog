@@ -14,6 +14,7 @@ https://github.com/MissKittin/simpleblog/blob/master/HOWTO.md
 <br><br>
 
 # admin panel
+requires PHP >= 5.5.0<br>
 default login and password is `simpleblog`<br>
 admin/disabled.php completely disables the panel - remove this file<br>
 online backup: https://github.com/MissKittin/simpleblog/tree/master/zip.lib
