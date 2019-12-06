@@ -196,7 +196,7 @@
 		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['show'])) && (!preg_match('/\//i', $_GET['show'])))
 		{
 			echo '<!DOCTYPE html><html><head><title>Preview</title><meta charset="utf-8">'; include $adminpanel['path']['htmlheaders']; echo '<head><body><div id="articles">'."\n";
-			simpleblog_engineCore($adminpanel['path']['articles'] . '/' . $_GET['show'], true);
+			simpleblog_engineCore($adminpanel['path']['articles'] . '/' . $_GET['show'], $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
 			echo '</div></body></html>';
 			exit();
 		}
@@ -211,7 +211,7 @@
 			rename($adminpanel['path']['articles'] . '/' . $_GET['hide'], str_replace('public', 'private', $adminpanel['path']['articles'] . '/' . $_GET['hide']));
 	// 'delete' link
 	if(isset($_GET['delete']))
-		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['source'])))
+		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
 			if(isset($_GET['yes']))
 				unlink($adminpanel['path']['articles'] . '/' . $_GET['delete']);
