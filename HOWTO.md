@@ -10,6 +10,7 @@
 * [Articles addressing scope](#articles-addressing-scope)
 * [Supported HTTP servers](#supported-http-servers)
 * [How to upgrade](#how-to-upgrade)
+* [Apache htpasswd security for admin panel](#apache-htpasswd-security-for-admin-panel)
 * [How it works](#how-it-works)
 	* [Core](#core)
 	* [Frontend](#frontend)
