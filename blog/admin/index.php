@@ -44,8 +44,9 @@
 		global $cms_root;
 		global $cms_root_php;
 
-		// counter
-		$returnCount=0;
+		// counters
+		$returnArray['published']=0;
+		$returnArray['hidden']=0;
 
 		// cache
 		global $adminpanel;
@@ -63,20 +64,37 @@
 					$tag=trim($tag); // remove space at the end
 					if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
 					{
-						$returnCount++;
+						$returnArray['published']++;
 						array_push($tags, $tag);
 					}
 				}
 			}
 
-		return $returnCount;
+		$hiddenTags=array();
+		foreach($files as $file)
+			if(substr($file, 0, 7) === 'private')
+			{
+				include $dir . '/' . $file;
+				foreach(explode('#', $art_tags) as $tag)
+				{
+					$tag=trim($tag); // remove space at the end
+					if(($tag != '') && (!in_array($tag, $tags)) && (!in_array($tag, $hiddenTags))) // omit empty value and published tags
+					{
+						$returnArray['hidden']++;
+						array_push($hiddenTags, $tag);
+					}
+				}
+			}
+
+		return $returnArray;
 	}
 
 	// count pages
 	function adminpanel_countPages($dir)
 	{
 		// counter
-		$returnCount=0;
+		$returnArray['published']=0;
+		$returnArray['hidden']=0;
 
 		// cache
 		global $adminpanel;
@@ -86,9 +104,14 @@
 
 		foreach($files as $file)
 			if(($file != '.') && ($file != '..') && (is_dir($dir . '/' . $file)))
-				$returnCount++;
+			{
+				if(file_exists($dir . '/' . $file . '/disabled.php'))
+					$returnArray['hidden']++;
+				else
+					$returnArray['published']++;
+			}
 
-		return $returnCount;
+		return $returnArray;
 	}
 
 	// count media
@@ -113,7 +136,7 @@
 			if(($file->isFile()) && ($file != 'index.php') && ($file != 'index.html'))
 				$returnArray['size']+=$file->getSize();
 
-		// size as MB
+		// size as B/kB/MB
 		$returnArray['size']=adminpanel_convertBytes($returnArray['size']);
 
 		return $returnArray;
@@ -174,7 +197,7 @@
 					$returnArray['size']+=$file->getSize();
 
 			// size as KB
-			$returnArray['size']=round($returnArray['size']/1024) . 'KB';
+			$returnArray['size']=adminpanel_convertBytes($returnArray['size']);
 
 			return $returnArray;
 		}
@@ -229,8 +252,8 @@
 		<h3>Stats</h3>
 		<ul>
 			<li>Articles published: <?php echo $stats['articles']['published']; ?>, hidden: <?php echo $stats['articles']['hidden']; ?></li>
-			<li>Defined tags: <?php echo $stats['tags']; ?></li>
-			<li>Pages: <?php echo $stats['pages']; ?></li>
+			<li>Tags published: <?php echo $stats['tags']['published']; ?>, hidden: <?php echo $stats['tags']['hidden']; ?></li>
+			<li>Pages published: <?php echo $stats['pages']['published']; ?>, hidden: <?php echo $stats['pages']['hidden']; ?></li>
 			<li>Media: <?php echo $stats['media']['count']; ?> (<?php echo $stats['media']['size']; ?>)</li>
 			<?php if($stats['cron'] != false) echo '<li>Cron tasks: ' . $stats['cron']['enabled'] . ' enabled, ' . $stats['cron']['disabled'] . ' disabled</li>'; ?>
 			<?php if($stats['tmp'] != false) echo '<li>Temporary files: ' . $stats['tmp']['count'] . ' (' . $stats['tmp']['size'] . ')</li>'; ?>
