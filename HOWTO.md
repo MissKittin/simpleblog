@@ -233,7 +233,7 @@ Admin panel modules:
 * CMS -> edit simpleblog settings, html titles, maintenance break settings, change login credentials and create backup
 * Cron -> manage cron tasks
 * Elements -> edit `header.php`, `headlinks.php`, `footer.php`, `htmlheaders.php` and manage favicons
-* Files -> simple file manager
+* Files -> simple file manager with cURL function
 * Media -> manage uploaded media files
 * Pages -> manage pages
 * Skins -> install, uninstall, edit and change current skin
