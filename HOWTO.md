@@ -180,6 +180,10 @@ PHP built-in server and Apache. If you want run the Simpleblog on other server, 
 5. Merge new version with old version
 <br><br>
 
+# Apache htpasswd security for admin panel
+Why not? Read some tutorials :)
+<br><br>
+
 # How it works
 The simpleblog is divided into three parts: main page, tags and post. Tags/Post can be detached by setting `$simpleblog['taglinks']`/`$simpleblog['postlinks']` and `$simpleblog['datelinks']` to false.<br>
 After that you can remove:
