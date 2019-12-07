@@ -87,23 +87,23 @@
 
 	// curl
 	if(isset($_POST['curl']))
-	{
-		$curl=curl_init();
-		curl_setopt($curl, CURLOPT_URL, $_POST['curl']);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_VERBOSE, true);
-		$downloadedFile=curl_exec($curl);
-		if(isset($_GET['dir']))
+		if(substr($_POST['curl'], 0, 7) !== 'file://')
 		{
-			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_POST['curlFilename']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'])) && (!file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename']))) // '..' hack
-				file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename'], $downloadedFile);
+			$curl=curl_init();
+			curl_setopt($curl, CURLOPT_URL, $_POST['curl']);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_VERBOSE, true);
+			$downloadedFile=curl_exec($curl);
+			if(isset($_GET['dir']))
+			{
+				if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_POST['curlFilename']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'])) && (!file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename']))) // '..' hack
+					file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_POST['curlFilename'], $downloadedFile);
+			}
+			else
+				if((!preg_match('/\//i', $_POST['curlFilename'])) && (!file_exists($simpleblog['root_php'] . '/' . $_POST['curlFilename']))) // '..' hack
+					file_put_contents($simpleblog['root_php'] . '/' . $_POST['curlFilename'], $downloadedFile);
+			curl_close($curl);
 		}
-		else
-			if((!preg_match('/\//i', $_POST['curlFilename'])) && (!file_exists($simpleblog['root_php'] . '/' . $_POST['curlFilename']))) // '..' hack
-				file_put_contents($simpleblog['root_php'] . '/' . $_POST['curlFilename'], $downloadedFile);
-
-		curl_close($curl);
-	}
 
 	// rename link (move function by '..' in file name)
 	if(isset($_POST['rename']))
