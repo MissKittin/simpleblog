@@ -20,9 +20,13 @@ admin/disabled.php completely disables the panel - remove this file<br>
 online backup: https://github.com/MissKittin/simpleblog/tree/master/zip.lib
 <br><br>
 
+# additional cron tasks
+`requireHTTPS.php`
+<br><br>
+
 # additional functions
-checkDate.php -> apply eg custom style beetwen start and end date<br>
-checkEaster.php -> checkDate for Easter - calculates the first day of Easter and the end date by adding n days to the first day
+`checkDate.php` -> apply eg custom style beetwen start and end date<br>
+`checkEaster.php` -> checkDate for Easter - calculates the first day of Easter and the end date by adding n days to the first day
 <br><br>
 
 # skurkawudka czorno
