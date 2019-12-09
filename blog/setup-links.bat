@@ -71,6 +71,11 @@ mklink index.php ..\..\prevent-index.php > NUL
 cd ..
 cd ..
 
+echo admin\opt_htmlheaders
+cd opt_htmlheaders
+mklink index.php ..\prevent-index.php > NUL
+cd ..
+
 echo admin\skins
 cd ..
 cd skins

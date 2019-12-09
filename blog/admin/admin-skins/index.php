@@ -33,7 +33,7 @@
 		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 
 		file_put_contents($configfile, str_replace('$simpleblog[\'skin\']=\'' . $oldskin . '\'', '$simpleblog[\'skin\']=\'' . $newskin . '\'', file_get_contents($configfile)));
-		echo '<!DOCTYPE html><html><head><title>Skins</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '"><meta http-equiv="refresh" content="0; url=admin-skins"></head></html>';
+		echo '<!DOCTYPE html><html><head><title>Skins</title><meta charset="utf-8">'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '<meta http-equiv="refresh" content="0; url=admin-skins"></head></html>';
 		exit();
 	}
 	function adminpanel_browseSkin($dir, $htmldir)
@@ -95,8 +95,7 @@
 				echo '<!DOCTYPE html><html><head>
 						<title>Skins</title>
 						<meta charset="utf-8">
-						<meta name="viewport" content="width=device-width, initial-scale=1">
-						<link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '">
+						'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['deleteFile'] . ' - Are you sure?</h1>
@@ -130,8 +129,7 @@
 				echo '<!DOCTYPE html><html><head>
 						<title>Skins</title>
 						<meta charset="utf-8">
-						<meta name="viewport" content="width=device-width, initial-scale=1">
-						<link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '">
+						'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
@@ -169,8 +167,7 @@
 	<head>
 		<title>Skins</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
+		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">

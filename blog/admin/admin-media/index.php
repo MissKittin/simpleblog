@@ -72,8 +72,7 @@
 				echo '<!DOCTYPE html><html><head>
 						<title>Articles</title>
 						<meta charset="utf-8">
-						<meta name="viewport" content="width=device-width, initial-scale=1">
-						<link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '">
+						'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . '<br>Are you sure?</h1>
@@ -89,8 +88,7 @@
 	<head>
 		<title>Media</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
+		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">

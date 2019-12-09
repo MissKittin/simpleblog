@@ -29,7 +29,7 @@
 	function reload()
 	{
 		global $adminpanel;
-		echo '<!DOCTYPE html><html><head><title>CMS</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" type="text/css" href="' . $adminpanel['root_html'] . '/skins/' . $adminpanel['skin'] . '"><meta http-equiv="refresh" content="0; url=?"></head></html>';
+		echo '<!DOCTYPE html><html><head><title>CMS</title><meta charset="utf-8">'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '<meta http-equiv="refresh" content="0; url=?"></head></html>';
 		exit();
 	}
 	function adminpanel_backupSearchRecursive($dir, $prefix)
@@ -261,8 +261,7 @@
 	<head>
 		<title>CMS</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
+		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">

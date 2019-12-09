@@ -60,12 +60,17 @@ while true; do
 		ln -s ../../prevent-index.php ./index.php
 		cd ../..
 
+		echo 'admin/opt_htmlheaders'
+		cd opt_htmlheaders
+		ln -s ../prevent-index.php ./index.php
+		cd ..
+
 		echo 'admin/skins'
 		cd ../skins
 		ln -s ../lib/prevent-index.php ./index.php
 		cd ..
 
-		echo 'admin\passwordChangeRequired'
+		echo 'admin/passwordChangeRequired'
 		cp ./lib/prevent-index.php ./passwordChangeRequired.php
 
 		echo 'admin/disabled'

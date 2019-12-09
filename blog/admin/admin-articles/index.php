@@ -18,9 +18,8 @@
 		global $adminpanel;
 		?>
 			<meta charset="utf-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1">
-			<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
-			<script type="text/javascript" src="<?php echo $adminpanel['root_html']; ?>/lib/TabManager.js"></script>
+			<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
+			<?php include $adminpanel['root_php'] . '/lib/opt_htmlheaders/TabManager.php'; ?>
 		<?php
 	}
 

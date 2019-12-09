@@ -71,6 +71,11 @@ copy ..\..\prevent-index.php index.php > NUL
 cd ..
 cd ..
 
+echo admin\opt_htmlheaders
+cd opt_htmlheaders
+copy ..\prevent-index.php index.php > NUL
+cd ..
+
 echo admin\skins
 cd ..
 cd skins

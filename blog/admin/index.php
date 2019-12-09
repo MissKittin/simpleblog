@@ -282,8 +282,7 @@
 	<head>
 		<title>Admin panel</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
+		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="header">
@@ -303,7 +302,7 @@
 
 			<h3>About</h3>
 			Admin panel for Simpleblog v2.1<br>
-			Version 1.1<br>
+			Version 1.2<br>
 			<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin">MissKittin</a>@<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin/simpleblog">GitHub</a><br>
 			Licensed under <a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0</a>
 		</div>

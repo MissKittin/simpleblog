@@ -10,8 +10,7 @@
 	<head>
 		<title>Pages</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $adminpanel['root_html']; ?>/skins/<?php echo $adminpanel['skin']; ?>">
+		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
 	<body>
 		<div id="content" style="padding-bottom: 30px;">
