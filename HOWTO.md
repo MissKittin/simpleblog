@@ -301,6 +301,7 @@ Content of files:
 [articles/000001.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/articles/public_000001.php)<br>
 [pages/samplepage/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/pages/samplepage/index.php)<br>
 [skins/default/style.css](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/skins/default/style.css)<br>
+[style/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/style/index.php)<br>
 [footer.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/footer.php)<br>
 [header.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/header.php)<br>
 [headlinks.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/headlinks.php)<br>
