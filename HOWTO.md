@@ -23,6 +23,11 @@
 		* [pages](#pages-optional-enabled-by-default)
 		* [prevent-index.php](#prevent-indexphp-required)
 		* [temporary files](#temporary-files-not-installed-by-default)
+* [History](#history)
+	* [alpha](#alpha)
+	* [v1](#v1)
+	* [v2.0](#v20)
+	* [today](#today)
 * [Why?](#why)
 <br><br>
 
@@ -269,7 +274,7 @@ Eg for timestamps and indicators created by cron tasks.
 
 # History
 ## alpha
-In alpha version the simpleblog was only simple script. Articles was created only via SSH.
+In alpha version the simpleblog was only simple script. Articles was created only via SSH.<br>
 The alpha version tree:
 * articles (dir)
 	* 000001.php
