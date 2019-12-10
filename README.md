@@ -6,6 +6,7 @@ No cookies(\*\*), no sessions(\*\*) and conventional database, with tags, custom
 \*\* cookies and sessions for login, javascript in TabManager.js
 <br><br>
 
+If you know the basics of PHP, HTML and CSS, the Simpleblog is for you :)<br>
 But first read manual.
 <br><br>
 
