@@ -265,9 +265,190 @@ A simple script that prevents directory listing.
 ### temporary files (not installed by default)
 Just create this directory manually, path `blog/tmp`<br>
 Eg for timestamps and indicators created by cron tasks.
+<br><br>
+
+# History
+## alpha
+In alpha version the simpleblog was only simple script. Articles was created only via SSH.
+The alpha version tree:
+* articles (dir)
+	* 000001.php
+* media (dir)
+* pages (dir)
+	* samplepage (dir)
+		* index.php
+	* index.php
+* skins (dir)
+	* default (dir)
+		* style.css
+* style (dir)
+	* index.php
+* footer.php
+* header.php
+* headlinks.php
+* index.php
+* prevent-index.php
+* router.php
+* settings.php
+<br>
+Content of files:
+
+[articles/000001.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/articles/public_000001.php)<br>
+[pages/samplepage/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/pages/samplepage/index.php)<br>
+[skins/default/style.css](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/skins/default/style.css)<br>
+[footer.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/footer.php)<br>
+[header.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/header.php)<br>
+[headlinks.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/headlinks.php)<br>
+[prevent-index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/prevent-index.php)<br>
+[settings.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/settings.php)<br>
+`index.php` (core of simpleblog alpha)
+```
+<?php
+	// Blog page renderer
+	// 13.04.2019 - 15.04.2019
+	// count_pages 25.09.2019
+
+	include 'settings.php';
+
+	isset($_GET['page']) ? $loop_start=$_GET['page'] : $loop_start=1; // max entries on one page
+
+	$loop_start=1;
+	if(isset($_GET['page'])) // is_int() protection
+		if(is_numeric($_GET['page']))
+			$loop_start=$_GET['page'];
+	settype($loop_start, 'integer');
+
+	// pages counter
+	function count_pages()
+	{
+		global $entries_per_page; // in settings.php
+		$pages_count=1;
+		$pages_ind=0;
+
+		$current_page='1';
+		if(isset($_GET['page']))
+			$current_page=$_GET['page'];
+
+		global $files; // used in div articles before executing function
+		foreach(array_reverse($files) as $file)
+		{
+			if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
+			{
+				// check if article is public
+				if(strpos(file_get_contents('articles/' . $file), '$art_public=true;'))
+				{
+					// count how many pages are available
+					if($pages_ind === $entries_per_page)
+					{
+						$pages_count++;
+						$pages_ind=1; // must reset this
+					}
+					else
+						$pages_ind++;
+				}
+			}
+
+		}
+
+		$i=1; // loop indicator
+		while($i <= $pages_count)
+		{
+			if($i == $current_page)
+				echo '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render current
+			else
+				echo '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
+			$i++;
+		}
+	}
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><?php echo "$page_title"; ?></title>
+		<meta charset="utf-8">
+		<link rel="shortcut icon" type="image/icon" href="<?php echo "$cms_root"; ?>favicon.ico">
+		<link rel="stylesheet" type="text/css" href="<?php echo "$cms_root"; ?>style?root=<?php echo "$cms_root"; ?>">
+	</head>
+	<body>
+		<div id="header">
+			<?php include 'header.php'; ?>
+		</div>
+		<div id="headlinks">
+			<?php include 'headlinks.php'; ?>
+		</div>
+		<div id="articles">
+			<?php
+				$loop_ind=1; // first if in foreach
+				$files=scandir('articles/');
+				foreach(array_reverse($files) as $file)
+				{
+					// debug
+					//if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
+					//	echo '<!-- processing article ' . ltrim(preg_replace('/\.[^.]+$/', '', $file), '0') . ' -->' . "\n";
+
+					/* Wait a sec!
+						"omit" loop doesn't check if article is public or private
+						articles may be duplicated on next page
+					*/
+
+					if($loop_ind >= ($loop_start*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
+					{
+						if(($file != '.') && ($file != '..'))
+						{
+							include 'articles/' . $file;
+
+							// check if article is public
+							if($art_public)
+							{
+								// render article
+								echo '<div class="article">'."\n";
+									echo '<div class="art-tags">'.$art_tags.'</div><div class="art-date">'.$art_date.'</div><div class="art-title"><h2>'.$art_title.'</h2></div>';
+									echo "$art_content";
+								echo '</div>'."\n";
+							}
+							else
+								$loop_ind--;
+						}
+
+						if($loop_ind === $loop_start*$entries_per_page) // break if the maximum number of entries has been reached
+							break;
+						else
+							$loop_ind++;
+					}
+					else
+						$loop_ind++; // if entry is unwanted
+				}
+			?>
+		</div>
+		<div id="pages">
+			<?php count_pages(); echo "\n"; ?>
+		</div>
+		<div id="footer">
+			<?php include 'footer.php'; ?>
+		</div>
+	</body>
+</html>
+```
 <br>
 
+In September 25, 2019, the naming of files with articles changed and the `$art_public` flag was deprecated:
+
+[index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/index.php)
+
+The algorithm's operation principle has not changed since then.
 <br>
+
+## v1
+In this version simple admin script, favicons and tag subsystem have been added. Also since this version skins are php scripts.
+<br>
+
+## v2.0
+Version 2 is completely redesigned. The simpleblog has been modularized, with true admin panel (v1).
+<br>
+
+## today
+v2.1 is v2.0 with many improvements, new features and admin panel v1.1. Stable and currently maintained.
+<br><br>
 
 # Why?
 Because I like PHP, simplicity and control over the code.
