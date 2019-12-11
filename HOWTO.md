@@ -1,6 +1,7 @@
 # Table of contents
 * [First steps after clone](#first-steps-after-clone)
 * [root_html vs root_php](#simpleblogroot_html-vs-simpleblogroot_php)
+* [Simpleblog in DOCUMENT_ROOT](#simpleblog-in-document_root)
 * [How to write articles](#how-to-write-articles)
 * [How to write articles with a lot of resources](#how-to-write-articles-with-a-lot-of-resources)
 * [How to write pages](#how-to-write-pages)
