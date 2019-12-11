@@ -46,6 +46,22 @@ In normal way `$simpleblog['root_php'] = $_SERVER['DOCUMENT_ROOT'] . $simpleblog
 But if you use http proxy script, path for browser is `/proxy/blog` and it's not `/var/www/proxy/blog`. In this case you have to change: `$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . '/blog'` and `$simpleblog['root_html']='/proxy/blog'`. Problem solved.
 <br><br>
 
+# Simpleblog in DOCUMENT_ROOT
+1. (only for php-cli version) open `.router.php` and put `return false;` before `?>`:
+```
+	// execute cron tasks
+	if(file_exists($simpleblog['root_php'] . '/lib/cron.php')) include $simpleblog['root_php'] . '/lib/cron.php';
+
+	// drop cache
+	unset($simpleblog_router_cache);
+
+	return false;
+?>
+```
+2. change `$simpleblog['root_html']='/blog';` to `$simpleblog['root_html']='';` in `.router.php` or `settings.php`
+3. push `.router.php` or `settings.php`
+<br><br>
+
 # How to write articles
 Copy `public_000001.php` to `public_000002.php`, open it and change variables content.<br>
 `$art_date` is in DD.MM.YYYY format.<br>
