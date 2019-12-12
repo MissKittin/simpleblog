@@ -471,7 +471,7 @@ Version 2 is completely redesigned. The simpleblog has been modularized, with tr
 <br>
 
 ## today
-v2.1 is v2.0 with many improvements, new features and admin panel v1.1. Stable and currently maintained.
+v2.1 is v2.0 with many improvements, new features and admin panel v1.1. Also fixes bugs and creates new ones. Stable and currently maintained.
 <br><br>
 
 # Why?
