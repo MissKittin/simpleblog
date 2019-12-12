@@ -9,6 +9,7 @@
 * [How to create skins](#how-to-create-skins)
 * [How to allow javascript](#how-to-allow-javascript)
 * [Articles addressing scope](#articles-addressing-scope)
+* [php-cli test pool](#php-cli-test-pool)
 * [Supported HTTP servers](#supported-http-servers)
 * [How to upgrade](#how-to-upgrade)
 * [Apache htpasswd security for admin panel](#apache-htpasswd-security-for-admin-panel)
