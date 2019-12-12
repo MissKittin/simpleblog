@@ -191,6 +191,10 @@ Automation: edit `$simpleblog_path`, put this file on your server, and run it in
 ```
 <br><br>
 
+# php-cli test pool
+Setup simpleblog for php built-in server, and type `php -S 0.0.0.0:8080 router.php`, where `router.php` is in the the repo root, not the one in the `blog` directory.
+<br><br>
+
 # Supported HTTP servers
 PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.<br>
 `auto_prepend_file` way isn't tested and I don't recommend this (but if you want...)
