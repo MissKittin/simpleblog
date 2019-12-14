@@ -30,6 +30,7 @@
 	* [v1](#v1)
 	* [v2.0](#v20)
 	* [today](#today)
+* [Limitations](#limitations)
 * [Why?](#why)
 <br><br>
 
