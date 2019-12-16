@@ -482,7 +482,7 @@ v2.1 is v2.0 with many improvements, new features and admin panel v1.1. Also fix
 
 # Limitations
 The simpleblog is inefficient when there are ~600000 articles in the database. I'm working to resolve this issue.<br>
-There are ~50 articles on my blog, the execution time is 0.0067s (on ssd).<br>
+There are ~50 articles on my blog, the execution time is 0.0067s (on ssd and with opcache).<br>
 Remember, the simpleblog was created to support a small website. For more advanced tasks use Wordpress or Joomla.
 <br><br>
 
