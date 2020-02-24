@@ -40,6 +40,9 @@ while true; do
 		echo 'admin/core'
 		cp ../../lib/core.php ./core.php
 
+		echo 'admin/favicon'
+		touch favicon.ico
+
 		echo 'admin/login'
 		cd login
 		cp ../prevent-index.php ./index.php

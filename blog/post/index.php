@@ -1,5 +1,5 @@
 <?php
-	// Simpleblog v2.1 - post page
+	// Simpleblog v2.1 - post subsystem
 	// 03.12.2019
 ?>
 <?php
@@ -71,7 +71,7 @@
 		</div>
 		<div id="articles">
 			<?php
-				$emptyDatabase=true; // for $_GET['date']
+				$simpleblog['page']['emptyDatabase']=true; // for $_GET['date']
 
 				if(isset($_GET['id'])) // select one post
 					simpleblog_engineCore($file, $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
@@ -80,13 +80,13 @@
 					foreach(simpleblog_enginePost($simpleblog['root_php'] . '/articles', $_GET['date'], $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $article)
 					{
 						simpleblog_engineCore($article, $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
-						$emptyDatabase=false;
+						$simpleblog['page']['emptyDatabase']=false;
 					}
-					if($emptyDatabase) echo $simpleblog['emptyLabel'];
+					if($simpleblog['page']['emptyDatabase']) echo $simpleblog['emptyLabel'];
 				}
 			?>
 		</div>
-		<?php if((isset($_GET['date'])) && (!$emptyDatabase)) { ?><div id="pages">
+		<?php if((isset($_GET['date'])) && (!$simpleblog['page']['emptyDatabase'])) { ?><div id="pages">
 			<?php echo simpleblog_countPostPages($simpleblog['root_php'] . '/articles', $_GET['date'], $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n"; ?>
 		</div><?php } ?>
 		<div id="footer">
@@ -94,4 +94,4 @@
 		</div>
 	</body>
 </html>
-<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time in seconds: ' . (microtime(true) - $simpleblog['execTime']), 0); ?>
+<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time: ' . (microtime(true) - $simpleblog['execTime']) . 's, max mem used: ' . memory_get_peak_usage() . 'B', 0); ?>

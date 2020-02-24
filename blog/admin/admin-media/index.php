@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php
 	// Admin panel for simpleblog - media section
 	// 19.11.2019
@@ -20,7 +21,7 @@
 	if(ini_get('file_uploads') == 1)
 		if(isset($_GET['upload']))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				$countfiles=count($_FILES['file']['name']);
 				for($i=0; $i<$countfiles; $i++)
@@ -47,7 +48,7 @@
 							<h3>Upload</h3>
 						</div>
 						<div id="content">
-							<form action="?upload&yes" method="post" enctype="multipart/form-data">
+							<form action="?upload&yes&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post" enctype="multipart/form-data">
 								<input type="file" name="file[]" id="file" multiple>
 								<input class="button" type="submit" value="Upload">
 							</form>
@@ -65,7 +66,7 @@
 	if(isset($_GET['delete']))
 		if((file_exists($adminpanel['path']['media'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 				unlink($adminpanel['path']['media'] . '/' . $_GET['delete']);
 			else
 			{
@@ -76,7 +77,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . '<br>Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div class="button button_in_row"><a href="?">Back</a></div> <div class="button button_in_row"><a href="?delete=' . $_GET['delete'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -108,7 +109,7 @@
 							echo '<tr><td><a style="color: #0000ff; text-decoration: none;" href="' . $adminpanel['path']['media_html'] . '/' . $file['name'] . '" target="_blank">' . $file['name'] . '</a></td><td style="text-align: center;">' . adminpanel_convertBytes($file['size']) . '</td><td><a style="color: #0000ff; text-decoration: none;" href="?delete=' . urlencode($file['name']) . '">Delete</a></td></tr>';
 				?>
 			</table>
-			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload">Upload</a></div><?php } ?>
+			<?php if(ini_get('file_uploads') == 1) { ?><div class="button button_in_row"><a href="?upload">Upload</a></div><?php } ?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

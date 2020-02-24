@@ -47,6 +47,9 @@ mklink index.php prevent-index.php > NUL
 echo admin\core
 mklink core.php ..\..\lib\core.php > NUL
 
+echo admin\favicon
+echo | set /p="" > favicon.ico
+
 echo admin\login
 cd login
 mklink index.php ..\prevent-index.php > NUL

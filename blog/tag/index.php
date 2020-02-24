@@ -40,15 +40,15 @@
 		</div>
 		<div id="articles">
 			<?php
-				$emptyDatabase=true;
+				$simpleblog['page']['emptyDatabase']=true;
 				if(isset($_GET['tag']))
 				{
 					foreach(simpleblog_engineTag($simpleblog['root_php'] . '/articles', 'render', $_GET['tag'], $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $simpleblog['page']['current_article'])
 					{
 						simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
-						$emptyDatabase=false;
+						$simpleblog['page']['emptyDatabase']=false;
 					}
-					if($emptyDatabase) echo $simpleblog['emptyLabel'];
+					if($simpleblog['page']['emptyDatabase']) echo $simpleblog['emptyLabel'];
 				}
 				else
 				{
@@ -56,14 +56,14 @@
 					foreach(simpleblog_engineTag($simpleblog['root_php'] . '/articles', 'list') as $tag)
 					{
 						echo '<a class="taglink" href="?tag=' . urlencode('#' . $tag) . '">#' . $tag . '</a><br>';
-						$emptyDatabase=false;
+						$simpleblog['page']['emptyDatabase']=false;
 					}
-					if($emptyDatabase) echo $simpleblog['emptyLabel'];
+					if($simpleblog['page']['emptyDatabase']) echo $simpleblog['emptyLabel'];
 					echo '</div>';
 				}
 			?>
 		</div>
-		<?php if((isset($_GET['tag'])) && (!$emptyDatabase)) { ?><div id="pages">
+		<?php if((isset($_GET['tag'])) && (!$simpleblog['page']['emptyDatabase'])) { ?><div id="pages">
 			<?php echo simpleblog_countTagPages($simpleblog['root_php'] . '/articles', $_GET['tag'], $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n"; ?>
 		</div><?php } ?>
 		<div id="footer">
@@ -71,3 +71,4 @@
 		</div>
 	</body>
 </html>
+<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time: ' . (microtime(true) - $simpleblog['execTime']) . 's, max mem used: ' . memory_get_peak_usage() . 'B', 0); ?>

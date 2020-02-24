@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php
 	// Admin panel for simpleblog - file manager
 	// 26.11.2019
@@ -41,7 +42,7 @@
 ?>
 <?php
 	// create file
-	if(isset($_POST['newfile_name']))
+	if((isset($_POST['newfile_name'])) && (adminpanel_csrf_checkToken('post')))
 	{
 		if(isset($_GET['dir']))
 		{
@@ -56,7 +57,7 @@
 	}
 
 	// make directory
-	if(isset($_POST['newdir_name']))
+	if((isset($_POST['newdir_name'])) && (adminpanel_csrf_checkToken('post')))
 	{
 		if(isset($_GET['dir']))
 		{
@@ -71,7 +72,7 @@
 	}
 
 	// upload
-	if((isset($_GET['uploadConfirm'])) && (ini_get('file_uploads') == 1))
+	if((isset($_GET['uploadConfirm'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
 	{
 		$countfiles=count($_FILES['file']['name']);
 		if(isset($_GET['dir']))
@@ -86,7 +87,7 @@
 	}
 
 	// curl
-	if(isset($_POST['curl']))
+	if((isset($_POST['curl'])) && (adminpanel_csrf_checkToken('get')))
 		if(substr($_POST['curl'], 0, 7) !== 'file://')
 		{
 			$curl=curl_init();
@@ -106,7 +107,7 @@
 		}
 
 	// rename link (move function by '..' in file name)
-	if(isset($_POST['rename']))
+	if((isset($_POST['rename'])) && (adminpanel_csrf_checkToken('post')))
 	{
 		if(isset($_GET['dir']))
 		{
@@ -125,7 +126,7 @@
 	{
 		if(isset($_GET['dir']))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_GET['delete']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['delete']))) // '..' hack
 					adminpanel_rmr($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['delete'], true);
@@ -137,7 +138,7 @@
 		}
 		else
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				if((!in_array('..', explode('/', $_GET['delete']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['delete'])))
 					adminpanel_rmr($simpleblog['root_php'] . '/' . $_GET['delete'], true);
@@ -156,7 +157,7 @@
 		{
 			if((!in_array('..', explode('/', $_GET['dir'] . '/' . $_GET['edit']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit']))) // '..' hack
 			{
-				if(isset($_POST['file_content']))
+				if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 				{
 					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 					file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit'], $_POST['file_content']);
@@ -172,7 +173,7 @@
 		{
 			if(!in_array('..', explode('/', $_GET['edit'])))
 			{
-				if(isset($_POST['file_content']))
+				if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 				{
 					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 					file_put_contents($simpleblog['root_php'] . '/' . $_GET['edit'], $_POST['file_content']);
@@ -257,6 +258,7 @@
 							<label for="newfile_name">New file name</label>
 							<input type="text" name="newfile_name" required>
 							<input type="submit" class="button" value="Create new file">
+							' . adminpanel_csrf_injectToken() . '
 						</form>
 					';
 				}
@@ -268,6 +270,7 @@
 							<label for="newdir_name">New directory name</label>
 							<input type="text" name="newdir_name" required>
 							<input type="submit" class="button" value="Create new directory">
+							' . adminpanel_csrf_injectToken() . '
 						</form>
 					';
 				}
@@ -275,7 +278,7 @@
 				if(isset($_GET['upload']))
 				{
 					echo '
-						<form action="?uploadConfirm'; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '" method="post" enctype="multipart/form-data">
+						<form action="?uploadConfirm'; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
 							<input type="file" name="file[]" id="file" multiple>
 							<input class="button" type="submit" value="Upload">
 						</form>
@@ -289,6 +292,7 @@
 							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
 							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
 							<input type="submit" class="button" value="Rename">
+							' . adminpanel_csrf_injectToken() . '
 						</form>
 					';
 				}
@@ -296,7 +300,7 @@
 				if(isset($_GET['curl']))
 				{
 					echo '
-						<form action="?'; if(isset($_GET['dir'])) echo 'dir=' . $_GET['dir']; echo '" method="post">
+						<form action="?'; if(isset($_GET['dir'])) echo 'dir=' . $_GET['dir']; echo '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post">
 							<label for="curl">URL</label>
 							<input type="text" name="curl" required>
 							<label for="curlFilename">File name</label>
@@ -308,12 +312,12 @@
 
 				if(isset($_GET['dir']))
 					if($_GET['dir'] != '')
-						echo '<div style="float: left;" class="button"><a href="?dir=' . substr($_GET['dir'], 0, strrpos($_GET['dir'], '/')) . '">Back</a></div>';
+						echo '<div class="button button_in_row"><a href="?dir=' . substr($_GET['dir'], 0, strrpos($_GET['dir'], '/')) . '">Back</a></div>';
 			?>
-			<div style="float: left;" class="button"><a href="?create<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Create</a></div>
-			<div style="float: left;" class="button"><a href="?mkdir<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">mkdir</a></div>
-			<?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?upload<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Upload</a></div><?php } ?>
-			<?php if(function_exists('curl_init')) { ?><div style="float: left;" class="button"><a href="?curl<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">curl</a></div><?php } ?>
+			<div class="button button_in_row"><a href="?create<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Create</a></div>
+			<div class="button button_in_row"><a href="?mkdir<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">mkdir</a></div>
+			<?php if(ini_get('file_uploads') == 1) { ?><div class="button button_in_row"><a href="?upload<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Upload</a></div><?php } ?>
+			<?php if(function_exists('curl_init')) { ?><div class="button button_in_row"><a href="?curl<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">curl</a></div><?php } ?>
 			<br><br><h3>Move function: click rename and add ../ before name to move upper</h3>
 		</div>
 		<div id="footer">

@@ -2,6 +2,7 @@
 	// admin panel login library
 	// bcrypt password and change credentials 24.11.2019
 	// session security 02.12.2019
+	// sec_csrf.php 19.02.2020
 ?>
 <?php
 	// prevent direct
@@ -26,6 +27,9 @@
 	{
 		include $adminpanel['root_php'] . '/lib/prevent-index.php'; exit();
 	}
+
+	// import sec_csrf.php library
+	include $adminpanel['root_php'] . '/lib/sec_csrf.php';
 ?>
 <?php
 	//functions
@@ -60,6 +64,7 @@
 	//header
 	session_name('SIMPLEBLOGSESSID');
 	session_start();
+	$adminpanel_csrf_generateToken(); unset($adminpanel_csrf_generateToken); // sec_csrf.php
 	if(!isset($_SESSION['logged']))
 		$_SESSION['logged']=false;
 
@@ -102,7 +107,7 @@
 		}
 
 		// password change prompt
-		if((isset($_POST['newusername'])) && (isset($_POST['newpassword'])))
+		if((isset($_POST['newusername'])) && (isset($_POST['newpassword'])) && (adminpanel_csrf_checkToken('post')))
 		{
 			$changeCredentials($_POST['newusername'], $_POST['newpassword']);
 			$reload();
@@ -116,7 +121,7 @@
 	}
 	else
 	{
-		if(isset($_POST['username']) && isset($_POST['password']))
+		if((isset($_POST['username'])) && (isset($_POST['password'])) && (adminpanel_csrf_checkToken('post'))) // ++ sec_csrf.php
 			if($_POST['username'] === $adminpanel_credentials['login'])
 				if(password_verify($_POST['password'], $adminpanel_credentials['password']))
 				{

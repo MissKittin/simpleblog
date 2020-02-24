@@ -1,6 +1,8 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php
 	// Admin panel for simpleblog - pages section
 	// 20.11.2019
+	// WTF: no upload button ?
 	$module['id']='admin-pages';
 
 	// import settings
@@ -22,7 +24,7 @@
 				// delete file link
 				if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['delete']))  && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['delete'])))
 				{
-					if(isset($_GET['yes']))
+					if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 					{
 						unlink($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['delete']);
 						include('manage.php'); exit();
@@ -42,7 +44,7 @@
 				// file editor
 				if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['edit'])))
 				{
-					if(isset($_POST['file_content']))
+					if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 					{
 						if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 						file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit'], $_POST['file_content']);
@@ -61,7 +63,7 @@
 			else if(isset($_POST['rename']))
 			{
 				// rename link
-				if(!preg_match('/\//i', $_POST['rename'])) // '..' hack
+				if((!preg_match('/\//i', $_POST['rename'])) && (adminpanel_csrf_checkToken('post'))) // '..' hack and sec_csrf
 				{
 					rename($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['oldname'], $adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['rename']);
 					include('manage.php'); exit();
@@ -76,7 +78,7 @@
 				// upload files button
 				if(ini_get('file_uploads') == 1)
 				{
-					if(isset($_GET['yes']))
+					if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 					{
 						$countfiles=count($_FILES['file']['name']);
 						for($i=0; $i<$countfiles; $i++)
@@ -99,7 +101,7 @@
 				// create file button
 				if(isset($_POST['create']))
 				{
-					if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['create'])))
+					if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['create'])) && (adminpanel_csrf_checkToken('post')))
 						file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'], '');
 					include('manage.php'); exit();
 				}
@@ -122,7 +124,7 @@
 	if(isset($_GET['delete']))
 		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				foreach(scandir($adminpanel['path']['pages'] . '/' . $_GET['delete']) as $file)
 					if(($file != '.') && ($file != '..'))
@@ -139,18 +141,18 @@
 	// rename link
 	if(isset($_POST['rename']))
 	{
-		if(!preg_match('/\//i', $_POST['rename'])) // '..' hack
+		if((!preg_match('/\//i', $_POST['rename'])) && (adminpanel_csrf_checkToken('post'))) // '..' hack and sec_csrf
 			rename($adminpanel['path']['pages'] . '/' . $_GET['oldname'], $adminpanel['path']['pages'] . '/' . $_POST['rename']);
 	}
 
 	// disable/enable link
 	if(isset($_GET['disable']))
-		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'])) && (!file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['disable'])))
+		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'])) && (!file_exists($adminpanel['path']['pages'] . '/' . $_GET['disable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['disable'])) && (adminpanel_csrf_checkToken('get')))
 		{
 			copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['path']['pages'] . '/' . $_GET['disable'] . '/disabled.php');
 		}
 	if(isset($_GET['enable']))
-		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['enable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['enable'])))
+		if((file_exists($adminpanel['path']['pages'] . '/' . $_GET['enable'] . '/disabled.php')) && (!preg_match('/\//i', $_GET['enable'])) && (adminpanel_csrf_checkToken('get')))
 		{
 			unlink($adminpanel['path']['pages'] . '/' . $_GET['enable'] . '/disabled.php');
 		}
@@ -164,7 +166,7 @@
 			exit();
 		}
 		else
-			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])))
+			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				mkdir($adminpanel['path']['pages'] . '/' . $_GET['create']);
 				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php if(php_sapi_name() != \'cli-server\') include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n".'<!DOCTYPE html>'."\n".'<html>'."\n\t".'<head>'."\n\t\t".'<title><?php echo $simpleblog[\'title\']; ?></title>'."\n\t\t".'<meta charset="utf-8">'."\n\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/htmlheaders.php\'; ?>'."\n\t".'</head>'."\n\t".'<body>'."\n\t\t".'<div id="header">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/header.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="headlinks">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/headlinks.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="articles">'."\n\t\t\t\n\t\t".'</div>'."\n\t\t".'<div id="footer">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/footer.php\'; ?>'."\n\t\t".'</div>'."\n\t".'</body>'."\n".'</html>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time in seconds: \' . (microtime(true) - $simpleblog[\'execTime\']), 0); ?>');
@@ -206,9 +208,9 @@
 								}
 
 							if(file_exists($adminpanel['path']['pages'] . '/' . $file . '/disabled.php'))
-								$disableLink='<a href="?enable=' . $file . '">Enable</a>';
+								$disableLink='<a href="?enable=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Enable</a>';
 							else
-								$disableLink='<a href="?disable=' . $file . '">Disable</a>';
+								$disableLink='<a href="?disable=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Disable</a>';
 
 							echo '<tr>
 								<td><a href="' . $adminpanel['path']['pages_html'] . '/' . $file . '" target="_blank">' . $file . '</a></td>
@@ -222,7 +224,7 @@
 						}
 				?>
 			</table>
-			<div style="float: left;" class="button"><a href="?create">Create</a></div>
+			<div class="button button_in_row"><a href="?create">Create</a></div>
 			<?php
 				if(isset($_GET['rename']))
 				{
@@ -231,6 +233,7 @@
 							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
 							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
 							<input type="submit" class="button" value="Rename">
+							' . adminpanel_csrf_injectToken() . '
 						</form>
 					';
 				}
@@ -239,7 +242,7 @@
 				{
 					echo '<br><br><h3>Generated link</h3>';
 					echo '&lt;a class="headlink" href="&lt;?php echo $simpleblog[\'root_html\']; ?&gt;/pages/' . $_GET['link'] . '"&gt;Page title&lt;/a&gt;<br><br>';
-					echo '<div style="float: left;" class="button"><a href="' . $adminpanel['root_html'] . '/admin-elements?edit=headlinks">Go to editor</a></div>';
+					echo '<div class="button button_in_row"><a href="' . $adminpanel['root_html'] . '/admin-elements?edit=headlinks">Go to editor</a></div>';
 				}
 			?>
 		</div>

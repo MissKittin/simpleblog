@@ -26,7 +26,8 @@
 			<form action="?manage=<?php echo $_GET['manage']; ?>&create" method="post">
 				<label for="create">File name</label>
 				<input type="text" name="create"><br>
-				<div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>">Back</a></div> <input type="submit" class="button" value="Create">
+				<div class="button button_in_row"><a href="?manage=<?php echo $_GET['manage']; ?>">Back</a></div> <input type="submit" class="button" value="Create">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 		<div id="footer">

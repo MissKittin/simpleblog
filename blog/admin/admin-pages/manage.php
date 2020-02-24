@@ -36,7 +36,7 @@
 							</tr>';
 				?>
 			</table>
-			<div style="float: left;" class="button"><a href="?">Back</a></div> <?php if(ini_get('file_uploads') == 1) { ?><div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&upload">Upload</a></div><?php } ?> <div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>&create">Create</a></div>
+			<div class="button button_in_row"><a href="?">Back</a></div> <?php if(ini_get('file_uploads') == 1) { ?><div class="button button_in_row"><a href="?manage=<?php echo $_GET['manage']; ?>&upload">Upload</a></div><?php } ?> <div class="button button_in_row"><a href="?manage=<?php echo $_GET['manage']; ?>&create">Create</a></div>
 			<?php
 				if(isset($_GET['rename']))
 				{
@@ -45,6 +45,7 @@
 							<label for="rename">Rename ' . $_GET['rename'] . ' to</label>
 							<input type="text" name="rename" value="' . $_GET['rename'] . '" required>
 							<input type="submit" class="button" value="Rename">
+							' . adminpanel_csrf_injectToken() . '
 						</form>
 					';
 				}

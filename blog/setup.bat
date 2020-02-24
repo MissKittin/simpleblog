@@ -47,6 +47,9 @@ copy prevent-index.php index.php > NUL
 echo admin\core
 copy ..\..\lib\core.php core.php > NUL
 
+echo admin\favicon
+echo | set /p="" > favicon.ico
+
 echo admin\login
 cd login
 copy ..\prevent-index.php index.php > NUL

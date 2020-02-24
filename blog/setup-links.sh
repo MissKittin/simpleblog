@@ -40,6 +40,9 @@ while true; do
 		echo 'admin/core'
 		ln -s ../../lib/core.php ./core.php
 
+		echo 'admin/favicon'
+		touch favicon.ico
+
 		echo 'admin/login'
 		cd login
 		ln -s ../prevent-index.php ./index.php

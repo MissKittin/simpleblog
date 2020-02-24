@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php header('X-XSS-Protection:0'); ?>
 <?php
 	// Admin panel for simpleblog - skins section
@@ -60,7 +61,7 @@
 	if(isset($_GET['fileEdit']))
 		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'])) && (!in_array('..', explode('/', $_GET['edit'] . '/' . $_GET['fileEdit']))))
 		{
-			if(isset($_POST['file_content']))
+			if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 			{
 				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 				file_put_contents($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'], $_POST['file_content']);
@@ -82,7 +83,7 @@
 
 		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))  && (!preg_match('/\//i', $_GET['edit'])) && (!preg_match('/\//i', $_GET['deleteFile'])))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				if(is_dir($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))
 					adminpanel_removeSkin($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile'], true);
@@ -99,7 +100,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['deleteFile'] . ' - Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Back</a></div> <div style="float: left;" class="button"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $_GET['deleteFile'] . '&yes">Delete</a></div>
+							<div class="button button_in_row"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Back</a></div> <div class="button button_in_row"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $_GET['deleteFile'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -109,7 +110,7 @@
 
 	// apply skin
 	if(isset($_GET['apply']))
-		if(file_exists($adminpanel['path']['skins'] . '/' . $_GET['apply']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['apply'])) && (adminpanel_csrf_checkToken('get')))
 		{
 			if(php_sapi_name() === 'cli-server')
 				adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/router.php');
@@ -121,7 +122,7 @@
 	if(isset($_GET['delete']))
 		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 				adminpanel_removeSkin($adminpanel['path']['skins'] . '/' . $_GET['delete'], true);
 			else
 			{
@@ -133,7 +134,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div class="button button_in_row"><a href="?">Back</a></div> <div class="button button_in_row"><a href="?delete=' . $_GET['delete'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -141,7 +142,7 @@
 		}
 
 	// install skin
-	if((isset($_GET['installSkin'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1))
+	if((isset($_GET['installSkin'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
 	{
 		$skinpack=new ZipArchive;
 		$skinpack->open($_FILES['file']['tmp_name'][0]);
@@ -151,7 +152,7 @@
 	}
 
 	// upload file
-	if((isset($_GET['upload'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1))
+	if((isset($_GET['upload'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
 	{
 		$countfiles=count($_FILES['file']['name']);
 		if(isset($_GET['dir']))
@@ -211,7 +212,7 @@
 						foreach(scandir($adminpanel['path']['skins']) as $file)
 							if(($file != '.') && ($file != '..') && ($file != 'index.php'))
 							{
-								echo '<tr><td>' . $file . '</td><td>'; if($file != $simpleblog['skin']) echo '<a href="?apply=' . $file . '">Apply</a>'; echo '</td><td><a href="?edit=' . $file . '">Browse</a></td><td>'; if($file != $simpleblog['skin']) echo '<a href="?delete=' . $file . '">Delete</a>'; echo '</td></tr>';
+								echo '<tr><td>' . $file . '</td><td>'; if($file != $simpleblog['skin']) echo '<a href="?apply=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Apply</a>'; echo '</td><td><a href="?edit=' . $file . '">Browse</a></td><td>'; if($file != $simpleblog['skin']) echo '<a href="?delete=' . $file . '">Delete</a>'; echo '</td></tr>';
 							}
 					}
 				?>
@@ -238,22 +239,22 @@
 						}
 
 						if($editBackButton['display'])
-							echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&dir=' . $editBackButton['link'] . '">Back</a></div>';
+							echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&dir=' . $editBackButton['link'] . '">Back</a></div>';
 						else
-							echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '">Back</a></div>';
+							echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '">Back</a></div>';
 
 						// upload button
 						if(ini_get('file_uploads') == 1)
 						{
 							if(isset($_GET['upload']))
 								echo '<br><br><br><br>
-									<form action="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload&yes" method="post" enctype="multipart/form-data">
+									<form action="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
 										<input type="file" name="file[]" id="file" multiple>
 										<input class="button" type="submit" value="Upload">
 									</form>
 								';
 							else
-								echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload">Upload</a></div>';
+								echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload">Upload</a></div>';
 						}
 					}
 					else
@@ -261,13 +262,13 @@
 						{
 							if(isset($_GET['upload']))
 								echo '
-									<form action="?edit=' . $_GET['edit'] . '&upload&yes" method="post" enctype="multipart/form-data">
+									<form action="?edit=' . $_GET['edit'] . '&upload&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
 										<input type="file" name="file[]" id="file" multiple>
 										<input class="button" type="submit" value="Upload">
 									</form>
 								';
 							else
-								echo '<div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&upload">Upload</a></div>';
+								echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&upload">Upload</a></div>';
 						}
 				}
 			?>
@@ -280,13 +281,13 @@
 					{
 				 		if(isset($_GET['installSkin']))
 							echo '
-								<form action="?installSkin&yes" method="post" enctype="multipart/form-data">
+								<form action="?installSkin&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
 									<input type="file" name="file[]" id="file" accept=".zip">
 									<input class="button" type="submit" value="Install">
 								</form>
 							';
 						else
-							echo '<div class="button" style="float: left;"><a href="?installSkin">Install</a></div>';
+							echo '<div class="button button_in_row"><a href="?installSkin">Install</a></div>';
 					}
 				}
 			?>

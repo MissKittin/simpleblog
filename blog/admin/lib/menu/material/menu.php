@@ -18,10 +18,10 @@
 			array_push($menu['modules'], $menu['file']);
 
 	// main page
-	if($module['id'] === 'main')
-		echo '<div class="headlink"><a href="' . $adminpanel['root_html'] . '">Status</a><div id="headlink_active"></div></div>'."\n";
-	else
-		echo '<div class="headlink"><a href="' . $adminpanel['root_html'] . '">Status</a></div>'."\n";
+	//if($module['id'] === 'main')
+	//	echo '<div class="headlink"><a href="' . $adminpanel['root_html'] . '">Status</a><div id="headlink_active"></div></div>'."\n";
+	//else
+	//	echo '<div class="headlink"><a href="' . $adminpanel['root_html'] . '">Status</a></div>'."\n";
 
 	// modules
 	foreach($menu['modules'] as $menu['module'])

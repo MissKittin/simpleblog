@@ -23,7 +23,7 @@
 			<h3>Upload</h3>
 		</div>
 		<div id="content">
-			<form action="?manage=<?php echo $_GET['manage']; ?>&upload&yes" method="post" enctype="multipart/form-data">
+			<form action="?manage=<?php echo $_GET['manage']; ?>&upload&yes&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post" enctype="multipart/form-data">
 				<input type="file" name="file[]" id="file" multiple>
 				<input class="button" type="submit" value="Upload">
 			</form>

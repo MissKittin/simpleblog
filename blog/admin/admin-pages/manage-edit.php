@@ -26,7 +26,8 @@
 		<div id="content">
 			<form action="?manage=<?php echo $_GET['manage']; ?>&edit=<?php echo $_GET['edit']; ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit']); ?></textarea>
-				<div style="float: left;" class="button"><a href="?manage=<?php echo $_GET['manage']; ?>">Back</a></div> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?manage=<?php echo $_GET['manage']; ?>">Back</a></div> <input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 		<div id="footer">

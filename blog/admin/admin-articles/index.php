@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php
 	// Admin panel for simpleblog - articles section
 	// 13.11.2019
@@ -71,7 +72,7 @@
 ?>
 <?php
 	// save new article
-	if(isset($_POST['article_content']))
+	if((isset($_POST['article_content'])) && (adminpanel_csrf_checkToken('post')))
 		file_put_contents($adminpanel['path']['articles'] . '/' . $_GET['filename'], $_POST['article_content']);
 ?>
 <!DOCTYPE html>
@@ -108,7 +109,8 @@
 			?>
 			<form action="?write&filename=<?php echo $filename; ?>" method="post">
 				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo file_get_contents($adminpanel['path']['articles'] . '/' . $filename); else echo '<?php' . "\n\t" . '$art_title=\'\';' . "\n\t" . '$art_date=\'' . date('d.m.Y') . '\';' . "\n\t" . '$art_tags=\'\';' . "\n" . "\n\t" . '//$art_style[\'article\']=\'\';' . "\n\t" . '//$art_style[\'tags\']=\'\';' . "\n\t" . '//$art_style[\'taglink\']=\'\';' . "\n\t" . '//$art_style[\'date\']=\'\';' . "\n\t" . '//$art_style[\'title\']=\'\';' . "\n\t" . '//$art_style[\'title-header\']=false;' . "\n\n\t" . '$art_content=\'' . "\n\t\t\n\t" . '\';' . "\n" . '?>'; ?></textarea>
-				<div style="float: left;" class="button"><a href="?">Back</a></div> <?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo '<div style="float: left;" class="button"><a href="?show=' . $_GET['filename'] . '" target="_blank">Preview</a></div>'; ?> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?">Back</a></div> <?php if(file_exists($adminpanel['path']['articles'] . '/' . $filename)) echo '<div class="button button_in_row"><a href="?show=' . $_GET['filename'] . '" target="_blank">Preview</a></div>'; ?> <input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 			<h3>Cheat sheet</h3>
 			// article meta<br>
@@ -141,7 +143,7 @@
 ?>
 <?php
 	// save edited article
-	if(isset($_POST['article_content']))
+	if((isset($_POST['article_content'])) && (adminpanel_csrf_checkToken('post')))
 		file_put_contents($adminpanel['path']['articles'] . '/' . $_GET['edit'], $_POST['article_content']);
 ?>
 <!DOCTYPE html>
@@ -163,7 +165,8 @@
 		<div id="content">
 			<form action="?edit=<?php echo $_GET['edit']; ?>" method="post">
 				<textarea name="article_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($adminpanel['path']['articles'] . '/' . $_GET['edit']); ?></textarea>
-				<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?show=<?php echo $_GET['edit']; ?>" target="_blank">Preview</a></div> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?">Back</a></div> <div class="button button_in_row"><a href="?show=<?php echo $_GET['edit']; ?>" target="_blank">Preview</a></div> <input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 			<h3>Cheat sheet</h3>
 			// article meta<br>
@@ -201,18 +204,18 @@
 		}
 
 	// 'publish' link
-	if(isset($_GET['publish']))
+	if((isset($_GET['publish'])) && (adminpanel_csrf_checkToken('get')))
 		if(file_exists($adminpanel['path']['articles'] . '/' . $_GET['publish']))
 			rename($adminpanel['path']['articles'] . '/' . $_GET['publish'], $adminpanel['path']['articles'] . '/' . str_replace('private', 'public', $_GET['publish']));
 	// 'hide' link
-	if(isset($_GET['hide']))
+	if((isset($_GET['hide'])) && (adminpanel_csrf_checkToken('get')))
 		if(file_exists($adminpanel['path']['articles'] . '/' . $_GET['hide']))
 			rename($adminpanel['path']['articles'] . '/' . $_GET['hide'], str_replace('public', 'private', $adminpanel['path']['articles'] . '/' . $_GET['hide']));
 	// 'delete' link
 	if(isset($_GET['delete']))
 		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
 		{
-			if(isset($_GET['yes']))
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 				unlink($adminpanel['path']['articles'] . '/' . $_GET['delete']);
 			else
 			{
@@ -222,7 +225,7 @@
 					</head><body>
 						<div id="content" style="padding-bottom: 30px;">
 							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
-							<div style="float: left;" class="button"><a href="?">Back</a></div> <div style="float: left;" class="button"><a href="?delete=' . $_GET['delete'] . '&yes">Delete</a></div>
+							<div class="button button_in_row"><a href="?">Back</a></div> <div class="button button_in_row"><a href="?delete=' . $_GET['delete'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
 						</div>
 					</body></html>';
 				exit();
@@ -267,14 +270,14 @@
 							{
 								$publish_get_param='publish'; $publish_get_title="Publish";
 							}
-							echo '<td>' . str_replace(['<', '>'], ['&lt;', '&gt;'], $art_title) . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td><td><a style="text-decoration: none;" href="?delete=' . $file . '">Delete</a></td></tr>' . "\n";
+							echo '<td>' . str_replace(['<', '>'], ['&lt;', '&gt;'], $art_title) . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td><td><a style="text-decoration: none;" href="?delete=' . $file . '">Delete</a></td></tr>' . "\n";
 							$articles_indicator++;
 							unset($art_title); unset($art_date); unset($art_tags); unset($art_style); unset($art_content);
 						}
 				?>
 			</table>
 			<h3>All articles: <?php echo $articles_indicator; ?>, Published: <?php echo $public_articles_indicator; ?></h3>
-			<div style="float: left;" class="button"><a href="?write">Write</a></div>
+			<div class="button button_in_row"><a href="?write">Write</a></div>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

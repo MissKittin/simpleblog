@@ -44,6 +44,8 @@
 	$adminpanel['path']['favicon_html']=$simpleblog['root_html'] . '/lib/favicon';
 	$adminpanel['path']['skins']=$simpleblog['root_php'] . '/skins';
 	$adminpanel['path']['skins_html']=$simpleblog['root_html'] . '/skins';
+	$adminpanel['path']['cms_tags']=$simpleblog['root_php'] . '/tag';
+	$adminpanel['path']['cms_tags_html']=$simpleblog['root_html'] . '/tag';
 
 	// paths - files
 	$adminpanel['path']['header']=$simpleblog['root_php'] . '/lib/header.php';

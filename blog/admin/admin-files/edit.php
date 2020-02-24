@@ -26,7 +26,8 @@
 		<div id="content">
 			<form action="?edit=<?php echo $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php if(isset($_GET['dir'])) echo file_get_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit']); else echo file_get_contents($simpleblog['root_php'] . '/' . $_GET['edit']); ?></textarea>
-				<div style="float: left;" class="button"><a href="?<?php if(isset($_GET['dir'])) echo 'dir=' . $_GET['dir']; ?>">Back</a></div> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?<?php if(isset($_GET['dir'])) echo 'dir=' . $_GET['dir']; ?>">Back</a></div> <input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 		<div id="footer">

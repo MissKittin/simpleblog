@@ -43,6 +43,9 @@ body {
 	color: #ffffff;
 	text-decoration: none;
 }
+.button_in_row {
+	float: left;
+}
 
 /* Text inputs */
 textarea {

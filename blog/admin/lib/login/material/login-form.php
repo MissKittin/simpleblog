@@ -28,6 +28,7 @@
 					<div id="input_buttons">
 						<input type="submit" value="Login" class="button">
 					</div>
+					<?php echo adminpanel_csrf_injectToken(); ?>
 				</form>
 			</div>
 		</div>

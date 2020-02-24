@@ -26,7 +26,8 @@
 			<form action="" method="get">
 				<label for="create">Page url</label>
 				<input type="text" name="create"><br>
-				<div style="float: left;" class="button"><a href="?">Back</a></div> <input type="submit" class="button" value="Create">
+				<div class="button button_in_row"><a href="?">Back</a></div> <input type="submit" class="button" value="Create">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 		<div id="footer">

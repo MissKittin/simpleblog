@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php
 	// Admin panel for simpleblog - cms section
 	// 25.11.2019
@@ -49,7 +50,7 @@
 ?>
 <?php
 	// apply settings
-	if(isset($_GET['apply']))
+	if((isset($_GET['apply'])) && (adminpanel_csrf_checkToken('get')))
 	{
 		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 
@@ -108,7 +109,7 @@
 	}
 
 	// maintenance break pattern
-	if(isset($_GET['applymbp']))
+	if((isset($_GET['applymbp'])) && (adminpanel_csrf_checkToken('get')))
 	{
 		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 
@@ -130,7 +131,7 @@
 		reload();
 	}
 
-	if(isset($_GET['mbpedit']))
+	if((isset($_GET['mbpedit'])) && (adminpanel_csrf_checkToken('get')))
 	{
 		if(isset($_POST['file_content']))
 		{
@@ -145,7 +146,7 @@
 	}
 
 	// reset credentials
-	if(isset($_GET['resetCredentials']))
+	if((isset($_GET['resetCredentials'])) && (adminpanel_csrf_checkToken('get')))
 	{
 		if(isset($_POST['resetCredentialsConfirm']))
 			copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['root_php'] . '/passwordChangeRequired.php');
@@ -153,7 +154,7 @@
 	}
 
 	// create backup
-	if(isset($_GET['doBackup']))
+	if((isset($_GET['doBackup'])) && (adminpanel_csrf_checkToken('get')))
 		if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
 		{
 			// set memory limit
@@ -234,7 +235,7 @@
 		}
 
 	// patch cms
-	if((isset($_GET['patch'])) && (isset($_POST['confirmPatch'])) && (ini_get('file_uploads') == 1))
+	if((isset($_GET['patch'])) && (isset($_POST['confirmPatch'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
 	{
 		$skinpack=new ZipArchive;
 		$skinpack->open($_FILES['file']['tmp_name'][0]);
@@ -275,7 +276,7 @@
 		</div>
 		<div id="content">
 			<h3>Settings</h3>
-			<form action="?apply" method="post">
+			<form action="?apply&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post">
 				<label for="title">&lt;title&gt;</label>
 				<input type="text" name="title" value="<?php echo $simpleblog['title']; ?>">
 
@@ -340,7 +341,7 @@
 
 				<input type="submit" class="button" value="Apply" disabled>
 			</form> -->
-			<form action="?resetCredentials" method="post">
+			<form action="?resetCredentials&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post">
 				<input type="submit" class="button" value="Reset credentials">
 				<label>
 					<input type="checkbox" name="resetCredentialsConfirm" value="true">
@@ -350,7 +351,7 @@
 
 			<?php if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { ?>
 			<h3>Maintenance break pattern</h3>
-			<form action="?applymbp" method="post">
+			<form action="?applymbp&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post">
 				Enabled
 				<label class="checkbox">
 					<?php
@@ -366,7 +367,7 @@
 				<label for="mballowedip">Allowed IP</label>
 				<input type="text" name="mballowedip" value="<?php echo $maintenance_break['allowed_ip']; ?>">
 
-				<div class="button" style="float: left;"><a href="?mbpedit">Edit pattern</a></div> <input type="submit" class="button" value="Apply">
+				<div class="button button_in_row"><a href="?mbpedit&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>">Edit pattern</a></div> <input type="submit" class="button" value="Apply">
 			</form>
 			<?php } ?>
 
@@ -374,7 +375,7 @@
 				if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
 				{
 					echo '<h3>Backup</h3>';
-					echo '<div class="button" style="float: left;"><a href="?doBackup" target="_blank">Dump content</a></div>';
+					echo '<div class="button button_in_row"><a href="?doBackup&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" target="_blank">Dump content</a></div>';
 					echo '<br><br>';
 				}
 			?>
@@ -383,7 +384,7 @@
 				if(ini_get('file_uploads') == 1)
 				{
 					echo '<h3>Patch CMS</h3>
-						<form action="?patch" method="post" enctype="multipart/form-data">
+						<form action="?patch&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
 							<input type="file" name="file[]" id="file" multiple>
 							<input class="button" type="submit" value="Apply patch">
 							<label>
@@ -396,7 +397,7 @@
 
 			<!-- <h3>Panic button</h3>
 			This button will lockdown the admin panel<br>
-			<div class="button" style="float: left;"><a href="?lockdown">I'm very scared</a></div> -->
+			<div class="button button_in_row"><a href="?lockdown">I'm very scared</a></div> -->
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

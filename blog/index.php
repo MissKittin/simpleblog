@@ -40,21 +40,23 @@
 		</div>
 		<div id="articles">
 			<?php
-				$emptyDatabase=true;
+				$simpleblog['page']['emptyDatabase']=true;
 				foreach(simpleblog_engineIndex($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $simpleblog['page']['current_article'])
 				{
-					$emptyDatabase=false;
+					$simpleblog['page']['emptyDatabase']=false;
 					simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
 				}
-				if($emptyDatabase) echo $simpleblog['emptyLabel'];
+				if($simpleblog['page']['emptyDatabase']) echo $simpleblog['emptyLabel'];
 			?>
 		</div>
 		<div id="pages">
-			<?php if(!$emptyDatabase) echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n"; ?>
+			<?php
+				if(!$simpleblog['page']['emptyDatabase']) echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n";
+			?>
 		</div>
 		<div id="footer">
 			<?php include $simpleblog['root_php'] . '/lib/footer.php'; ?>
 		</div>
 	</body>
 </html>
-<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time in seconds: ' . (microtime(true) - $simpleblog['execTime']), 0); ?>
+<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time: ' . (microtime(true) - $simpleblog['execTime']) . 's, max mem used: ' . memory_get_peak_usage() . 'B', 0); ?>

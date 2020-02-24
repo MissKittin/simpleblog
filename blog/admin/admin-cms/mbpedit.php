@@ -24,9 +24,9 @@
 			<h3>Edit pattern</h3>
 		</div>
 		<div id="content">
-			<form action="?mbpedit" method="post">
+			<form action="?mbpedit&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($adminpanel['path']['mbp']); ?></textarea>
-				<div style="float: left;" class="button"><a href="?">Back</a></div> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?">Back</a></div> <input type="submit" class="button" value="Save">
 			</form>
 		</div>
 		<div id="footer">

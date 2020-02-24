@@ -1,3 +1,4 @@
+<?php header('X-Frame-Options: DENY'); ?>
 <?php header('X-XSS-Protection:0'); ?>
 <?php
 	// Admin panel for simpleblog - elements section
@@ -17,6 +18,7 @@
 			<form action="?edit=<?php echo $_GET['edit']; ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($file); ?></textarea>
 				<input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 	<?php }
@@ -25,7 +27,8 @@
 		<div>
 			<form action="?edit=favicon&file=<?php echo $_GET['file']; ?>" method="post">
 				<textarea name="file_content" style="height: 1024px; width: 99%;"><?php echo file_get_contents($file); ?></textarea>
-				<div style="float: left;" class="button"><a href="?edit=favicon">Back</a></div> <input type="submit" class="button" value="Save">
+				<div class="button button_in_row"><a href="?edit=favicon">Back</a></div> <input type="submit" class="button" value="Save">
+				<?php echo adminpanel_csrf_injectToken(); ?>
 			</form>
 		</div>
 	<?php }
@@ -50,14 +53,14 @@
 		</div>
 		<div id="content">
 			<div style="overflow: auto;">
-				<div style="float: left;" class="button"><a href="?edit=header">Header</a></div>
-				<div style="float: left;" class="button"><a href="?edit=headlinks">Headlinks</a></div>
-				<div style="float: left;" class="button"><a href="?edit=footer">Footer</a></div>
-				<div style="float: left;" class="button"><a href="?edit=htmlheaders">HTML headers</a></div>
-				<div style="float: left;" class="button"><a href="?edit=favicon">Favicon</a></div>
+				<div class="button button_in_row"><a href="?edit=header">Header</a></div>
+				<div class="button button_in_row"><a href="?edit=headlinks">Headlinks</a></div>
+				<div class="button button_in_row"><a href="?edit=footer">Footer</a></div>
+				<div class="button button_in_row"><a href="?edit=htmlheaders">HTML headers</a></div>
+				<div class="button button_in_row"><a href="?edit=favicon">Favicon</a></div>
 			</div>
 			<?php
-				if(isset($_POST['file_content']))
+				if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 				{
 					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 					switch($_GET['edit'])
@@ -98,11 +101,11 @@
 							if(isset($_GET['delete']))
 								if(file_exists($adminpanel['path']['favicon'] . '/' . $_GET['delete']))
 								{
-									if(isset($_GET['yes']))
+									if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 										unlink($adminpanel['path']['favicon'] . '/' . $_GET['delete']);
 									else
 									{
-										echo '<div style="overflow: auto;"><h1>' . $_GET['delete'] . ' - Are you sure?</h1><div style="float: left;" class="button"><a href="?edit=favicon">Back</a></div> <div style="float: left;" class="button"><a href="?edit=' . $_GET['edit'] . '&delete=' . $_GET['delete'] . '&yes">Delete</a></div></div>';
+										echo '<div style="overflow: auto;"><h1>' . $_GET['delete'] . ' - Are you sure?</h1><div class="button button_in_row"><a href="?edit=favicon">Back</a></div> <div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&delete=' . $_GET['delete'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div></div>';
 										break;
 									}
 								}
@@ -111,7 +114,7 @@
 							$adminpanel_uploadButton=true;
 							if((ini_get('file_uploads') == 1) && (isset($_GET['upload'])))
 							{
-								if($_GET['upload'] === 'yes')
+								if(($_GET['upload'] === 'yes') && (adminpanel_csrf_checkToken('get')))
 								{
 									$countfiles=count($_FILES['file']['name']);
 									for($i=0; $i<$countfiles; $i++)
@@ -122,7 +125,7 @@
 							}
 
 							// save file
-							if(isset($_POST['file_content']))
+							if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
 							{
 								if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 								file_put_contents($adminpanel['path']['favicon'] . '/' . $_GET['file'], $_POST['file_content']);
@@ -145,9 +148,9 @@
 							if(ini_get('file_uploads') == 1)
 							{
 								if($adminpanel_uploadButton)
-									echo '<div style="float: left;" class="button"><a href="?edit=favicon&upload">Upload</a></div>'; // upload button
+									echo '<div class="button button_in_row"><a href="?edit=favicon&upload">Upload</a></div>'; // upload button
 								else
-									echo '<form action="?edit=favicon&upload=yes" method="post" enctype="multipart/form-data"><input type="file" name="file[]" id="file" multiple><input class="button" type="submit" value="Upload"></form>'; // upload form
+									echo '<form action="?edit=favicon&upload=yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data"><input type="file" name="file[]" id="file" multiple><input class="button" type="submit" value="Upload"></form>'; // upload form
 							}
 
 							break;
