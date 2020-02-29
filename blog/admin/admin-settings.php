@@ -54,4 +54,11 @@
 	$adminpanel['path']['htmlheaders']=$simpleblog['root_php'] . '/lib/htmlheaders.php';
 	$adminpanel['path']['mbp']=$simpleblog['root_php'] . '/lib/maintenance-break-pattern.php';
 	$adminpanel['path']['cron_bin']=$simpleblog['root_php'] . '/lib/cron.php';
+
+	// settings for sec_bruteforce.php library
+	$adminpanel_loginBan['enabled']=false;
+	$adminpanel_loginBan['DBFile']=$adminpanel['path']['tmp'] . '/admin_banned_ips.php';
+	$adminpanel_loginBan['DBFile_dynamic']=true;
+	$adminpanel_loginBan['attempts']=5;
+	$adminpanel_loginBan['time']=3600;
 ?>

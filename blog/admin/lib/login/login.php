@@ -3,6 +3,7 @@
 	// bcrypt password and change credentials 24.11.2019
 	// session security 02.12.2019
 	// sec_csrf.php 19.02.2020
+	// sec_bruteforce.php 28.02.2020
 ?>
 <?php
 	// prevent direct
@@ -30,6 +31,9 @@
 
 	// import sec_csrf.php library
 	include $adminpanel['root_php'] . '/lib/sec_csrf.php';
+
+	// import sec_bruteforce.php library
+	include $adminpanel['root_php'] . '/lib/sec_bruteforce.php';
 ?>
 <?php
 	//functions
@@ -94,7 +98,6 @@
 			exit();
 		}
 		$_SESSION['expired']=strtotime('now')+86400; // renew expired time, 24h
-		
 
 		// detect cookie attack
 		if(($_SESSION['logged_ip'] != $_SERVER['REMOTE_ADDR']) || ($_SESSION['user_agent'] != $_SERVER['HTTP_USER_AGENT']))
@@ -121,8 +124,10 @@
 	}
 	else
 	{
-		if((isset($_POST['username'])) && (isset($_POST['password'])) && (adminpanel_csrf_checkToken('post'))) // ++ sec_csrf.php
+		if((isset($_POST['username'])) && (isset($_POST['password'])) && (adminpanel_csrf_checkToken('post')) && (!$adminpanel_loginBan_checkDB())) // ++ sec_csrf.php, ++ sec_bruteforce.php
+		{
 			if($_POST['username'] === $adminpanel_credentials['login'])
+			{
 				if(password_verify($_POST['password'], $adminpanel_credentials['password']))
 				{
 					$_SESSION['logged_user']=$adminpanel_credentials['login'];
@@ -130,10 +135,25 @@
 					$_SESSION['logged_ip']=$_SERVER['REMOTE_ADDR']; // log for cookie attack detection
 					$_SESSION['user_agent']=$_SERVER['HTTP_USER_AGENT']; // log for cookie attack detection
 					$_SESSION['expired']=strtotime('now')+86400; // 24h
+					$adminpanel_loginBan_saveDB(false); // ++ sec_bruteforce.php
 					$reload();
 					exit();
 				}
+				else
+					$adminpanel_loginBan_saveDB(true); // ++ sec_bruteforce.php
+			}
+			else
+				$adminpanel_loginBan_saveDB(true); // ++ sec_bruteforce.php
+		}
 	}
+
+	unset($adminpanel_credentials); unset($reload); unset($changeCredentials); // clean
+
+	// ++ sec_bruteforce.php - remove
+	$adminpanel_loginBan_removeFromMemory=true;
+	include $adminpanel['root_php'] . '/lib/sec_bruteforce.php';
+	unset($adminpanel_loginBan_removeFromMemory);
+	unset($adminpanel_loginBan);
 
 	//login form
 	if(!$_SESSION['logged'])
@@ -141,6 +161,4 @@
 		include $adminpanel['root_php'] . '/lib/login/' . $adminpanel['login_form'] . '/login-form.php';
 		exit();
 	}
-
-	unset($adminpanel_credentials); unset($reload); unset($changeCredentials); // clean
 ?>
