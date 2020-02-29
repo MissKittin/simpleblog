@@ -13,6 +13,7 @@
 * [Supported HTTP servers](#supported-http-servers)
 * [How to upgrade](#how-to-upgrade)
 * [Apache htpasswd security for admin panel](#apache-htpasswd-security-for-admin-panel)
+* [Enabling brute force attack protection](#enabling-brute-force-attack-protection)
 * [How it works](#how-it-works)
 	* [Core](#core)
 	* [Frontend](#frontend)
@@ -212,6 +213,11 @@ PHP built-in server and Apache. If you want run the Simpleblog on other server, 
 
 # Apache htpasswd security for admin panel
 Why not? Read some tutorials :)
+<br><br>
+
+# Enabling brute force attack protection
+1. Read explantation in  `sec_bruteforce.php`
+2. Edit `admin-settings.php`
 <br><br>
 
 # How it works
