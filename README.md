@@ -18,7 +18,7 @@ https://github.com/MissKittin/simpleblog/blob/master/HOWTO.md
 requires PHP >= 5.5.0<br>
 default login and password is `simpleblog`<br>
 admin/disabled.php completely disables the panel - remove this file<br>
-online backup: https://github.com/MissKittin/simpleblog/tree/master/zip.lib
+online backup: https://github.com/MissKittin/simpleblog/tree/master/patches/zip.lib
 <br><br>
 
 # additional cron tasks
@@ -31,7 +31,7 @@ online backup: https://github.com/MissKittin/simpleblog/tree/master/zip.lib
 <br><br>
 
 # patches
-a draft of the patch that adds the comments function is ready, but I don't using comments on my blog. If you use the simpleblog and you want this patch, write to me.
+https://github.com/MissKittin/simpleblog/tree/master/patches
 <br><br>
 
 # skurkawudka czorno

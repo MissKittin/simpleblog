@@ -259,7 +259,7 @@ Basic script set that allow manage the Simpleblog from a web browser.<br>
 Requires PHP >= 5.5.0 (whole cms is developed on PHP v7)<br>
 Default login and password is `simpleblog`.<br>
 `admin/disabled.php` completely disables the panel ("panic button"). Remove this file if you want use admin panel.<br>
-To enable backup function, read https://github.com/MissKittin/simpleblog/tree/master/zip.lib
+To enable backup function, read https://github.com/MissKittin/simpleblog/tree/master/patches/zip.lib
 <br><br>
 Admin panel modules:
 * core modules:
