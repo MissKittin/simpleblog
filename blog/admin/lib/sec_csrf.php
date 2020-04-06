@@ -46,8 +46,6 @@
 		// define
 		$adminpanel_csrf_generateToken=function()
 		{
-			global $_SESSION;
-
 			// use one token per session
 			//if(!isset($_SESSION['csrf_token']))
 			//	$_SESSION['csrf_token']=substr(base_convert(sha1(uniqid(mt_rand())), 16, 36), 0, 32);
@@ -58,8 +56,6 @@
 		};
 		function adminpanel_csrf_checkToken($method)
 		{
-			global $_SESSION;
-			global $_GET; global $_POST;
 			if(isset($_SESSION['csrf_token']))
 				switch($method)
 				{
