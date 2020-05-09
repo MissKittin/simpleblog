@@ -31,8 +31,11 @@
 	$adminpanel['skin']='material-green';
 	$adminpanel['menu_module']='material';
 	$adminpanel['login_form']='material';
+	//$adminpanel['nocurl']=true; // for admin-files
 
 	// paths - dirs
+	$adminpanel['path']['cms_root']=$simpleblog['root_php'];
+	$adminpanel['path']['cms_root_html']=$simpleblog['root_html'];
 	$adminpanel['path']['articles']=$simpleblog['root_php'] . '/articles';
 	$adminpanel['path']['pages']=$simpleblog['root_php'] . '/pages';
 	$adminpanel['path']['pages_html']=$simpleblog['root_html'] . '/pages';

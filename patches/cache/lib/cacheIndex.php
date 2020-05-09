@@ -49,11 +49,7 @@
 		foreach(array_reverse(scandir($simpleblog['cache']['cacheIndex']['articles_dir'])) as $file)
 			if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0)) // include only items with public_ prefix
 			{
-				// catch echo() and append to cache file
-				ob_start();
-				simpleblog_engineCore($simpleblog['cache']['cacheIndex']['articles_dir'] . '/' . $file, $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
-				file_put_contents($simpleblog['cache']['cacheIndex']['cache_dir'] . '/' . $page . '.php', ob_get_contents(), FILE_APPEND);
-				ob_end_clean();
+				file_put_contents($simpleblog['cache']['cacheIndex']['cache_dir'] . '/' . $page . '.php', simpleblog_engineCore($simpleblog['cache']['cacheIndex']['articles_dir'] . '/' . $file, $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']), FILE_APPEND);
 
 				// limit entries
 				if($loop_ind >= $simpleblog['entries_per_page'])
@@ -68,7 +64,7 @@
 
 	// use_cache flag
 	$simpleblog['cache']['use_cache']=false;
-	if(file_exists($simpleblog['cache']['cacheIndex']['cache_dir'] . '/' . $simpleblog['page']['current_page'] . '.php')) $simpleblog['cache']['use_cache']=true;
+	if(@file_exists($simpleblog['cache']['cacheIndex']['cache_dir'] . '/' . $simpleblog['page']['current_page'] . '.php')) $simpleblog['cache']['use_cache']=true;
 
 	// page switches generator (not available if cache is empty)
 	if($simpleblog['cache']['use_cache'])

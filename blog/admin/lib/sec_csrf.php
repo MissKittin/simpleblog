@@ -74,7 +74,6 @@
 		}
 		function adminpanel_csrf_printToken($parameter)
 		{
-			global $_SESSION;
 			switch($parameter)
 			{
 				case 'parameter':
@@ -88,7 +87,6 @@
 		}
 		function adminpanel_csrf_injectToken()
 		{
-			global $_SESSION;
 			return '<input type="hidden" name="csrf_token" value="' . $_SESSION['csrf_token'] . '">' . "\n";
 		}
 	}

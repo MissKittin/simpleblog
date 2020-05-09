@@ -15,32 +15,32 @@
 		}
 	}
 ?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $simpleblog['title']; ?></title>
-		<meta charset="utf-8">
-		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
-		<style>
-			#maintenanceBreak {
-				width: 300px;
-				margin-left: auto; margin-right: auto;
-				text-align: center;
-			}
-			#maintenanceBreakContent {
-				position: absolute;
-				top: 30%;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="header">
-			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
+<?php
+	// losuj obrazek
+	$images['sources']=['przerwa_techniczna.gif', 'wypierdalaj.gif'];
+	$images['rand']=rand(0, 1);
+?>
+<?php function simpleblog_viewMaintenanceCustomheaders() { ?>
+	<style>
+		#maintenanceBreak {
+			width: 300px;
+			margin-left: auto; margin-right: auto;
+			text-align: center;
+		}
+		#maintenanceBreakContent {
+			position: absolute;
+			top: 30%;
+		}
+	</style>
+<?php } ?>
+<?php function simpleblog_viewMaintenanceContent() { ?>
+	<?php global $images; ?>
+	<?php global $simpleblog; ?>
+	<div id="maintenanceBreak">
+		<div id="maintenanceBreakContent">
+			<h1>Przerwa techniczna</h1>
+			<img src="<?php echo $simpleblog['root_html']; ?>/media/<?php echo $images['sources'][$images['rand']]; ?>" alt="przerwa">
 		</div>
-		<div id="maintenanceBreak">
-			<div id="maintenanceBreakContent">
-				<h1>Maintenance Break</h1>
-			</div>
-		</div>
-	</body>
-</html>
+	</div>
+<?php } ?>
+<?php include $simpleblog['root_php'] . '/skins/' . $simpleblog['skin'] . '/views/viewMaintenanceBreak.php'; ?>

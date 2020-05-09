@@ -13,9 +13,9 @@
 	// import core library (for cacheIndex)
 	include $adminpanel['root_php'] . '/lib/core.php';
 
-	// import coreTag library (for cacheTag)
+	// import coreTag library (for cacheTag) [$simpleblog array used]
 	if(file_exists($adminpanel['path']['cms_tags'] . '/index.php'))
-		include $adminpanel['root_php'] . '/lib/coreTag.php';
+		include $simpleblog['root_php'] . '/lib/coreTag.php';
 
 	// import cacheIndex library
 	include $adminpanel['root_php'] . '/lib/cacheIndex.php';
@@ -25,6 +25,7 @@
 	if(isset($_GET['generate']))
 		if(($_GET['generate'] === 'index') && (adminpanel_csrf_checkToken('get')))
 		{
+			if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 			if(!file_exists($simpleblog['cache']['cacheIndex']['cache_dir']))
 				mkdir($simpleblog['cache']['cacheIndex']['cache_dir'], 0755, true);
 			file_put_contents($simpleblog['cache']['cacheIndex']['cache_dir'] . '/generate_cache', '');
@@ -40,6 +41,7 @@
 		if(isset($_GET['generate']))
 			if(($_GET['generate'] === 'tag') && (adminpanel_csrf_checkToken('get')))
 			{
+				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 				if(!file_exists($simpleblog['cache']['cacheTag']['cache_dir']))
 					mkdir($simpleblog['cache']['cacheTag']['cache_dir'], 0755, true);
 				file_put_contents($simpleblog['cache']['cacheTag']['cache_dir'] . '/generate_cache', '');

@@ -6,7 +6,7 @@ rmdir admin /S /Q
 goto postadmin
 
 :nocache
-rmdir tag /S /Q
+del lib\viewTag.php
 del lib\cacheTag.php
 goto postcache
 
@@ -24,7 +24,7 @@ cd ..
 set /p admin="install admin module? (y/[n]) "
 if /i "%admin%" neq "y" goto noadmin
 cd admin
-md lib
+REM md lib
 cd lib
 mklink cacheIndex.php ..\..\lib\cacheIndex.php > NUL
 if exist ..\..\lib\cacheTag.php mklink cacheTag.php ..\..\lib\cacheTag.php > NUL

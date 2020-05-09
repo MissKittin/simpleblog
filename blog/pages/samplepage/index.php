@@ -1,26 +1,22 @@
-<?php if(php_sapi_name() != 'cli-server') include '../../settings.php'; ?>
+<?php /* import apache settings (if not imported by main index) */ if((!isset($simpleblog)) && (php_sapi_name() != 'cli-server')) include '../../settings.php'; ?>
 <?php if(file_exists('disabled.php')) { include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); } ?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $simpleblog['title']; ?></title>
-		<meta charset="utf-8">
-		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
-	</head>
-	<body>
-		<div id="header">
-			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
-		</div>
-		<div id="headlinks">
-			<?php include $simpleblog['root_php'] . '/lib/headlinks.php'; ?>
-		</div>
-		<div id="articles">
-			<h1 style="text-align: center;">Sample page</h1>
-			<div style="text-align: center;">Sample text on this page</div>
-		</div>
-		<div id="footer">
-			<?php include $simpleblog['root_php'] . '/lib/footer.php'; ?>
-		</div>
-	</body>
-</html>
+
+<?php $simpleblog_viewPageLang='en'; // custom html lang (optional) ?>
+<?php $simpleblog_viewPageTitle='Sample page | ' . $simpleblog['title']; // custom title (optional) ?>
+
+<?php function simpleblog_viewPageCustomheaders() { ?>
+	<!-- custom html headers here (optional) -->
+<?php } ?>
+
+<?php function simpleblog_viewPageArticles() { ?>
+	<!-- page content (required) -->
+	<h1 style="text-align: center;">Sample page</h1>
+	<div style="text-align: center;">Sample text on this page</div>
+<?php } ?>
+
+<?php function simpleblog_viewPageBodyAppend() { ?>
+	<!-- content at the end of <body> -->
+<?php } ?>
+
+<?php include $simpleblog['root_php'] . '/skins/' . $simpleblog['skin'] . '/views/viewPage.php'; ?>
 <?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time: ' . (microtime(true) - $simpleblog['execTime']) . 's, max mem used: ' . memory_get_peak_usage() . 'B', 0); ?>

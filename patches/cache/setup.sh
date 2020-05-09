@@ -12,7 +12,7 @@ while true; do
 		break
 	fi
 	if [ "$taganswer" = 'n' ]; then
-		rm -r ./tag
+		rm ./lib/viewTag.php
 		rm ./lib/cacheTag.php
 		break
 	fi
@@ -23,7 +23,7 @@ while true; do
 	read adminanswer
 	if [ "$adminanswer" = 'y' ]; then
 		cd admin
-		mkdir lib
+		#mkdir lib
 		cd lib
 		cp ../../lib/cacheIndex.php ./cacheIndex.php
 		[ -e ../../lib/cacheTag.php ] && cp ../../lib/cacheTag.php ./cacheTag.php
@@ -42,6 +42,7 @@ cd ..
 rm README.MD
 rm setup.bat
 rm setup-links.sh
+rm setup-links.bat
 
 rm setup.sh
 exit 0

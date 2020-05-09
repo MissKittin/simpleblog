@@ -1,62 +1,11 @@
 <?php
-	// Simpleblog v2.1 - main page
-	// 03.12.2019
-?>
-<?php
+	// Simpleblog v2.2 - main page
+	// 04.04.2020
+
 	// import apache settings
 	if(php_sapi_name() != 'cli-server') include 'settings.php';
 
-	// import core functions
-	include $simpleblog['root_php'] . '/lib/core.php';
-
-	// import coreIndex functions
-	include $simpleblog['root_php'] . '/lib/coreIndex.php';
-
-	// set page number
-	if(isset($_GET['page']))
-	{
-		if(is_numeric($_GET['page']))
-		{
-			$simpleblog['page']['current_page']=$_GET['page'];
-			settype($simpleblog['page']['current_page'], 'integer');
-		}
-	}
-	else
-		$simpleblog['page']['current_page']=1;
+	// jump to startup page
+	if(!@include $simpleblog['root_php'] . '/pages/' . $simpleblog['startup_page'] . '/index.php')
+		echo 'WTF. Check the startup page entry in settings.';
 ?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<title><?php echo $simpleblog['title']; ?></title>
-		<meta charset="utf-8">
-		<?php include $simpleblog['root_php'] . '/lib/htmlheaders.php'; ?>
-	</head>
-	<body>
-		<div id="header">
-			<?php include $simpleblog['root_php'] . '/lib/header.php'; ?>
-		</div>
-		<div id="headlinks">
-			<?php include $simpleblog['root_php'] . '/lib/headlinks.php'; ?>
-		</div>
-		<div id="articles">
-			<?php
-				$simpleblog['page']['emptyDatabase']=true;
-				foreach(simpleblog_engineIndex($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) as $simpleblog['page']['current_article'])
-				{
-					$simpleblog['page']['emptyDatabase']=false;
-					simpleblog_engineCore($simpleblog['page']['current_article'], $simpleblog['taglinks'], $simpleblog['postlinks'], $simpleblog['datelinks']);
-				}
-				if($simpleblog['page']['emptyDatabase']) echo $simpleblog['emptyLabel'];
-			?>
-		</div>
-		<div id="pages">
-			<?php
-				if(!$simpleblog['page']['emptyDatabase']) echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n";
-			?>
-		</div>
-		<div id="footer">
-			<?php include $simpleblog['root_php'] . '/lib/footer.php'; ?>
-		</div>
-	</body>
-</html>
-<?php if(isset($simpleblog['execTime'])) error_log('Simpleblog execution time: ' . (microtime(true) - $simpleblog['execTime']) . 's, max mem used: ' . memory_get_peak_usage() . 'B', 0); ?>

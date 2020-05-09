@@ -5,6 +5,7 @@
 * [How to write articles](#how-to-write-articles)
 * [How to write articles with a lot of resources](#how-to-write-articles-with-a-lot-of-resources)
 * [How to write pages](#how-to-write-pages)
+* [Startup page](#startup-page)
 * [Editing header.php, footer.php and headlinks.php](#editing-headerphp-footerphp-and-headlinksphp)
 * [How to create skins](#how-to-create-skins)
 * [How to allow javascript](#how-to-allow-javascript)
@@ -30,6 +31,7 @@
 	* [alpha](#alpha)
 	* [v1](#v1)
 	* [v2.0](#v20)
+	* [v2.1](#v21)
 	* [today](#today)
 * [Limitations](#limitations)
 * [Why?](#why)
@@ -89,12 +91,18 @@ Problem solved!
 Copy `samplepage` to `your_page_link`, upload images, styles, fonts etc to this dir and edit `index.php`.
 <br><br>
 
+# Startup page
+Default startup page is `posts`. To choose a different startup page, change the `$simpleblog['startup_page']` setting.
+<br><br>
+
 # Editing header.php, footer.php and headlinks.php
 Don't touch first `<?php` block of code. Write content below `?>`.
 <br><br>
 
 # How to create skins
 Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
+<br>
+`views` contains html layouts for `index`, maintenance break, `post`, `tag` and pages.
 <br>
 To create an installation package, just zip the directory with your theme.<br>
 
@@ -223,24 +231,24 @@ Why not? Read some tutorials :)
 # How it works
 The simpleblog is divided into three parts: main page, tags and post. Tags/Post can be detached by setting `$simpleblog['taglinks']`/`$simpleblog['postlinks']` and `$simpleblog['datelinks']` to false.<br>
 After that you can remove:
-* for tag: `tag` directory and `lib/coreTag.php`
-* for post: `post` directory and `lib/corePost.php`
+* for tag: `tag` directory, `lib/coreTag.php` and `lib/viewTag.php`
+* for post: `post` directory, `lib/corePost.php` and `lib/viewPost.php`
 <br><br>
 
 ## Core
-The heart of the Simpleblog is divided into four parts:
+The heart of the Simpleblog is divided into three parts:
 * `core.php` -> contains function that render articles.
-* `coreIndex.php` -> contains functions that prepare and groups articles for main page
-* `coreTag.php` -> the same as `coreIndex.php` but for tag part
-* `corePost.php` -> the same as `coreIndex.php` but for post part
+* `coreIndex.php`, `coreTag.php`, `corePost.php` -> contains functions that prepare and groups articles for main page/tag/post
+* `viewIndex.php`, `viewTag.php`, `viewPost.php` -> contains functions for frontend (`views` in skin)
 <br>
 
 ## Frontend
 The frontend consists of the following files:
-* htmlheaders.php that imports favicon, theme, etc
-* header.php with top header
-* headlinks.php with defined menu
-* footer.php
+* `htmlheaders.php` that imports favicon, theme, etc
+* `header.php` with top header
+* `headlinks.php` with defined menu
+* `footer.php`
+* `views` with html layouts provided by current skin
 
 ## Settings
 Settings are located in router.php (php-cli configuration) or in settings.php (apache configuration).
@@ -268,7 +276,7 @@ Admin panel modules:
 	* `menu` (material installed by default)
 	* `login` (material forms installed by default)
 	* `skins` (material-green installed by default)
-* Status (`index.php` in `admin`)
+* Status
 * Articles -> manage articles
 * CMS -> edit simpleblog settings, html titles, maintenance break settings, change login credentials and create backup
 * Cron -> manage cron tasks
@@ -482,8 +490,12 @@ In this version simple admin script, favicons and tag subsystem have been added.
 Version 2 is completely redesigned. The simpleblog has been modularized, with true admin panel (v1).
 <br>
 
+## v2.1
+v2.1 is v2.0 with many improvements, new features and admin panel v1.1.
+<br>
+
 ## today
-v2.1 is v2.0 with many improvements, new features and admin panel v1.1. Also fixes bugs and creates new ones. Stable and currently maintained.
+in v2.2 the page layout has been moved from indexes to the skin. Also you can now create custom startup page. Stable and currently maintained.
 <br><br>
 
 # Limitations

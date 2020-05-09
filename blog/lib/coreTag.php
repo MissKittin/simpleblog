@@ -3,6 +3,7 @@
 	// for tag subsystem
 	// modified simpleblog_engineTag() and added simpleblog_countTagPages()
 	// 04.12.2019
+	// optimizations 06.04.2020
 
 	// deny direct access
 	if(php_sapi_name() === 'cli-server')
@@ -34,10 +35,10 @@
 
 		$returnArray=array(); // output
 
-		// cache
+		// cache - scandir
 		global $simpleblog;
 		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+			$simpleblog['cache']['core_files']=scandir($dir, 1); // dump filelist, sort descending
 		$files=$simpleblog['cache']['core_files'];
 
 		switch($action)
@@ -45,7 +46,7 @@
 			case 'list':
 				$tags=array(); $i=0; // bypass if tag is already listed
 
-				foreach(array_reverse($files) as $file)
+				foreach($files as $file)
 					if(substr($file, 0, 6) === 'public')
 					{
 						include $dir . '/' . $file;
@@ -55,7 +56,7 @@
 							if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
 							{
 								array_push($returnArray, $tag);
-								$tags[$i]=$tag; $i++;
+								$tags[$i]=$tag; ++$i;
 								$no_tags=false; // dont print 'Empty'
 							}
 						}
@@ -65,7 +66,7 @@
 
 			case 'render':
 				$loop_ind=1; // second if in second foreach
-				foreach(array_reverse($files) as $file)
+				foreach($files as $file)
 					if(substr($file, 0, 6) === 'public') // include only items with public_ prefix
 					{
 						include $dir . '/' . $file;
@@ -80,7 +81,7 @@
 								if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
 									break 2;
 								else
-									$loop_ind++;
+									++$loop_ind;
 							}
 						}
 					}
@@ -101,21 +102,17 @@
 		global $cms_root;
 		global $cms_root_php;
 
-		// initialize indicators
-		$pages_count=1;
-		$pages_ind=0;
-
 		$return=''; // output
 
-		// cache
+		// cache - scandir
 		global $simpleblog;
 		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+			$simpleblog['cache']['core_files']=scandir($dir, 1); // dump filelist, sort descending
 		$files=$simpleblog['cache']['core_files'];
 
 		// select articles with tag
 		$selected_articles=array();
-		foreach(array_reverse($files) as $file)
+		foreach($files as $file)
 			if(substr($file, 0, 6) === 'public') // include only items with public_ prefix
 			{
 				include $dir . '/' . $file;
@@ -128,18 +125,7 @@
 			}
 
 		// count pages
-		foreach($selected_articles as $file)
-			if(($file != '.') && ($file != '..')) // public checking not needed here
-			{
-				// count how many pages are available
-				if($pages_ind === $entries_per_page)
-				{
-					$pages_count++;
-					$pages_ind=1; // must reset this
-				}
-				else
-					$pages_ind++;
-			}
+		$pages_count=ceil(count($selected_articles)/$entries_per_page);
 
 		// render buttons
 		$getTag=urlencode($selected_tag); // must be encoded
@@ -151,7 +137,7 @@
 			else
 				$return=$return . '<div class="page"><a href="?tag=' . $getTag . '&page='. $i .'">' . $i . '</a></div>'; // render
 
-			$i++;
+			++$i;
 		}
 
 		return $return;

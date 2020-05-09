@@ -2,7 +2,8 @@
 	// Simpleblog v1 16.04.2019
 	// Simpleblog v2 11.11.2019
 	// Simpleblog v2.1 03.12.2019
-	// Edit lines 13-35
+	// Simpleblog v2.2 06.04.2020
+	// Edit lines 14-38
 
 	// Denied: articles/*, favicon.php, htmlheaders.php, cron/* and tmp/*
 
@@ -12,7 +13,9 @@
 	// settings - cms
 	$simpleblog['root_html']='/blog'; // directory (for html)
 	$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']; // directory (for php)
+	$simpleblog['startup_page']='posts'; // for $simpleblog['root_php']/index.php
 	$simpleblog['title']='Simpleblog'; // <title>
+	$simpleblog['html_lang']='en'; // <html lang="value">
 	$simpleblog['short_title']='SimpleblogShortTitle'; // for admin panel
 	$simpleblog['entries_per_page']=10;
 	$simpleblog['taglinks']=true; // enable/disable tag as link
@@ -51,42 +54,26 @@
 	};
 
 	// simpleblog rules
-	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'articles')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
-	if($simpleblog_router_cache['substr'] === 'favicon.php')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
-	if($simpleblog_router_cache['substr'] === 'htmlheaders.php')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
-	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'cron')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
-	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'tmp')
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
+	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'articles')	// deny access to /articles
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
+	if($simpleblog_router_cache['substr'] === 'favicon.php')							// deny access to favicon.php
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
+	if($simpleblog_router_cache['substr'] === 'htmlheaders.php')							// deny access to htmlheaders.php
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
+	if($simpleblog_router_cache['explode_output'] === 'cron')							// deny access to cron
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
+	if($simpleblog_router_cache['explode_output'] === 'tmp')							// deny access to tmps
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
 
 	// rewrite common rules
-	if($simpleblog_router_cache['substr'] === '.router.php') // hide script - fake 404 for this script
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
-	if($simpleblog_router_cache['substr'] === 'index.php') // hide php
-	{
-		include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-	}
+	if($simpleblog_router_cache['substr'] === '.router.php')			// hide script - fake 404 for this script
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
+	if(strstr($simpleblog_router_cache['substr'], '.') === '.php')			// hide php
+		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
 	// 404 handle for dirs - rewrite policy don't work, rule removed
-	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'])) // 404 handle - for dirs
+	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok']))	// 404 handle - for dirs
 		if((file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.php')) || (file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.html'))){}else
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
+			{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
 
 	// include maintenance break pattern
 	if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { include $simpleblog['root_php'] . '/lib/maintenance-break.php'; unset($maintenance_break); }

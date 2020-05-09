@@ -33,20 +33,6 @@
 		echo '<!DOCTYPE html><html><head><title>CMS</title><meta charset="utf-8">'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '<meta http-equiv="refresh" content="0; url=?"></head></html>';
 		exit();
 	}
-	function adminpanel_backupSearchRecursive($dir, $prefix)
-	{
-		$returnArray=array();
-		foreach(scandir($dir) as $file)
-			if(($file != '.') && ($file != '..'))
-			{
-				if(is_dir($dir . '/' . $file))
-					foreach(adminpanel_backupSearchRecursive($dir . '/' . $file, $file . '/') as $addToArray)
-						array_push($returnArray, $addToArray);
-				else
-					array_push($returnArray, $prefix . $file);
-			}
-		return $returnArray;
-	}
 ?>
 <?php
 	// apply settings
@@ -55,6 +41,10 @@
 		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 
 		// cms
+		if(isset($_POST['startuppage']))
+			if(($_POST['startuppage'] !== $simpleblog['startup_page']) && file_exists($adminpanel['path']['pages'] . '/' . $simpleblog['startup_page']))
+				file_put_contents($settings_file, str_replace('$simpleblog[\'startup_page\']=\'' . $simpleblog['startup_page'] . '\'', '$simpleblog[\'startup_page\']=\'' . $_POST['startuppage'] . '\'', file_get_contents($settings_file)));
+
 		if(isset($_POST['title']))
 			if($_POST['title'] !== $simpleblog['title'])
 				file_put_contents($settings_file, str_replace('$simpleblog[\'title\']=\'' . $simpleblog['title'] . '\'', '$simpleblog[\'title\']=\'' . $_POST['title'] . '\'', file_get_contents($settings_file)));
@@ -160,8 +150,13 @@
 			// set memory limit
 			ini_set('memory_limit','256M');
 
-			// create new zip
+			// zip library
 			include $adminpanel['root_php'] . '/lib/zip.lib.php';
+
+			// fileSearchRecursive library
+			include $adminpanel['root_php'] . '/lib/fileSearchRecursive.php';
+
+			// create new zip
 			$zip=new zipfile();
 
 			// dump all articles
@@ -181,12 +176,14 @@
 					$zip->addFile(file_get_contents($adminpanel['path']['media'] . '/' . $file), 'media/' . $file);
 
 			// dump pages
-			foreach(adminpanel_backupSearchRecursive($adminpanel['path']['pages'], '') as $pageFile)
-				$zip->addFile(file_get_contents($adminpanel['path']['pages'] . '/' . $pageFile), 'pages/' . $pageFile);
+			foreach(adminpanel_fileSearchRecursive($adminpanel['path']['pages'], '') as $pageFile)
+				if($pageFile !== 'index.php')
+					$zip->addFile(file_get_contents($adminpanel['path']['pages'] . '/' . $pageFile), 'pages/' . $pageFile);
 
 			// dump skins
-			foreach(adminpanel_backupSearchRecursive($adminpanel['path']['skins'], '') as $skinFile)
-				$zip->addFile(file_get_contents($adminpanel['path']['skins'] . '/' . $skinFile), 'skins/' . $skinFile);
+			foreach(adminpanel_fileSearchRecursive($adminpanel['path']['skins'], '') as $skinFile)
+				if($skinFile !== 'index.php')
+					$zip->addFile(file_get_contents($adminpanel['path']['skins'] . '/' . $skinFile), 'skins/' . $skinFile);
 
 			// dump settings
 			if(php_sapi_name() === 'cli-server')
@@ -219,6 +216,7 @@
 					($customFile != 'lib') &&
 					($customFile != 'media') &&
 					($customFile != 'pages') &&
+					($customFile != 'post') &&
 					($customFile != '.router.php') &&
 					($customFile != 'settings.php') &&
 					($customFile != 'skins') &&
@@ -277,6 +275,23 @@
 		<div id="content">
 			<h3>Settings</h3>
 			<form action="?apply&<?php echo adminpanel_csrf_printToken('parameter'); ?>=<?php echo adminpanel_csrf_printToken('value'); ?>" method="post">
+				<label for="startuppage">Startup page</label>
+				<div id="startuppage">
+					<?php
+						if(!file_exists($adminpanel['path']['pages'] . '/' . $simpleblog['startup_page']))
+							echo '<span style="color: #ff0000; -webkit-text-stroke: 1px #990000;">&#9888; WTF: startup page "' . $simpleblog['startup_page'] . '" does not exist!</span><br>';
+
+						foreach(array_diff(scandir($adminpanel['path']['pages']), ['.', '..', 'index.php']) as $page)
+						{
+							$pageSetting='';
+							if($page === $simpleblog['startup_page'])
+								$pageSetting='checked';
+							echo '<input type="radio" name="startuppage" value="' . $page . '" ' . $pageSetting . '> ' . $page . '<br>';
+						}
+					?>
+				</div>
+				<br>
+
 				<label for="title">&lt;title&gt;</label>
 				<input type="text" name="title" value="<?php echo $simpleblog['title']; ?>">
 

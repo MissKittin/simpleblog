@@ -87,7 +87,7 @@
 	}
 
 	// curl
-	if((isset($_POST['curl'])) && (adminpanel_csrf_checkToken('get')))
+	if((isset($_POST['curl'])) && (!isset($adminpanel['nocurl'])) && (adminpanel_csrf_checkToken('get')))
 		if(substr($_POST['curl'], 0, 7) !== 'file://')
 		{
 			$curl=curl_init();
@@ -317,7 +317,7 @@
 			<div class="button button_in_row"><a href="?create<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Create</a></div>
 			<div class="button button_in_row"><a href="?mkdir<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">mkdir</a></div>
 			<?php if(ini_get('file_uploads') == 1) { ?><div class="button button_in_row"><a href="?upload<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">Upload</a></div><?php } ?>
-			<?php if(function_exists('curl_init')) { ?><div class="button button_in_row"><a href="?curl<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">curl</a></div><?php } ?>
+			<?php if((function_exists('curl_init')) && (!isset($adminpanel['nocurl']))) { ?><div class="button button_in_row"><a href="?curl<?php if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; ?>">curl</a></div><?php } ?>
 			<br><br><h3>Move function: click rename and add ../ before name to move upper</h3>
 		</div>
 		<div id="footer">

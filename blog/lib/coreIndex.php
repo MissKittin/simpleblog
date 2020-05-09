@@ -2,6 +2,7 @@
 	// Simpleblog v2 core functions
 	// for main page
 	// 11.11.2019
+	// optimizations 06.04.2020
 
 	// deny direct access
 	if(php_sapi_name() === 'cli-server')
@@ -26,57 +27,49 @@
 
 		$returnArray=array(); // output
 
-		// cache
+		// cache - scandir
 		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+		if(empty($simpleblog['cache']['core_files'])) // dump filelist, sort descending
+			$simpleblog['cache']['core_files']=array_filter(scandir($dir, 1), function($file){
+				if(strpos($file, 'public_') === 0)
+					return true;
+				return false;
+			});
 		$files=$simpleblog['cache']['core_files'];
 
 		$loop_ind=1; // first if in foreach
-		foreach(array_reverse($files) as $file)
+		foreach($files as $file)
 		{
 			if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-				if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0)) // include only items with public_ prefix
-					array_push($returnArray, $dir . '/' . $file);
+				array_push($returnArray, $dir . '/' . $file);
 
 			if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
 				break;
 			else
-				$loop_ind++;
+				++$loop_ind;
 		}
 
 		return $returnArray;
 	}
 
 	// count pages - for main page
-	function simpleblog_countPages($dir, $current_page, $entries_per_page)
+	function simpleblog_countIndexPages($dir, $current_page, $entries_per_page)
 	{
 		// Usage: echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $current_page, $simpleblog['entries_per_page']) . "\n"
 
-		// initialize indicators
-		$pages_count=1;
-		$pages_ind=0;
-
 		$return=''; // output
 
-		// cache
+		// cache - scandir
 		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+		if(empty($simpleblog['cache']['core_files'])) // dump filelist, sort descending
+			$simpleblog['cache']['core_files']=array_filter(scandir($dir, 1), function($file){
+				if(strpos($file, 'public_') === 0)
+					return true;
+				return false;
+			});
 		$files=$simpleblog['cache']['core_files'];
 
-		foreach(array_reverse($files) as $file)
-			if(($file != '.') && ($file != '..') && (strpos($file, 'public_') === 0))
-			{
-				// count how many pages are available
-				if($pages_ind === $entries_per_page)
-				{
-					$pages_count++;
-					$pages_ind=1; // must reset this
-				}
-				else
-					$pages_ind++;
-			}
+		$pages_count=ceil(count($files)/$entries_per_page);
 
 		$i=1; // loop indicator
 		while($i <= $pages_count)
@@ -86,7 +79,7 @@
 			else
 				$return=$return . '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
 
-			$i++;
+			++$i;
 		}
 
 		return $return;

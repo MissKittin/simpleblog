@@ -2,7 +2,6 @@
 <?php
 	// Admin panel for simpleblog - pages section
 	// 20.11.2019
-	// WTF: no upload button ?
 	$module['id']='admin-pages';
 
 	// import settings
@@ -113,7 +112,7 @@
 			else
 			{
 				// manage page
-				if((!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['edit'])))
+				if((!@preg_match('/\//i', $_GET['manage'])) && (!@preg_match('/\//i', $_GET['edit'])))
 				{
 					include('manage.php'); exit();
 				}
@@ -169,10 +168,27 @@
 			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				mkdir($adminpanel['path']['pages'] . '/' . $_GET['create']);
-				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php if(php_sapi_name() != \'cli-server\') include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n".'<!DOCTYPE html>'."\n".'<html>'."\n\t".'<head>'."\n\t\t".'<title><?php echo $simpleblog[\'title\']; ?></title>'."\n\t\t".'<meta charset="utf-8">'."\n\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/htmlheaders.php\'; ?>'."\n\t".'</head>'."\n\t".'<body>'."\n\t\t".'<div id="header">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/header.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="headlinks">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/headlinks.php\'; ?>'."\n\t\t".'</div>'."\n\t\t".'<div id="articles">'."\n\t\t\t\n\t\t".'</div>'."\n\t\t".'<div id="footer">'."\n\t\t\t".'<?php include $simpleblog[\'root_php\'] . \'/lib/footer.php\'; ?>'."\n\t\t".'</div>'."\n\t".'</body>'."\n".'</html>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time in seconds: \' . (microtime(true) - $simpleblog[\'execTime\']), 0); ?>');
+				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php /* import apache settings (if not imported by main index) */ if((!isset($simpleblog)) && (php_sapi_name() != \'cli-server\')) include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n\n".'<?php //$simpleblog_viewPageLang=\'en\'; // custom html lang (optional) ?>'."\n".'<?php //$simpleblog_viewPageTitle=\'Sample page | \' . $simpleblog[\'title\']; // custom title (optional) ?>'."\n\n".'<?php function simpleblog_viewPageCustomheaders() { ?>'."\n\t".'<!-- custom html headers here (optional) -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageArticles() { ?>'."\n\t".'<!-- put content here -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageBodyAppend() { ?>'."\n\t".'<!-- content at the end of <body> -->'."\n".'<?php } ?>'."\n\n".'<?php include $simpleblog[\'root_php\'] . \'/skins/\' . $simpleblog[\'skin\'] . \'/views/viewPage.php\'; ?>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time: \' . (microtime(true) - $simpleblog[\'execTime\']) . \'s, max mem used: \' . memory_get_peak_usage() . \'B\', 0); ?>');
 				copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['path']['pages'] . '/' . $_GET['create'] . '/disabled.php');
 			}
 	}
+
+	// dump page
+	if((isset($_GET['dumpPage'])) && (file_exists($adminpanel['path']['pages'] . '/' . $_GET['dumpPage'])) && (adminpanel_csrf_checkToken('get')))
+		if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
+		{
+			// zip library
+			include $adminpanel['root_php'] . '/lib/zip.lib.php';
+
+			// fileSearchRecursive library
+			include $adminpanel['root_php'] . '/lib/fileSearchRecursive.php';
+			
+			$zip=new zipfile();
+			foreach(adminpanel_fileSearchRecursive($adminpanel['path']['pages'] . '/' . $_GET['dumpPage'], '') as $dumpPageFile)
+				$zip->addFile(file_get_contents($adminpanel['path']['pages'] . '/' . $_GET['dumpPage'] . '/' . $dumpPageFile), $_GET['dumpPage'] . '/' . $dumpPageFile);
+			header('Content-type: application/octet-stream'); header('Content-Disposition: attachment; filename=simpleblog_' . $_GET['dumpPage'] . '_page_dump_' . date('d-m-Y') . '.zip'); header('Content-Description: Simpleblog page dump');
+			echo $zip->file();
+		}
 ?>
 <!DOCTYPE html>
 <html>
@@ -219,7 +235,8 @@
 								<td><a href="?manage=' . $file . '">Manage</a></td>
 								<td><a href="?delete=' . $file . '">Delete</a></td>
 								<td><a href="?rename=' . $file . '">Rename</a></td>
-								<td><a href="?link=' . $file . '">Link</a></td><td>' . $disableLink . '</td>
+								<td><a href="?link=' . $file . '">Link</a></td><td>' . $disableLink . '</td>';
+								if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php')) echo '<td><a href="?dumpPage=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" target="_blank">Dump</a></td>'; echo '
 							</tr>';
 						}
 				?>

@@ -2,6 +2,7 @@
 	// Simpleblog v2.1 core functions
 	// for post subsystem
 	// 04.12.2019
+	// optimizations 06.04.2020
 
 	// deny direct access
 	if(php_sapi_name() === 'cli-server')
@@ -26,15 +27,25 @@
 
 		if(is_numeric($id))
 		{
+			// cache - scandir
+			global $simpleblog;
+			if(empty($simpleblog['cache']['core_files'])) // dump filelist, sort descending
+				$simpleblog['cache']['core_files']=array_filter(scandir($dir, 1), function($file){
+					if(strpos($file, 'public_') === 0)
+						return true;
+					return false;
+				});
+			$files=$simpleblog['cache']['core_files'];
+
 			// get addressing
-			foreach(scandir($dir) as $file)
+			foreach($files as $file)
 				if(strpos($file, 'public_') === 0)
 					break;
 
 			// calculate file name
 			$file=strlen(str_replace(['public_', '.php'], '', $file))-strlen($id);
 			$filePrefix=''; // declare
-			for($i=0; $i<$file; $i++)
+			for($i=0; $i<$file; ++$i)
 				$filePrefix.=0;
 
 			// check if file exists
@@ -61,8 +72,12 @@
 
 		// cache - scandir
 		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+		if(empty($simpleblog['cache']['core_files'])) // dump filelist, sort descending
+			$simpleblog['cache']['core_files']=array_filter(scandir($dir, 1), function($file){
+				if(strpos($file, 'public_') === 0)
+					return true;
+				return false;
+			});
 		$files=$simpleblog['cache']['core_files'];
 
 		// cache - date - convert to readable format
@@ -80,59 +95,56 @@
 		switch($mode)
 		{
 			case 'dmy':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					if($art_date === $date[0] . '.' . $date[1] . '.' . $date[2])
 					{
-						include $dir . '/' . $file;
-						if($art_date === $date[0] . '.' . $date[1] . '.' . $date[2])
-						{
-							if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-								array_push($returnArray, $dir . '/' . $file);
+						if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
+							array_push($returnArray, $dir . '/' . $file);
 
-							if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
-								break;
-							else
-								$loop_ind++;
-						}
+						if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
+							break;
+						else
+							++$loop_ind;
 					}
+				}
 				break;
 
 			case 'my':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					$exploded_art_date=explode('.', $art_date);
+					if($exploded_art_date[1] . '.' . $exploded_art_date[2] === $date[0] . '.' . $date[1])
 					{
-						include $dir . '/' . $file;
-						$exploded_art_date=explode('.', $art_date);
-						if($exploded_art_date[1] . '.' . $exploded_art_date[2] === $date[0] . '.' . $date[1])
-						{
-							if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-								array_push($returnArray, $dir . '/' . $file);
+						if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
+							array_push($returnArray, $dir . '/' . $file);
 
-							if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
-								break;
-							else
-								$loop_ind++;
-						}
+						if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
+							break;
+						else
+							++$loop_ind;
 					}
+				}
 				break;
 
 			case 'y':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					$exploded_art_date=explode('.', $art_date);
+					if($exploded_art_date[2] === $date[0])
 					{
-						include $dir . '/' . $file;
-						$exploded_art_date=explode('.', $art_date);
-						if($exploded_art_date[2] === $date[0])
-						{
-							if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
-								array_push($returnArray, $dir . '/' . $file);
+						if($loop_ind >= ($current_page*$entries_per_page)-($entries_per_page-1)) // omit unwanted entries and start from to eg 1-10, 11-20 etc
+							array_push($returnArray, $dir . '/' . $file);
 
-							if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
-								break;
-							else
-								$loop_ind++;
-						}
+						if($loop_ind === $current_page*$entries_per_page) // break if the maximum number of entries has been reached
+							break;
+						else
+							++$loop_ind;
 					}
+				}
 				break;
 		}
 
@@ -149,16 +161,16 @@
 		global $cms_root;
 		global $cms_root_php;
 
-		// initialize indicators
-		$pages_count=1;
-		$pages_ind=0;
-
 		$return=''; // output
 
 		// cache - scandir
 		global $simpleblog;
-		if(empty($simpleblog['cache']['core_files']))
-			$simpleblog['cache']['core_files']=scandir($dir); // dump filelist
+		if(empty($simpleblog['cache']['core_files'])) // dump filelist, sort descending
+			$simpleblog['cache']['core_files']=array_filter(scandir($dir, 1), function($file){
+				if(strpos($file, 'public_') === 0)
+					return true;
+				return false;
+			});
 		$files=$simpleblog['cache']['core_files'];
 
 		// cache - date - convert to readable format
@@ -177,51 +189,37 @@
 		switch($mode)
 		{
 			case 'dmy':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
-					{
-						include $dir . '/' . $file;
-						if($art_date === $date[0] . '.' . $date[1] . '.' . $date[2])
-							array_push($selected_articles, $dir . '/' . $file);
-					}
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					if($art_date === $date[0] . '.' . $date[1] . '.' . $date[2])
+						array_push($selected_articles, $dir . '/' . $file);
+				}
 				break;
 
 			case 'my':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
-					{
-						include $dir . '/' . $file;
-						$exploded_art_date=explode('.', $art_date);
-						if($exploded_art_date[1] . '.' . $exploded_art_date[2] === $date[0] . '.' . $date[1])
-							array_push($selected_articles, $dir . '/' . $file);
-					}
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					$exploded_art_date=explode('.', $art_date);
+					if($exploded_art_date[1] . '.' . $exploded_art_date[2] === $date[0] . '.' . $date[1])
+						array_push($selected_articles, $dir . '/' . $file);
+				}
 				break;
 
 			case 'y':
-				foreach(array_reverse($files) as $file)
-					if(($file != '.') && ($file != '..') && (substr($file, 0, 6) === 'public'))
-					{
-						include $dir . '/' . $file;
-						$exploded_art_date=explode('.', $art_date);
-						if($exploded_art_date[2] === $date[0])
-							array_push($selected_articles, $dir . '/' . $file);
-					}
+				foreach($files as $file)
+				{
+					include $dir . '/' . $file;
+					$exploded_art_date=explode('.', $art_date);
+					if($exploded_art_date[2] === $date[0])
+						array_push($selected_articles, $dir . '/' . $file);
+				}
 				break;
 		}
 
 		// count pages
-		foreach($selected_articles as $file)
-			if(($file != '.') && ($file != '..')) // public checking not needed here
-			{
-				// count how many pages are available
-				if($pages_ind === $entries_per_page)
-				{
-					$pages_count++;
-					$pages_ind=1; // must reset this
-				}
-				else
-					$pages_ind++;
-			}
+		$pages_count=ceil(count($selected_articles)/$entries_per_page);
 
 		// render buttons
 		$i=1; // loop indicator
@@ -232,7 +230,7 @@
 			else
 				$return=$return . '<div class="page"><a href="?date=' . $selected_date . '&page='. $i .'">' . $i . '</a></div>'; // render
 
-			$i++;
+			++$i;
 		}
 
 		return $return;

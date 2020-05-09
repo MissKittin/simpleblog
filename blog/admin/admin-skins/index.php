@@ -1,231 +1,189 @@
 <?php header('X-Frame-Options: DENY'); ?>
+<?php header('X-XSS-Protection:0'); ?>
 <?php
-	// Admin panel for simpleblog
-	// 12-13.11.2019
-	$module['id']='admin-status';
+	// Admin panel for simpleblog - skins section
+	// 20.11.2019
+	$module['id']='admin-skins';
 
 	// import settings
-	if(file_exists('admin-settings.php'))
-		include 'admin-settings.php';
-	else
-		include '../admin-settings.php';
+	include '../admin-settings.php';
 
 	// login subsystem
 	include $adminpanel['root_php'] . '/lib/login/login.php';
 
-	// convertBytes library
-	include $adminpanel['root_php'] . '/lib/convertBytes.php';
-
 	// functions
-	function adminpanel_stats()
+	function adminpanel_removeSkin($dir, $first)
 	{
-		// helpers
-
-		// count articles
-		function adminpanel_countArticles($dir)
-		{
-			// counters
-			$returnArray['published']=0; $returnArray['hidden']=0;
-
-			// cache
-			global $adminpanel;
-			if(empty($adminpanel['cache']['core_files']))
-				$adminpanel['cache']['core_files']=scandir($dir); // dump filelist
-			$files=$adminpanel['cache']['core_files'];
-
-			foreach($files as $file)
-				if(($file != '.') && ($file != '..'))
-				{
-					if(substr($file, 0, 6) === 'public')
-						$returnArray['published']++;
-					else
-						$returnArray['hidden']++;
-				}
-
-			return $returnArray;
-		}
-
-		// count tags
-		function adminpanel_countTags($dir)
-		{
-			// globals
-			global $simpleblog;
-			global $cms_root;
-			global $cms_root_php;
-
-			// counters
-			$returnArray['published']=0;
-			$returnArray['hidden']=0;
-
-			// cache
-			global $adminpanel;
-			if(empty($adminpanel['cache']['core_files']))
-				$adminpanel['cache']['core_files']=scandir($dir); // dump filelist
-			$files=$adminpanel['cache']['core_files'];
-
-			$tags=array();
-			foreach($files as $file)
-				if(substr($file, 0, 6) === 'public')
-				{
-					include $dir . '/' . $file;
-					foreach(explode('#', $art_tags) as $tag)
-					{
-						$tag=trim($tag); // remove space at the end
-						if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
-						{
-							$returnArray['published']++;
-							array_push($tags, $tag);
-						}
-					}
-				}
-
-			$hiddenTags=array();
-			foreach($files as $file)
-				if(substr($file, 0, 7) === 'private')
-				{
-					include $dir . '/' . $file;
-					foreach(explode('#', $art_tags) as $tag)
-					{
-						$tag=trim($tag); // remove space at the end
-						if(($tag != '') && (!in_array($tag, $tags)) && (!in_array($tag, $hiddenTags))) // omit empty value and published tags
-						{
-							$returnArray['hidden']++;
-							array_push($hiddenTags, $tag);
-						}
-					}
-				}
-
-			return $returnArray;
-		}
-
-		// count pages
-		function adminpanel_countPages($dir)
-		{
-			// counter
-			$returnArray['published']=0;
-			$returnArray['hidden']=0;
-
-			// cache
-			global $adminpanel;
-			if(empty($adminpanel['cache']['core_pages']))
-				$adminpanel['cache']['core_pages']=scandir($dir); // dump filelist
-			$files=$adminpanel['cache']['core_pages'];
-
-			foreach($files as $file)
-				if(($file != '.') && ($file != '..') && (is_dir($dir . '/' . $file)))
-				{
-					if(file_exists($dir . '/' . $file . '/disabled.php'))
-						$returnArray['hidden']++;
-					else
-						$returnArray['published']++;
-				}
-
-			return $returnArray;
-		}
-
-		// count cron tasks
-		function adminpanel_countCron($dir)
-		{
-			// check if tmp folder exists
-			if(file_exists($dir))
+		foreach(scandir($dir) as $file)
+			if(($file != '.') && ($file != '..'))
 			{
-				// counters
-				$returnArray['enabled']=0; $returnArray['disabled']=0;
-
-				// cache
-				global $adminpanel;
-				if(empty($adminpanel['cache']['core_cron']))
-					$adminpanel['cache']['core_cron']=scandir($dir); // dump filelist
-				$files=$adminpanel['cache']['core_cron'];
-
-				foreach($files as $file)
-					if(($file != '.') && ($file != '..'))
-					{
-						if(substr($file, 0, 3) === 'on_')
-							$returnArray['enabled']++;
-						else
-							$returnArray['disabled']++;
-					}
-
-				return $returnArray;
+				if(is_dir($dir . '/' . $file))
+				{
+					adminpanel_removeSkin($dir . '/' . $file, false);
+					rmdir($dir . '/' . $file);
+				}
+				else
+					unlink($dir . '/' . $file);
 			}
-			return false;
-		}
-
-		// count cms size
-		function adminpanel_countCmsSize($dir, $action)
-		{
-			$returnCount=0;
-			switch($action)
-			{
-				case 'size':
-					foreach(new DirectoryIterator($dir) as $file)
-						if(($file != '.') && ($file != '..'))
-						{
-							if(is_dir($dir . '/' . $file))
-								$returnCount+=adminpanel_countCmsSize($dir . '/' . $file, 'size');
-							else
-								$returnCount+=$file->getSize();
-						}
-					break;
-				case 'count':
-					foreach(scandir($dir) as $file)
-						if(($file != '.') && ($file != '..'))
-						{
-							if(is_dir($dir . '/' . $file))
-								$returnCount+=adminpanel_countCmsSize($dir . '/' . $file, 'count');
-							else
-								$returnCount++;
-						}
-					break;
-			}
-			return $returnCount;
-		}
-
-		// main
-
+		if($first)
+			rmdir($dir);
+	}
+	function adminpanel_applySkin($oldskin, $newskin, $configfile)
+	{
 		global $adminpanel;
-		global $simpleblog;
+		if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 
-		// collect stats
-		$stats['articles']=adminpanel_countArticles($adminpanel['path']['articles']);
-		$stats['tags']=adminpanel_countTags($adminpanel['path']['articles']);
-		$stats['pages']=adminpanel_countPages($adminpanel['path']['pages']);
-		$stats['cron']=adminpanel_countCron($adminpanel['path']['cron']);
-
-		// display ?>
-		<h3>Stats</h3>
-		<ul>
-			<li>Articles published: <?php echo $stats['articles']['published']; ?>, hidden: <?php echo $stats['articles']['hidden']; ?></li>
-			<li>Tags published: <?php echo $stats['tags']['published']; ?>, hidden: <?php echo $stats['tags']['hidden']; ?></li>
-			<li>Pages published: <?php echo $stats['pages']['published']; ?>, hidden: <?php echo $stats['pages']['hidden']; ?></li>
-			<li>Media: <?php echo adminpanel_countCmsSize($adminpanel['path']['media'], 'count'); ?> files (<?php echo adminpanel_convertBytes(adminpanel_countCmsSize($adminpanel['path']['media'], 'size')); ?>)</li>
-			<?php if($stats['cron'] != false) echo '<li>Cron tasks: ' . $stats['cron']['enabled'] . ' enabled, ' . $stats['cron']['disabled'] . ' disabled</li>'; ?>
-			<?php if(file_exists($adminpanel['path']['tmp'])) echo '<li>Temporary files: ' . adminpanel_countCmsSize($adminpanel['path']['tmp'], 'count') . ' (' . adminpanel_convertBytes(adminpanel_countCmsSize($adminpanel['path']['tmp'], 'size')) . ')</li>'; ?>
-			<li>CMS size: <?php echo adminpanel_countCmsSize($simpleblog['root_php'], 'count'); ?> files (<?php echo adminpanel_convertBytes(adminpanel_countCmsSize($simpleblog['root_php'], 'size')); ?>)</li>
-		</ul><?php
+		file_put_contents($configfile, str_replace('$simpleblog[\'skin\']=\'' . $oldskin . '\'', '$simpleblog[\'skin\']=\'' . $newskin . '\'', file_get_contents($configfile)));
+		echo '<!DOCTYPE html><html><head><title>Skins</title><meta charset="utf-8">'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '<meta http-equiv="refresh" content="0; url=admin-skins"></head></html>';
+		exit();
 	}
-	function adminpanel_serverInfo()
+	function adminpanel_browseSkin($dir, $htmldir)
 	{
-		global $simpleblog;
+		echo '<tr><th>Name</th><th>Type</th></tr>';
+		foreach(scandir($dir) as $file)
+			if(($file != '.') && ($file != '..'))
+			{
+				if(isset($_GET['dir']))
+					$currentDir=$_GET['dir'] . '/';
+				else
+					$currentDir='';
 
-		?>
-		<h3>Server</h3>
-		HTTP Server: <?php echo $_SERVER['SERVER_SOFTWARE']; ?><br>
-		PHP version: <?php echo phpversion(); ?><br>
-		<?php
-			if(file_exists($simpleblog['root_php'] . '/settings.php'))
-				echo 'Simpleblog is configured for Apache'."\n";
-			elseif(file_exists($simpleblog['root_php'] . '/.router.php'))
-				echo 'Simpleblog is configured for PHP built-in server'."\n";
-		?>
-		<?php
+				if(is_dir($dir . '/' . $file))
+					$filelink='<a href="?edit=' . $_GET['edit'] . '&dir=' . $currentDir . $file . '">' . $file . '</a>';
+				else
+					$filelink='<a href="' . $htmldir . '/' . $file . '" target="_blank">' . $file . '</a>';
+				echo '<tr><td>' . $filelink . '</td><td style="text-align: center;">'; if(is_dir($dir . '/' . $file)) echo '&lt;DIR&gt;'; else echo '&lt;FILE&gt;'; echo '</td><td>'; if(!is_dir($dir . '/' . $file)) { echo '<a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&fileEdit=' . $currentDir . $file . '">Edit</a>'; } echo '</td><td><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $file . '">Delete</a></td></tr>';
+			}
 	}
+?>
+<?php
+	// edit file
+	if(isset($_GET['fileEdit']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'])) && (!in_array('..', explode('/', $_GET['edit'] . '/' . $_GET['fileEdit']))))
+		{
+			if((isset($_POST['file_content'])) && (adminpanel_csrf_checkToken('post')))
+			{
+				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
+				file_put_contents($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'], $_POST['file_content']);
+				include('edit.php'); exit();
+			}
+			else
+			{
+				include('edit.php'); exit();
+			}
+		}
+
+	// delete file
+	if(isset($_GET['deleteFile']))
+	{
+		$currentDir='';
+		if(isset($_GET['dir']))
+			if(!preg_match('/\//i', $_GET['dir']))
+				$currentDir=$_GET['dir'] . '/';
+
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))  && (!preg_match('/\//i', $_GET['edit'])) && (!preg_match('/\//i', $_GET['deleteFile'])))
+		{
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
+			{
+				if(is_dir($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']))
+					adminpanel_removeSkin($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile'], true);
+				else
+					unlink($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $currentDir . $_GET['deleteFile']);
+			}
+			else
+			{
+				// ask
+				echo '<!DOCTYPE html><html><head>
+						<title>Skins</title>
+						<meta charset="utf-8">
+						'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '
+					</head><body>
+						<div id="content" style="padding-bottom: 30px;">
+							<h1>' . $_GET['deleteFile'] . ' - Are you sure?</h1>
+							<div class="button button_in_row"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '">Back</a></div> <div class="button button_in_row"><a href="?edit=' . $_GET['edit']; if(isset($_GET['dir'])) echo '&dir=' . $_GET['dir']; echo '&deleteFile=' . $_GET['deleteFile'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
+						</div>
+					</body></html>';
+				exit();
+			}
+		}
+	}
+
+	// apply skin
+	if(isset($_GET['apply']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['apply'])) && (adminpanel_csrf_checkToken('get')))
+		{
+			if(php_sapi_name() === 'cli-server')
+				adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/router.php');
+			else
+				adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/settings.php');
+		}
+
+	// delete skin
+	if(isset($_GET['delete']))
+		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))
+		{
+			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
+				adminpanel_removeSkin($adminpanel['path']['skins'] . '/' . $_GET['delete'], true);
+			else
+			{
+				// ask
+				echo '<!DOCTYPE html><html><head>
+						<title>Skins</title>
+						<meta charset="utf-8">
+						'; include $adminpanel['root_php'] . '/lib/htmlheaders.php'; echo '
+					</head><body>
+						<div id="content" style="padding-bottom: 30px;">
+							<h1>' . $_GET['delete'] . ' - Are you sure?</h1>
+							<div class="button button_in_row"><a href="?">Back</a></div> <div class="button button_in_row"><a href="?delete=' . $_GET['delete'] . '&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Delete</a></div>
+						</div>
+					</body></html>';
+				exit();
+			}
+		}
+
+	// install skin
+	if((isset($_GET['installSkin'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
+	{
+		$skinpack=new ZipArchive;
+		$skinpack->open($_FILES['file']['tmp_name'][0]);
+		$skinpack->extractTo($adminpanel['path']['skins']);
+		$skinpack->close();
+		unlink($_FILES['file']['tmp_name'][0]);
+	}
+
+	// upload file
+	if((isset($_GET['upload'])) && (isset($_GET['yes'])) && (ini_get('file_uploads') == 1) && (adminpanel_csrf_checkToken('get')))
+	{
+		$countfiles=count($_FILES['file']['name']);
+		if(isset($_GET['dir']))
+			for($i=0; $i<$countfiles; $i++)
+				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['dir'] . '/' . $_FILES['file']['name'][$i]);
+		else
+			for($i=0; $i<$countfiles; $i++)
+				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_FILES['file']['name'][$i]);
+	}
+
+	// dump skin
+	if((isset($_GET['dumpSkin'])) && (file_exists($adminpanel['path']['skins'] . '/' . $_GET['dumpSkin'])) && (adminpanel_csrf_checkToken('get')))
+		if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
+		{
+			// zip library
+			include $adminpanel['root_php'] . '/lib/zip.lib.php';
+
+			// fileSearchRecursive library
+			include $adminpanel['root_php'] . '/lib/fileSearchRecursive.php';
+
+			$zip=new zipfile();
+			foreach(adminpanel_fileSearchRecursive($adminpanel['path']['skins'] . '/' . $_GET['dumpSkin'], '') as $dumpSkinFile)
+				$zip->addFile(file_get_contents($adminpanel['path']['skins'] . '/' . $_GET['dumpSkin'] . '/' . $dumpSkinFile), $_GET['dumpSkin'] . '/' . $dumpSkinFile);
+			header('Content-type: application/octet-stream'); header('Content-Disposition: attachment; filename=simpleblog_' . $_GET['dumpSkin'] . '_skin_dump_' . date('d-m-Y') . '.zip'); header('Content-Description: Simpleblog skin dump');
+			echo $zip->file();
+		}
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Admin panel</title>
+		<title>Skins</title>
 		<meta charset="utf-8">
 		<?php include $adminpanel['root_php'] . '/lib/htmlheaders.php'; ?>
 	</head>
@@ -237,19 +195,124 @@
 			<?php include $adminpanel['root_php'] . '/lib/menu/' . $adminpanel['menu_module'] . '/menu.php'; ?>
 		</div>
 		<div id="content_header">
-			<h3>CMS Status</h3>
+			<?php
+				if(isset($_GET['edit']))
+					echo '<h3>Browse skin</h3>';
+				else
+					echo '<h3>Skins</h3>';
+			?>
 		</div>
 		<div id="content">
+			<table>
+				<?php
+					if(isset($_GET['edit']))
+					{
+						// browse skin
+						if(isset($_GET['dir']))
+							$edit_dothack=$_GET['dir'];
+						else
+							$edit_dothack='';
 
-			<?php adminpanel_stats(); ?>
+						if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['edit'])) && (!in_array('..', explode('/', $edit_dothack))))
+						{
+							if(isset($_GET['dir']))
+								adminpanel_browseSkin($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['dir'], $adminpanel['path']['skins_html'] . '/' . $_GET['edit'] . '/' . $_GET['dir']);
+							else
+								adminpanel_browseSkin($adminpanel['path']['skins'] . '/' . $_GET['edit'], $adminpanel['path']['skins_html'] . '/' . $_GET['edit']);
+						}
+						else // '..' hack detected
+							adminpanel_browseSkin($adminpanel['path']['skins'] . '/' . $_GET['edit'], $adminpanel['path']['skins_html'] . '/' . $_GET['edit']);
+					}
+					else
+					{
+						// list skins
+						foreach(scandir($adminpanel['path']['skins']) as $file)
+							if(($file != '.') && ($file != '..') && ($file != 'index.php'))
+							{
+								echo '<tr><td>' . $file . '</td><td>';
+								if($file !== $simpleblog['skin']) echo '<a href="?apply=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">Apply</a>';
+								echo '</td><td><a href="?edit=' . $file . '">Browse</a></td><td>';
+								if($file !== $simpleblog['skin']) echo '<a href="?delete=' . $file . '">Delete</a></td><td>';
+								if($file === $simpleblog['skin']) echo '</td><td>'; echo '<a href="?dumpSkin=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" target="_blank">Dump</a>';
+								echo '</td></tr>';
+							}
+					}
+				?>
+			</table>
+			<?php
+				/* for browse skin  - back button */
+				if(isset($_GET['edit']))
+				{
+					if(isset($_GET['dir']))
+					{
+						// back button with $_GET['dir']
+						$editBackButton['display']=false;
+						$editBackButton['explode']=explode('/', $_GET['dir']);
+						$editBackButton['count']=count($editBackButton['explode'])-1;
+						$editBackButton['link']='';
 
-			<?php adminpanel_serverInfo(); ?>
+						for($i=0; $i<$editBackButton['count']; $i++)
+						{
+							$editBackButton['display']=true;
+							if($i == $editBackButton['count']-1)
+								$editBackButton['link'].=$editBackButton['explode'][$i];
+							else
+								$editBackButton['link'].=$editBackButton['explode'][$i] . '/';
+						}
 
-			<h3>About</h3>
-			Admin panel for Simpleblog v2.1u1<br>
-			Version 1.2u1.1<br>
-			<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin">MissKittin</a>@<a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://github.com/MissKittin/simpleblog">GitHub</a><br>
-			Licensed under <a style="text-decoration: none; color: #0000ff;" target="_blank" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License v3.0</a>
+						if($editBackButton['display'])
+							echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&dir=' . $editBackButton['link'] . '">Back</a></div>';
+						else
+							echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '">Back</a></div>';
+
+						// upload button
+						if(ini_get('file_uploads') == 1)
+						{
+							if(isset($_GET['upload']))
+								echo '<br><br><br><br>
+									<form action="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
+										<input type="file" name="file[]" id="file" multiple>
+										<input class="button" type="submit" value="Upload">
+									</form>
+								';
+							else
+								echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&dir=' . $_GET['dir'] . '&upload">Upload</a></div>';
+						}
+					}
+					else
+						if(ini_get('file_uploads') == 1) // only upload button
+						{
+							if(isset($_GET['upload']))
+								echo '
+									<form action="?edit=' . $_GET['edit'] . '&upload&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
+										<input type="file" name="file[]" id="file" multiple>
+										<input class="button" type="submit" value="Upload">
+									</form>
+								';
+							else
+								echo '<div class="button button_in_row"><a href="?edit=' . $_GET['edit'] . '&upload">Upload</a></div>';
+						}
+				}
+			?>
+			<?php
+				/* for list skins - current skin info and install button */
+				if(!isset($_GET['edit']))
+				{
+					echo '<h3>Current skin: ' . $simpleblog['skin'] . '</h3>';
+					if(ini_get('file_uploads') == 1)
+					{
+				 		if(isset($_GET['installSkin']))
+							echo '
+								<form action="?installSkin&yes&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '" method="post" enctype="multipart/form-data">
+									<input type="file" name="file[]" id="file" accept=".zip">
+									<input class="button" type="submit" value="Install">
+								</form>
+							';
+						else
+							echo '<div class="button button_in_row"><a href="?installSkin">Install</a></div>';
+					}
+				}
+			?>
 		</div>
 		<div id="footer">
 			<?php include $adminpanel['root_php'] . '/lib/footer.php'; ?>

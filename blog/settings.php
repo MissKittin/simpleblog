@@ -2,7 +2,8 @@
 	// Simpleblog v1 16.04.2019
 	// Simpleblog v2 11.11.2019
 	// Simpleblog v2.1 03.12.2019
-	// Edit lines 11-33
+	// Simpleblog v2.2 06.04.2020
+	// Edit lines 9-36
 
 	// start execution time monitor (uncomment this to enable)
 	//$simpleblog['execTime']=microtime(true); 
@@ -10,7 +11,9 @@
 	// settings - cms
 	$simpleblog['root_html']='/blog'; // directory (for html)
 	$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']; // directory (for php)
+	$simpleblog['startup_page']='posts'; // for $simpleblog['root_php']/index.php
 	$simpleblog['title']='Simpleblog'; // <title>
+	$simpleblog['html_lang']='en'; // <html lang="value">
 	$simpleblog['short_title']='SimpleblogShortTitle'; // for admin panel
 	$simpleblog['entries_per_page']=10;
 	$simpleblog['taglinks']=true; // enable/disable tag as link

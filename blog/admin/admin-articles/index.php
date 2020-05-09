@@ -205,12 +205,10 @@
 
 	// 'publish' link
 	if((isset($_GET['publish'])) && (adminpanel_csrf_checkToken('get')))
-		if(file_exists($adminpanel['path']['articles'] . '/' . $_GET['publish']))
-			rename($adminpanel['path']['articles'] . '/' . $_GET['publish'], $adminpanel['path']['articles'] . '/' . str_replace('private', 'public', $_GET['publish']));
+		@rename($adminpanel['path']['articles'] . '/' . $_GET['publish'], $adminpanel['path']['articles'] . '/' . str_replace('private', 'public', $_GET['publish']));
 	// 'hide' link
 	if((isset($_GET['hide'])) && (adminpanel_csrf_checkToken('get')))
-		if(file_exists($adminpanel['path']['articles'] . '/' . $_GET['hide']))
-			rename($adminpanel['path']['articles'] . '/' . $_GET['hide'], str_replace('public', 'private', $adminpanel['path']['articles'] . '/' . $_GET['hide']));
+		@rename($adminpanel['path']['articles'] . '/' . $_GET['hide'], str_replace('public', 'private', $adminpanel['path']['articles'] . '/' . $_GET['hide']));
 	// 'delete' link
 	if(isset($_GET['delete']))
 		if((file_exists($adminpanel['path']['articles'] . '/' . $_GET['delete'])) && (!preg_match('/\//i', $_GET['delete'])))

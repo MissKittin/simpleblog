@@ -34,7 +34,7 @@
 
 		// clear old cache
 		unlink($simpleblog['cache']['cacheTag']['cache_dir'] . '/generate_cache');
-		if(file_exists($simpleblog['cache']['cacheTag']['cache_dir'] . '/tags.php')) unlink($simpleblog['cache']['cacheTag']['cache_dir'] . '/tags.php');
+		@unlink($simpleblog['cache']['cacheTag']['cache_dir'] . '/tags.php');
 
 		// render articles and pack it into cache
 		foreach(simpleblog_engineTag($simpleblog['cache']['cacheTag']['articles_dir'], 'list') as $tag)

@@ -29,6 +29,12 @@
 		include $adminpanel['root_php'] . '/lib/prevent-index.php'; exit();
 	}
 
+	// check php version
+	if(!function_exists('password_verify'))
+	{
+		echo 'PHP version is too old'; exit();
+	}
+
 	// import sec_csrf.php library
 	include $adminpanel['root_php'] . '/lib/sec_csrf.php';
 

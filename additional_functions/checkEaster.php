@@ -7,9 +7,15 @@
 		// usage: simpleblog_checkEaster(daysToEnd)
 		// example: simpleblog_checkEaster(49)
 
-		$calculateEaster=function()
+		// cache: put empty 'generateEasterCache' file in this directory
+
+		$calculateEaster=function($overrideThisYear=false)
 		{
-			$thisYear=date('Y'); // cache year
+			// calculate for cache or without cache
+			if($overrideThisYear !== false)
+				$thisYear=$overrideThisYear;
+			else
+				$thisYear=date('Y'); // cache year
 
 			// constants
 			if(($thisYear >= 1900) && ($thisYear <= 2099))
@@ -57,6 +63,34 @@
 
 			return $easter;
 		};
+
+		// generate/read cache (rewrite $calculateEaster())
+		if(file_exists('generateEasterCache'))
+		{
+			$cache_thisYear=date('Y');
+			for($i=1; $i<=100; ++$i)
+			{
+				$cache_output=$calculateEaster($cache_thisYear); // run $calculateEaster() once per loop
+				$cache_outputArray[$cache_thisYear]=array($cache_output['day'], $cache_output['month']);
+				++$cache_thisYear;
+			}
+			file_put_contents('easterCache.php', serialize($cache_outputArray));
+			unlink('generateEasterCache');
+
+			$calculateEaster=function()
+			{
+				$inputArray=unserialize(file_get_contents('easterCache.php'));
+				$thisYear=date('Y');
+				return array('day'=>$inputArray[$thisYear][0], 'month'=>$inputArray[$thisYear][1]);
+			};
+		}
+		elseif(file_exists('easterCache.php'))
+			$calculateEaster=function()
+			{
+				$inputArray=unserialize(file_get_contents('easterCache.php'));
+				$thisYear=date('Y');
+				return array('day'=>$inputArray[$thisYear][0], 'month'=>$inputArray[$thisYear][1]);
+			};
 
 		// calculate end date
 		$easterStart=$calculateEaster(); if($easterStart == false) { echo '/* no constants defined */' . "\n"; return false; }
