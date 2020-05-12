@@ -39,11 +39,6 @@
 
 	// settings end - don't edit code below
 
-	// router cache
-	$simpleblog_router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
-	$simpleblog_router_cache['substr']=substr($simpleblog_router_cache['strtok'], strrpos($simpleblog_router_cache['strtok'], '/') + 1);
-	$simpleblog_router_cache['explode_input']=substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html']));
-
 	// new explode function
 	$simpleblog_router_cache['explode']=function($a, $b, $offset)
 	{
@@ -52,6 +47,12 @@
 			return $array[$offset];
 		return false;
 	};
+
+	// router cache
+	$simpleblog_router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
+	$simpleblog_router_cache['substr']=substr($simpleblog_router_cache['strtok'], strrpos($simpleblog_router_cache['strtok'], '/') + 1);
+	$simpleblog_router_cache['explode_input']=substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html']));
+	$simpleblog_router_cache['explode_output']=$simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1);
 
 	// simpleblog rules
 	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'articles')	// deny access to /articles
