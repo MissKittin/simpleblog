@@ -15,11 +15,6 @@
 		}
 	}
 ?>
-<?php
-	// losuj obrazek
-	$images['sources']=['przerwa_techniczna.gif', 'wypierdalaj.gif'];
-	$images['rand']=rand(0, 1);
-?>
 <?php function simpleblog_viewMaintenanceCustomheaders() { ?>
 	<style>
 		#maintenanceBreak {
@@ -34,12 +29,9 @@
 	</style>
 <?php } ?>
 <?php function simpleblog_viewMaintenanceContent() { ?>
-	<?php global $images; ?>
-	<?php global $simpleblog; ?>
 	<div id="maintenanceBreak">
 		<div id="maintenanceBreakContent">
-			<h1>Przerwa techniczna</h1>
-			<img src="<?php echo $simpleblog['root_html']; ?>/media/<?php echo $images['sources'][$images['rand']]; ?>" alt="przerwa">
+			<h1>Maintenance Break</h1>
 		</div>
 	</div>
 <?php } ?>
