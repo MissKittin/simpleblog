@@ -147,9 +147,6 @@
 	if((isset($_GET['doBackup'])) && (adminpanel_csrf_checkToken('get')))
 		if(file_exists($adminpanel['root_php'] . '/lib/zip.lib.php'))
 		{
-			// set memory limit
-			ini_set('memory_limit','256M');
-
 			// zip library
 			include $adminpanel['root_php'] . '/lib/zip.lib.php';
 

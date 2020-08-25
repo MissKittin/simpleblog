@@ -1,6 +1,7 @@
 <?php
 	// Simpleblog index view library
 	// 04.04.2020
+	// $simpleblog['coreIndex_forceEcho'] variable 19.08.2020
 
 	// deny direct access
 	if(php_sapi_name() === 'cli-server')
@@ -55,6 +56,7 @@
 	{
 		global $simpleblog;
 
-		if(!$simpleblog['page']['emptyDatabase']) echo simpleblog_countIndexPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page']) . "\n";
+		if(!isset($simpleblog['coreIndex_forceEcho'])) $simpleblog['coreIndex_forceEcho']=false; // if not defined in settings
+		if(!$simpleblog['page']['emptyDatabase']) echo simpleblog_countIndexPages($simpleblog['root_php'] . '/articles', $simpleblog['page']['current_page'], $simpleblog['entries_per_page'], $simpleblog['coreIndex_forceEcho']) . "\n";
 	}
 ?>

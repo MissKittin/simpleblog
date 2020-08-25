@@ -35,7 +35,6 @@
 	* [today](#today)
 * [Limitations](#limitations)
 * [Why?](#why)
-<br><br>
 
 # First steps after clone
 1. you can rename `blog` to another name
@@ -44,13 +43,12 @@
 4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
 5. copy blog/skins/default and create your own.
 6. upload `blog` to server
-<br><br>\*setup is based on copy, setup-links is based on ln/mklink
-<br><br>
+
+\*setup is based on copy, setup-links is based on ln/mklink
 
 # $simpleblog['root_html'] vs $simpleblog['root_php']
-In normal way `$simpleblog['root_php'] = $_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']`, and it's ok: eg path for server is `/var/www/blog` and for browser is `/blog`.<br>
+In normal way `$simpleblog['root_php'] = $_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']`, and it's ok: eg path for server is `/var/www/blog` and for browser is `/blog`.  
 But if you use http proxy script, path for browser is `/proxy/blog` and it's not `/var/www/proxy/blog`. In this case you have to change: `$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . '/blog'` and `$simpleblog['root_html']='/proxy/blog'`. Problem solved.
-<br><br>
 
 # Simpleblog in DOCUMENT_ROOT
 1. (only for php-cli version) open `.router.php` and put `return false;` before `?>`:
@@ -66,11 +64,10 @@ But if you use http proxy script, path for browser is `/proxy/blog` and it's not
 ```
 2. change `$simpleblog['root_html']='/blog';` to `$simpleblog['root_html']='';` in `.router.php` or `settings.php`
 3. push `.router.php` or `settings.php`
-<br><br>
 
 # How to write articles
-Copy `public_000001.php` to `public_000002.php`, open it and change variables content.<br>
-`$art_date` is in DD.MM.YYYY format.<br>
+Copy `public_000001.php` to `public_000002.php`, open it and change variables content.  
+`$art_date` is in DD.MM.YYYY format.  
 If you want style article uncomment `$art_style['something']`, where
 * `$art_style['article']='content';` adds inline style to `<div class="article" style="content">`
 * `$art_style['tags']='content';` adds inline style to `<div class="art-tags" style="content">`
@@ -78,33 +75,26 @@ If you want style article uncomment `$art_style['something']`, where
 * `$art_style['date']='content';` adds inline style to `<div class="art-date" style="content">`
 * `$art_style['title']='content';` adds inline style to `<div class="art-title" style="content">`
 * `$art_style['title-header']=false;` disables `<h2>` tag in `<div class="art-title">`
-<br><br>
 
 # How to write articles with a lot of resources
-Create new page, divide the article into parts, add switches on the page.<br>
-Create standalone article, put in this article a little bit of full article and add link to page with full article.<br>
-See https://github.com/MissKittin/simpleblog/tree/master/blog/pages/sample_multipage<br>
+Create new page, divide the article into parts, add switches on the page.  
+Create standalone article, put in this article a little bit of full article and add link to page with full article.  
+See [here](blog/pages/sample_multipage)  
 Problem solved!
-<br><br>
 
 # How to write pages
 Copy `samplepage` to `your_page_link`, upload images, styles, fonts etc to this dir and edit `index.php`.
-<br><br>
 
 # Startup page
 Default startup page is `posts`. To choose a different startup page, change the `$simpleblog['startup_page']` setting.
-<br><br>
 
 # Editing header.php, footer.php and headlinks.php
 Don't touch first `<?php` block of code. Write content below `?>`.
-<br><br>
 
 # How to create skins
-Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP. You can use my functions: https://github.com/MissKittin/simpleblog/tree/master/additional_functions
-<br>
-`views` contains html layouts for `index`, maintenance break, `post`, `tag` and pages.
-<br>
-To create an installation package, just zip the directory with your theme.<br>
+Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP. You can use my functions: [here](additional_functions)  
+`views` contains html layouts for `index`, maintenance break, `post`, `tag` and pages.  
+To create an installation package, just zip the directory with your theme.
 
 Common CSS classes and ids in cms:
 * #header -> header.php content
@@ -112,7 +102,6 @@ Common CSS classes and ids in cms:
 	* .headlink -> link class
 * #articles -> page content
 * #footer -> footer.php content
-<br>
 
 Main page:
 * #articles
@@ -120,7 +109,6 @@ Main page:
 		* .art-tags -> box with tags, links inside (if taglinks enabled)
 		* .art-date -> box with date, links inside (if datelinks enabled)
 		* .art-title -> box with title, links and placeholder inside (if postlinks enabled)
-<br>
 
 Tag (list):
 * #articles
@@ -133,23 +121,20 @@ Tag (articles):
 		* .art-tags -> box with tags, links inside (if taglinks enabled)
 		* .art-date -> box with date, links inside (if datelinks enabled)
 		* .art-title -> box with title, links and placeholder inside (if postlinks enabled)
-<br>
 
-.art-title link placeholder is invisible link, that keeps postlink functionality if title is empty. It's styled in skin file.<br>
+.art-title link placeholder is invisible link, that keeps postlink functionality if title is empty. It's styled in skin file.  
 Pages uses commons ids and classes.
-<br><br>
 
 # How to allow javascript
-Change https://github.com/MissKittin/simpleblog/blob/master/blog/lib/htmlheaders.php#L3 to<br>
-`<meta http-equiv="Content-Security-Policy" content="script-src 'self';">`<br>
-This prevent inline script executing, but allow js files from your website.<br>
+Change [this](blog/lib/htmlheaders.php#L3) to  
+`<meta http-equiv="Content-Security-Policy" content="script-src 'self';">`  
+This prevent inline script executing, but allow js files from your website.  
 **Achtung!** Allow inline styles or you breaks $art_style
-<br><br>
 
 # Articles addressing scope
-Articles are addressed from `000001` to `999999`. You can increase scope by adding zeros at the begin of number, eg `0000999999`<br>
-**Achtung!** You must add zeros in all articles!<br>
-Automation: edit `$simpleblog_path`, put this file on your server, and run it in browser.<br>
+Articles are addressed from `000001` to `999999`. You can increase scope by adding zeros at the begin of number, eg `0000999999`  
+**Achtung!** You must add zeros in all articles!  
+Automation: edit `$simpleblog_path`, put this file on your server, and run it in browser.  
 **Remember to delete this file after the operation!**
 ```
 <?php
@@ -200,16 +185,13 @@ Automation: edit `$simpleblog_path`, put this file on your server, and run it in
 	</body>
 </html>
 ```
-<br><br>
 
 # php-cli test pool
 Setup simpleblog for php built-in server, and type `php -S 0.0.0.0:8080 router.php`, where `router.php` is in the the repo root, not the one in the `blog` directory.
-<br><br>
 
 # Supported HTTP servers
-PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.<br>
+PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.  
 `auto_prepend_file` way isn't tested and I don't recommend this (but if you want...)
-<br><br>
 
 # How to upgrade
 1. Merge `favicon`, `footer.php`, `header.php`, `headlinks.php`, `htmlheaders.php` content to new files in `lib`
@@ -217,30 +199,25 @@ PHP built-in server and Apache. If you want run the Simpleblog on other server, 
 3. Move maintenance break pattern from old `maintenance-break.php` to new `lib/maintenance-break-pattern.php`
 4. Remove all files from old version except `articles`, `cron`, `media`, `pages` and `skins`
 5. Merge new version with old version
-<br><br>
 
 # Apache htpasswd security for admin panel
 Why not? Read some tutorials :)
-<br><br>
 
 # Enabling brute force attack protection
 1. Read explantation in  `sec_bruteforce.php`
 2. Edit `admin-settings.php`
-<br><br>
 
 # How it works
-The simpleblog is divided into three parts: main page, tags and post. Tags/Post can be detached by setting `$simpleblog['taglinks']`/`$simpleblog['postlinks']` and `$simpleblog['datelinks']` to false.<br>
+The simpleblog is divided into three parts: main page, tags and post. Tags/Post can be detached by setting `$simpleblog['taglinks']`/`$simpleblog['postlinks']` and `$simpleblog['datelinks']` to false.  
 After that you can remove:
 * for tag: `tag` directory, `lib/coreTag.php` and `lib/viewTag.php`
 * for post: `post` directory, `lib/corePost.php` and `lib/viewPost.php`
-<br><br>
 
 ## Core
 The heart of the Simpleblog is divided into three parts:
 * `core.php` -> contains function that render articles.
 * `coreIndex.php`, `coreTag.php`, `corePost.php` -> contains functions that prepare and groups articles for main page/tag/post
 * `viewIndex.php`, `viewTag.php`, `viewPost.php` -> contains functions for frontend (`views` in skin)
-<br>
 
 ## Frontend
 The frontend consists of the following files:
@@ -252,23 +229,20 @@ The frontend consists of the following files:
 
 ## Settings
 Settings are located in router.php (php-cli configuration) or in settings.php (apache configuration).
-<br>
 
 ## Administration
 You can manage the Simpleblog in two ways: through admin panel and ssh.
-<br>
 
 ## Modules
 The Simpleblog has a modular structure
-<br>
 
 ### admin panel (optional)
-Basic script set that allow manage the Simpleblog from a web browser.<br>
-Requires PHP >= 5.5.0 (whole cms is developed on PHP v7)<br>
-Default login and password is `simpleblog`.<br>
-`admin/disabled.php` completely disables the panel ("panic button"). Remove this file if you want use admin panel.<br>
-To enable backup function, read https://github.com/MissKittin/simpleblog/tree/master/patches/zip.lib
-<br><br>
+Basic script set that allow manage the Simpleblog from a web browser.  
+Requires PHP >= 5.5.0 (whole cms is developed on PHP v7)  
+Default login and password is `simpleblog`.  
+`admin/disabled.php` completely disables the panel ("panic button"). Remove this file if you want use admin panel.  
+To enable backup function, read [here](patches/zip.lib)
+
 Admin panel modules:
 * core modules:
 	* `admin-settings.php` -> admin panel configuration and credentials, don't touch this (change password on first login)
@@ -285,34 +259,28 @@ Admin panel modules:
 * Media -> manage uploaded media files
 * Pages -> manage pages
 * Skins -> install, uninstall, edit and change current skin
-<br>
 
 ### cron (optional)
-Executes defined tasks, see https://github.com/MissKittin/simpleblog/blob/master/blog/lib/cron.php<br>
-You can detach cron from Simpleblog, just comment https://github.com/MissKittin/simpleblog/blob/master/blog/router.php#L89 or https://github.com/MissKittin/simpleblog/blob/master/blog/settings.php#L34
-<br>
+Executes defined tasks, see [here](blog/lib/cron.php)  
+You can detach cron from Simpleblog, just comment [this](blog/router.php#L89) or [this](blog/settings.php#L34)
 
 ### maintenance break pattern (optional)
-Edit .router.php or settings.php: enable/disable switch and one ip on which the pattern isn't displayed<br>
-See https://github.com/MissKittin/simpleblog/blob/master/blog/lib/maintenance-break.php
-<br>
+Edit .router.php or settings.php: enable/disable switch and one ip on which the pattern isn't displayed  
+See [here](blog/lib/maintenance-break.php)
 
 ### pages (optional, enabled by default)
 Static pages linked in `headlinks.php`
-<br>
 
 ### prevent-index.php (required)
 A simple script that prevents directory listing.
-<br>
 
 ### temporary files (not installed by default)
-Just create this directory manually, path `blog/tmp`<br>
+Just create this directory manually, path `blog/tmp`  
 Eg for timestamps and indicators created by cron tasks.
-<br><br>
 
 # History
 ## alpha
-In alpha version the simpleblog was only simple script. Articles was created only via SSH.<br>
+In alpha version the simpleblog was only simple script. Articles was created only via SSH.  
 The alpha version tree:
 * articles (dir)
 	* 000001.php
@@ -333,18 +301,18 @@ The alpha version tree:
 * prevent-index.php
 * router.php
 * settings.php
-<br>
+
 Content of files:
 
-[articles/000001.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/articles/public_000001.php)<br>
-[pages/samplepage/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/pages/samplepage/index.php)<br>
-[skins/default/style.css](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/skins/default/style.css)<br>
-[style/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/style/index.php)<br>
-[footer.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/footer.php)<br>
-[header.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/header.php)<br>
-[headlinks.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/headlinks.php)<br>
-[prevent-index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/prevent-index.php)<br>
-[settings.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/settings.php)<br>
+[articles/000001.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/articles/public_000001.php)  
+[pages/samplepage/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/pages/samplepage/index.php)  
+[skins/default/style.css](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/skins/default/style.css)  
+[style/index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/style/index.php)  
+[footer.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/footer.php)  
+[header.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/header.php)  
+[headlinks.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/headlinks.php)  
+[prevent-index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/prevent-index.php)  
+[settings.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/settings.php)  
 `index.php` (core of simpleblog alpha)
 ```
 <?php
@@ -473,36 +441,32 @@ Content of files:
 	</body>
 </html>
 ```
-<br>
 
 In September 25, 2019, the naming of files with articles changed and the `$art_public` flag was deprecated:
 
 [index.php](https://github.com/MissKittin/simpleblog/blob/457b31e5abbde2cd5977d11453935beb72bdc6d1/blog/index.php)
 
 The algorithm's operation principle has not changed since then.
-<br>
 
 ## v1
 In this version simple admin script, favicons and tag subsystem have been added. Also since this version skins are php scripts.
-<br>
 
 ## v2.0
 Version 2 is completely redesigned. The simpleblog has been modularized, with true admin panel (v1).
-<br>
 
 ## v2.1
 v2.1 is v2.0 with many improvements, new features and admin panel v1.1.
-<br>
 
 ## today
 in v2.2 the page layout has been moved from indexes to the skin. Also you can now create custom startup page. Stable and currently maintained.
-<br><br>
 
 # Limitations
-The simpleblog is inefficient when there are ~600000 articles in the database. I'm working to resolve this issue.<br>
-There are ~50 articles on my blog, the execution time is 0.0067s (on ssd and with opcache).<br>
+The simpleblog is inefficient when there are ~600000 articles in the database.
+
+**Hack:** add `$simpleblog['coreIndex_forceEcho']=true` to `.router.php` or `settings.php`. Successfully tested 822668 articles, executed in 0.61096978187561s using 107009512B **(tag and datelinks subsystems were unusable)**.
+
+There are ~50 articles on my blog, the execution time is 0.0067s (on ssd and with opcache).  
 Remember, the simpleblog was created to support a small website. For more advanced tasks use Wordpress or Joomla.
-<br><br>
 
 # Why?
 Because I like PHP, simplicity and control over the code.
