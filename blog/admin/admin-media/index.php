@@ -24,7 +24,7 @@
 			if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				$countfiles=count($_FILES['file']['name']);
-				for($i=0; $i<$countfiles; $i++)
+				for($i=0; $i<$countfiles; ++$i)
 					move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['media'] . '/' . $_FILES['file']['name'][$i]);
 			}
 			else

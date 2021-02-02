@@ -1,4 +1,4 @@
-<?php /* import apache settings (if not imported by main index) */ if((!isset($simpleblog)) && (php_sapi_name() != 'cli-server')) include '../../settings.php'; ?>
+<?php /* import settings (if not imported by main index) */ if(!isset($simpleblog)) include '../../settings.php'; ?>
 <?php if(file_exists('disabled.php')) { include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); } ?>
 
 <?php $simpleblog_viewPageLang='en'; // custom html lang (optional) ?>

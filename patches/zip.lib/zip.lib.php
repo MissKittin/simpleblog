@@ -2,7 +2,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/zip.lib.php')
 	{
-		include 'prevent-index.php'; exit();
+		include './prevent-index.php'; exit();
 	}
 ?>
 <?php

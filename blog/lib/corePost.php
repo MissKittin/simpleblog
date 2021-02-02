@@ -5,19 +5,9 @@
 	// optimizations 06.04.2020
 
 	// deny direct access
-	if(php_sapi_name() === 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/corePost.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include 'prevent-index.php'; exit();
-		}
+		include './prevent-index.php'; exit();
 	}
 
 	// convert ID to filename

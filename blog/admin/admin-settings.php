@@ -2,23 +2,22 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/admin-settings.php')
 	{
-		include 'lib/prevent-index.php'; exit();
+		include './lib/prevent-index.php'; exit();
 	}
 ?>
 <?php
 	// import simpleblog settings
-	if(php_sapi_name() != 'cli-server')
-		if(!isset($simpleblog))
+	if(!isset($simpleblog))
+	{
+		$search_settings='settings.php';
+		$search_prevent_index='lib/prevent-index.php';
+		while((!file_exists($search_settings)) || (!file_exists($search_prevent_index)))
 		{
-			$search_settings='settings.php';
-			$search_prevent_index='lib/prevent-index.php';
-			while((!file_exists($search_settings)) || (!file_exists($search_prevent_index)))
-			{
-				$search_settings='../' . $search_settings;
-				$search_prevent_index='../' . $search_prevent_index;
-			}
-			include $search_settings;
+			$search_settings='../' . $search_settings;
+			$search_prevent_index='../' . $search_prevent_index;
 		}
+		include $search_settings;
+	}
 ?>
 <?php
 	// credentials

@@ -12,10 +12,7 @@
 	include $adminpanel['root_php'] . '/lib/login/login.php';
 
 	// select settings file
-	if(php_sapi_name() === 'cli-server')
-		$settings_file=$simpleblog['root_php'] . '/.router.php';
-	else
-		$settings_file=$simpleblog['root_php'] . '/settings.php';
+	$settings_file=$simpleblog['root_php'] . '/settings.php';
 
 	// restore $maintenance_break array
 	foreach(explode(PHP_EOL, file_get_contents($settings_file)) as $mbLine)
@@ -127,11 +124,11 @@
 		{
 			if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 			file_put_contents($adminpanel['path']['mbp'], $_POST['file_content']);
-			include 'mbpedit.php'; exit();
+			include './mbpedit.php'; exit();
 		}
 		else
 		{
-			include 'mbpedit.php'; exit();
+			include './mbpedit.php'; exit();
 		}
 	}
 
@@ -185,8 +182,7 @@
 			// dump settings
 			if(php_sapi_name() === 'cli-server')
 				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/.router.php'), '.router.php');
-			else
-				$zip->addFile(file_get_contents($simpleblog['root_php'] . '/settings.php'), 'settings.php');
+			$zip->addFile(file_get_contents($simpleblog['root_php'] . '/settings.php'), 'settings.php');
 
 			// dump maintenance break pattern
 			if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php'))

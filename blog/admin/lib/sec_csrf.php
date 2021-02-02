@@ -16,7 +16,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/sec_csrf.php')
 	{
-		include 'prevent-index.php'; exit();
+		include './prevent-index.php'; exit();
 	}
 
 	// disable library - for debugging only!

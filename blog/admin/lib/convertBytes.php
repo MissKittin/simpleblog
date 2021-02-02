@@ -5,7 +5,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/convertBytes.php')
 	{
-		include 'prevent-index.php'; exit();
+		include './prevent-index.php'; exit();
 	}
 
 	function adminpanel_convertBytes($input)
@@ -15,7 +15,7 @@
 		while($value >= 1024)
 		{
 			$value=$value/1024;
-			$depth++;
+			++$depth;
 		}
 		switch($depth)
 		{

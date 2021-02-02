@@ -5,8 +5,8 @@
 	$module['id']='admin-status';
 
 	// import settings
-	if(file_exists('admin-settings.php'))
-		include 'admin-settings.php';
+	if(file_exists('./admin-settings.php'))
+		include './admin-settings.php';
 	else
 		include '../admin-settings.php';
 
@@ -37,9 +37,9 @@
 				if(($file != '.') && ($file != '..'))
 				{
 					if(substr($file, 0, 6) === 'public')
-						$returnArray['published']++;
+						++$returnArray['published'];
 					else
-						$returnArray['hidden']++;
+						++$returnArray['hidden'];
 				}
 
 			return $returnArray;
@@ -73,7 +73,7 @@
 						$tag=trim($tag); // remove space at the end
 						if(($tag != '') && (!in_array($tag, $tags))) // omit empty value
 						{
-							$returnArray['published']++;
+							++$returnArray['published'];
 							array_push($tags, $tag);
 						}
 					}
@@ -89,7 +89,7 @@
 						$tag=trim($tag); // remove space at the end
 						if(($tag != '') && (!in_array($tag, $tags)) && (!in_array($tag, $hiddenTags))) // omit empty value and published tags
 						{
-							$returnArray['hidden']++;
+							++$returnArray['hidden'];
 							array_push($hiddenTags, $tag);
 						}
 					}
@@ -115,9 +115,9 @@
 				if(($file != '.') && ($file != '..') && (is_dir($dir . '/' . $file)))
 				{
 					if(file_exists($dir . '/' . $file . '/disabled.php'))
-						$returnArray['hidden']++;
+						++$returnArray['hidden'];
 					else
-						$returnArray['published']++;
+						++$returnArray['published'];
 				}
 
 			return $returnArray;
@@ -142,9 +142,9 @@
 					if(($file != '.') && ($file != '..'))
 					{
 						if(substr($file, 0, 3) === 'on_')
-							$returnArray['enabled']++;
+							++$returnArray['enabled'];
 						else
-							$returnArray['disabled']++;
+							++$returnArray['disabled'];
 					}
 
 				return $returnArray;
@@ -175,7 +175,7 @@
 							if(is_dir($dir . '/' . $file))
 								$returnCount+=adminpanel_countCmsSize($dir . '/' . $file, 'count');
 							else
-								$returnCount++;
+								++$returnCount;
 						}
 					break;
 			}
@@ -213,12 +213,6 @@
 		<h3>Server</h3>
 		HTTP Server: <?php echo $_SERVER['SERVER_SOFTWARE']; ?><br>
 		PHP version: <?php echo phpversion(); ?><br>
-		<?php
-			if(file_exists($simpleblog['root_php'] . '/settings.php'))
-				echo 'Simpleblog is configured for Apache'."\n";
-			elseif(file_exists($simpleblog['root_php'] . '/.router.php'))
-				echo 'Simpleblog is configured for PHP built-in server'."\n";
-		?>
 		<?php
 	}
 ?>

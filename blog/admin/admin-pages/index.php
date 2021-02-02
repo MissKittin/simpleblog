@@ -26,16 +26,16 @@
 					if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 					{
 						unlink($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['delete']);
-						include('manage.php'); exit();
+						include './manage.php'; exit();
 					}
 					else
 					{
-						include('manage-delete.php'); exit();
+						include './manage-delete.php'; exit();
 					}
 				}
 				else
 				{
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 			}
 			else if(isset($_GET['edit']))
@@ -47,16 +47,16 @@
 					{
 						if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 						file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['edit'], $_POST['file_content']);
-						include('manage-edit.php'); exit();
+						include './manage-edit.php'; exit();
 					}
 					else
 					{
-						include('manage-edit.php'); exit();
+						include './manage-edit.php'; exit();
 					}
 				}
 				else
 				{
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 			}
 			else if(isset($_POST['rename']))
@@ -65,11 +65,11 @@
 				if((!preg_match('/\//i', $_POST['rename'])) && (adminpanel_csrf_checkToken('post'))) // '..' hack and sec_csrf
 				{
 					rename($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_GET['oldname'], $adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['rename']);
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 				else
 				{
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}	
 			}
 			else if(isset($_GET['upload']))
@@ -80,18 +80,18 @@
 					if((isset($_GET['yes'])) && (adminpanel_csrf_checkToken('get')))
 					{
 						$countfiles=count($_FILES['file']['name']);
-						for($i=0; $i<$countfiles; $i++)
+						for($i=0; $i<$countfiles; ++$i)
 							move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_FILES['file']['name'][$i]);
-						include('manage.php'); exit();
+						include './manage.php'; exit();
 					}
 					else
 					{
-						include('manage-upload.php'); exit();
+						include './manage-upload.php'; exit();
 					}
 				}
 				else
 				{
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 				
 			}
@@ -102,11 +102,11 @@
 				{
 					if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'])) && (!preg_match('/\//i', $_GET['manage'])) && (!preg_match('/\//i', $_GET['create'])) && (adminpanel_csrf_checkToken('post')))
 						file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['manage'] . '/' . $_POST['create'], '');
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 				else
 				{
-					include('manage-create.php'); exit();
+					include './manage-create.php'; exit();
 				}
 			}
 			else
@@ -114,7 +114,7 @@
 				// manage page
 				if((!@preg_match('/\//i', $_GET['manage'])) && (!@preg_match('/\//i', $_GET['edit'])))
 				{
-					include('manage.php'); exit();
+					include './manage.php'; exit();
 				}
 			}
 		}
@@ -132,7 +132,7 @@
 			}
 			else
 			{
-				include('delete.php');
+				include './delete.php';
 				exit();
 			}
 		}
@@ -161,14 +161,14 @@
 	{
 		if($_GET['create'] === '')
 		{
-			include('create.php');
+			include './create.php';
 			exit();
 		}
 		else
 			if((!file_exists($adminpanel['path']['pages'] . '/' . $_GET['create'])) && (!preg_match('/\//i', $_GET['create'])) && (adminpanel_csrf_checkToken('get')))
 			{
 				mkdir($adminpanel['path']['pages'] . '/' . $_GET['create']);
-				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php /* import apache settings (if not imported by main index) */ if((!isset($simpleblog)) && (php_sapi_name() != \'cli-server\')) include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n\n".'<?php //$simpleblog_viewPageLang=\'en\'; // custom html lang (optional) ?>'."\n".'<?php //$simpleblog_viewPageTitle=\'Sample page | \' . $simpleblog[\'title\']; // custom title (optional) ?>'."\n\n".'<?php function simpleblog_viewPageCustomheaders() { ?>'."\n\t".'<!-- custom html headers here (optional) -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageArticles() { ?>'."\n\t".'<!-- put content here -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageBodyAppend() { ?>'."\n\t".'<!-- content at the end of <body> -->'."\n".'<?php } ?>'."\n\n".'<?php include $simpleblog[\'root_php\'] . \'/skins/\' . $simpleblog[\'skin\'] . \'/views/viewPage.php\'; ?>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time: \' . (microtime(true) - $simpleblog[\'execTime\']) . \'s, max mem used: \' . memory_get_peak_usage() . \'B\', 0); ?>');
+				file_put_contents($adminpanel['path']['pages'] . '/' . $_GET['create'] . '/index.php', '<?php /* import settings (if not imported by main index) */ if(!isset($simpleblog)) include \'../../settings.php\'; ?>'."\n".'<?php if(file_exists(\'disabled.php\')) { include $simpleblog[\'root_php\'] . \'/lib/prevent-index.php\'; exit(); } ?>'."\n\n".'<?php //$simpleblog_viewPageLang=\'en\'; // custom html lang (optional) ?>'."\n".'<?php //$simpleblog_viewPageTitle=\'Sample page | \' . $simpleblog[\'title\']; // custom title (optional) ?>'."\n\n".'<?php function simpleblog_viewPageCustomheaders() { ?>'."\n\t".'<!-- custom html headers here (optional) -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageArticles() { ?>'."\n\t".'<!-- put content here -->'."\n".'<?php } ?>'."\n\n".'<?php function simpleblog_viewPageBodyAppend() { ?>'."\n\t".'<!-- content at the end of <body> -->'."\n".'<?php } ?>'."\n\n".'<?php include $simpleblog[\'root_php\'] . \'/skins/\' . $simpleblog[\'skin\'] . \'/views/viewPage.php\'; ?>'."\n".'<?php if(isset($simpleblog[\'execTime\'])) error_log(\'Simpleblog execution time: \' . (microtime(true) - $simpleblog[\'execTime\']) . \'s, max mem used: \' . memory_get_peak_usage() . \'B\', 0); ?>');
 				copy($adminpanel['root_php'] . '/lib/prevent-index.php', $adminpanel['path']['pages'] . '/' . $_GET['create'] . '/disabled.php');
 			}
 	}
@@ -220,7 +220,7 @@
 								if(($fil != '.') && ($fil != '..'))
 								{
 									$size+=$fil->getSize();
-									$countfiles++;
+									++$countfiles;
 								}
 
 							if(file_exists($adminpanel['path']['pages'] . '/' . $file . '/disabled.php'))

@@ -2,7 +2,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/fileSearchRecursive.php')
 	{
-		include 'prevent-index.php'; exit();
+		include './prevent-index.php'; exit();
 	}
 
 	function adminpanel_fileSearchRecursive($dir, $prefix)

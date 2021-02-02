@@ -1,43 +1,9 @@
 <?php
-	// Simpleblog v1 16.04.2019
-	// Simpleblog v2 11.11.2019
-	// Simpleblog v2.1 03.12.2019
-	// Simpleblog v2.2 06.04.2020
-	// Edit lines 14-38
+	// Simpleblog - router script
+	// Denied: *.php [in uri], articles/*, cron/* and tmp/*
 
-	// Denied: articles/*, favicon.php, htmlheaders.php, cron/* and tmp/*
-
-	// start execution time monitor (uncomment this to enable)
-	//$simpleblog['execTime']=microtime(true); 
-
-	// settings - cms
-	$simpleblog['root_html']='/blog'; // directory (for html)
-	$simpleblog['root_php']=$_SERVER['DOCUMENT_ROOT'] . $simpleblog['root_html']; // directory (for php)
-	$simpleblog['startup_page']='posts'; // for $simpleblog['root_php']/index.php
-	$simpleblog['title']='Simpleblog'; // <title>
-	$simpleblog['html_lang']='en'; // <html lang="value">
-	$simpleblog['short_title']='SimpleblogShortTitle'; // for admin panel
-	$simpleblog['entries_per_page']=10;
-	$simpleblog['taglinks']=true; // enable/disable tag as link
-	$simpleblog['postlinks']=true; // enable/disable post title as link
-	$simpleblog['datelinks']=true; // enable/disable post date as link
-	$simpleblog['skin']='default'; // skin name
-	$simpleblog['fake_notfound']=true; // use http_response_code(404)
-
-	// settings - one label in whole cms
-	$simpleblog['emptyLabel']='<h1 style="text-align: center;">Empty</h1>';
-
-	// settings - maintenance break pattern
-	$maintenance_break['enabled']=false;
-	$maintenance_break['allowed_ip']='127.0.0.1';
-
-	// settings - backward compatibility with v1
-	// uncomment three lines below if you have old skins or articles
-	//$cms_root=$simpleblog['root_html'];
-	//$cms_root_php=$simpleblog['root_php'];
-	//$page_title=$simpleblog['title'];
-
-	// settings end - don't edit code below
+	// include settings.php (if you are using softlinks, you may need to tweak this)
+	include __DIR__ . '/settings.php';
 
 	// new explode function
 	$simpleblog_router_cache['explode']=function($a, $b, $offset)
@@ -57,31 +23,24 @@
 	// simpleblog rules
 	if($simpleblog_router_cache['explode']('/', $simpleblog_router_cache['explode_input'], 1) === 'articles')	// deny access to /articles
 		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	if($simpleblog_router_cache['substr'] === 'favicon.php')							// deny access to favicon.php
+	if($simpleblog_router_cache['explode_output'] === 'cron')													// deny access to cron
 		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	if($simpleblog_router_cache['substr'] === 'htmlheaders.php')							// deny access to htmlheaders.php
-		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	if($simpleblog_router_cache['explode_output'] === 'cron')							// deny access to cron
-		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	if($simpleblog_router_cache['explode_output'] === 'tmp')							// deny access to tmps
+	if($simpleblog_router_cache['explode_output'] === 'tmp')													// deny access to tmps
 		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
 
 	// rewrite common rules
-	if($simpleblog_router_cache['substr'] === '.router.php')			// hide script - fake 404 for this script
+	if($simpleblog_router_cache['substr'] === '.router.php')													// hide script - fake 404 for this script
 		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	if(strstr($simpleblog_router_cache['substr'], '.') === '.php')			// hide php
+	if(strstr($simpleblog_router_cache['substr'], '.') === '.php')												// hide php
 		{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
-	// 404 handle for dirs - rewrite policy don't work, rule removed
-	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok']))	// 404 handle - for dirs
+																												// 404 handle for dirs - rewrite policy don't work, rule removed
+	if(is_dir($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok']))									// 404 handle - for dirs
 		if((file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.php')) || (file_exists($_SERVER['DOCUMENT_ROOT'] . $simpleblog_router_cache['strtok'] . '/index.html'))){}else
 			{ include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit(); }
 
-	// include maintenance break pattern
-	if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { include $simpleblog['root_php'] . '/lib/maintenance-break.php'; unset($maintenance_break); }
-
-	// execute cron tasks
-	if(file_exists($simpleblog['root_php'] . '/lib/cron.php')) include $simpleblog['root_php'] . '/lib/cron.php';
-
 	// drop cache
 	unset($simpleblog_router_cache);
+
+	// drop settings (not necessary)
+	//unset($simpleblog);
 ?>

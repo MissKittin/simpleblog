@@ -1,18 +1,8 @@
 <?php
 	// deny direct access
-	if(php_sapi_name() === 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(basename(strtok($_SERVER['REQUEST_URI'], '?')) === 'viewPage.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include '../../../lib/prevent-index.php'; exit();
-		}
+		include '../../../lib/prevent-index.php'; exit();
 	}
 ?>
 <!DOCTYPE html>

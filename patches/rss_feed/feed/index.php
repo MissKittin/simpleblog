@@ -7,11 +7,11 @@
 	// cache location dir: $simpleblog['root_php'] /tmp/feed_cache
 	// cache (re)generation indicator: $simpleblog['root_php'] /tmp/feed_cache/generate_cache
 
+	// import settings (called for admin panel if failed)
+	if(!@include '../settings.php') include '../../settings.php';
+
 	// settings
 	$simpleblog['cache']['cacheFeed']['cache_dir']=$simpleblog['root_php'] . '/tmp/feed_cache';
-
-	// import apache settings
-	if(php_sapi_name() != 'cli-server') include '../settings.php';
 
 	// protocol
 	if(isset($_SERVER['HTTPS'])) $protocol='https://'; else $protocol='http://';
@@ -59,7 +59,29 @@
 	if(file_exists($simpleblog['cache']['cacheFeed']['cache_dir'] . '/generate_cache'))
 	{
 		unlink($simpleblog['cache']['cacheFeed']['cache_dir'] . '/generate_cache');
+
+		// pivot/force variables (server-independent cache)
+		$simpleblog['cache']['cacheIndex']['pivot_root_html']=$simpleblog['root_html'];
+		$simpleblog['root_html']='<?php echo $simpleblog[\'root_html\']; ?>';
+		if(isset($cms_root))
+		{
+			$simpleblog['cache']['cacheIndex']['pivot_cms_root']=$cms_root;
+			$cms_root='<?php echo $cms_root; ?>';
+		}
+
 		file_put_contents($simpleblog['cache']['cacheFeed']['cache_dir'] . '/feed.php', simpleblog_engineFeed());
+
+		// htmlspecialchars() patch - do not entity php code
+		file_put_contents($simpleblog['cache']['cacheFeed']['cache_dir'] . '/feed.php', str_replace(array('&lt;?php', '&lt;?', '?&gt;'), array('<?php', '<?', '?>'), file_get_contents($simpleblog['cache']['cacheFeed']['cache_dir'] . '/feed.php')));
+
+		// revert and remove pivots
+		$simpleblog['root_html']=$simpleblog['cache']['cacheIndex']['pivot_root_html'];
+		unset($simpleblog['cache']['cacheIndex']['pivot_root_html']);
+		if(isset($cms_root))
+		{
+			$cms_root=$simpleblog['cache']['cacheIndex']['pivot_cms_root'];
+			unset($simpleblog['cache']['cacheIndex']['pivot_cms_root']);
+		}
 	}
 
 	// for admin-feed (1)

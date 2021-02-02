@@ -2,8 +2,8 @@
 	// Simpleblog v2.2 - post subsystem
 	// 04.04.2020
 
-	// import apache settings
-	if(php_sapi_name() != 'cli-server') include '../settings.php';
+	// import settings
+	if(!isset($simpleblog)) include '../settings.php';
 
 	// import view
 	if(!@include $simpleblog['root_php'] . '/skins/' . $simpleblog['skin'] . '/views/viewPost.php')

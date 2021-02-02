@@ -65,11 +65,11 @@
 			{
 				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 				file_put_contents($adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['fileEdit'], $_POST['file_content']);
-				include('edit.php'); exit();
+				include './edit.php'; exit();
 			}
 			else
 			{
-				include('edit.php'); exit();
+				include './edit.php'; exit();
 			}
 		}
 
@@ -111,12 +111,7 @@
 	// apply skin
 	if(isset($_GET['apply']))
 		if((file_exists($adminpanel['path']['skins'] . '/' . $_GET['apply'])) && (adminpanel_csrf_checkToken('get')))
-		{
-			if(php_sapi_name() === 'cli-server')
-				adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/router.php');
-			else
-				adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/settings.php');
-		}
+			adminpanel_applySkin($simpleblog['skin'], $_GET['apply'], $simpleblog['root_php'] . '/settings.php');
 
 	// delete skin
 	if(isset($_GET['delete']))
@@ -156,10 +151,10 @@
 	{
 		$countfiles=count($_FILES['file']['name']);
 		if(isset($_GET['dir']))
-			for($i=0; $i<$countfiles; $i++)
+			for($i=0; $i<$countfiles; ++$i)
 				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_GET['dir'] . '/' . $_FILES['file']['name'][$i]);
 		else
-			for($i=0; $i<$countfiles; $i++)
+			for($i=0; $i<$countfiles; ++$i)
 				move_uploaded_file($_FILES['file']['tmp_name'][$i], $adminpanel['path']['skins'] . '/' . $_GET['edit'] . '/' . $_FILES['file']['name'][$i]);
 	}
 
@@ -251,7 +246,7 @@
 						$editBackButton['count']=count($editBackButton['explode'])-1;
 						$editBackButton['link']='';
 
-						for($i=0; $i<$editBackButton['count']; $i++)
+						for($i=0; $i<$editBackButton['count']; ++$i)
 						{
 							$editBackButton['display']=true;
 							if($i == $editBackButton['count']-1)

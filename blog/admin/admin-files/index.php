@@ -78,11 +78,11 @@
 		if(isset($_GET['dir']))
 		{
 			if((!in_array('..', explode('/', $_GET['dir']))) && (file_exists($simpleblog['root_php'] . '/' . $_GET['dir']))) // '..' hack
-				for($i=0; $i<$countfiles; $i++)
+				for($i=0; $i<$countfiles; ++$i)
 					move_uploaded_file($_FILES['file']['tmp_name'][$i], $simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_FILES['file']['name'][$i]);
 		}
 		else
-			for($i=0; $i<$countfiles; $i++)
+			for($i=0; $i<$countfiles; ++$i)
 				move_uploaded_file($_FILES['file']['tmp_name'][$i], $simpleblog['root_php'] . '/' . $_FILES['file']['name'][$i]);
 	}
 
@@ -133,7 +133,7 @@
 			}
 			else
 			{
-				include 'delete.php'; exit();
+				include './delete.php'; exit();
 			}
 		}
 		else
@@ -145,7 +145,7 @@
 			}
 			else
 			{
-				include 'delete.php'; exit();
+				include './delete.php'; exit();
 			}
 		}
 	}
@@ -161,11 +161,11 @@
 				{
 					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 					file_put_contents($simpleblog['root_php'] . '/' . $_GET['dir'] . '/' . $_GET['edit'], $_POST['file_content']);
-					include 'edit.php'; exit();
+					include './edit.php'; exit();
 				}
 				else
 				{
-					include 'edit.php'; exit();
+					include './edit.php'; exit();
 				}
 			}
 		}
@@ -177,11 +177,11 @@
 				{
 					if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 					file_put_contents($simpleblog['root_php'] . '/' . $_GET['edit'], $_POST['file_content']);
-					include 'edit.php'; exit();
+					include './edit.php'; exit();
 				}
 				else
 				{
-					include 'edit.php'; exit();
+					include './edit.php'; exit();
 				}
 			}
 		}

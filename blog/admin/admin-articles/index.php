@@ -50,7 +50,7 @@
 
 		// calculate name length
 		$filename['length']=strlen($filename['data']);
-		$filename['data']=$filename['data']+1; // greater than greatest
+		++$filename['data']; // greater than greatest
 		$filename['length']=$filename['length']-strlen($filename['data']);
 
 		// if out of space
@@ -58,7 +58,7 @@
 			$out_of_space=true;
 
 		// add zeros
-		for($i=1; $i<=$filename['length']; $i++)
+		for($i=1; $i<=$filename['length']; ++$i)
 			$filename['data']='0' . $filename['data'];
 
 		return 'private_' . $filename['data'] . '.php';
@@ -261,7 +261,7 @@
 							include $adminpanel['path']['articles'] . '/' . $file;
 							if(substr($file, 0, 6) === 'public')
 							{
-								$public_articles_indicator++;
+								++$public_articles_indicator;
 								$publish_get_param='hide'; $publish_get_title="Hide";
 							}
 							else
@@ -269,7 +269,7 @@
 								$publish_get_param='publish'; $publish_get_title="Publish";
 							}
 							echo '<td>' . str_replace(['<', '>'], ['&lt;', '&gt;'], $art_title) . '</td><td style="padding: 2px;">' . $art_date . '</td><td>' . $art_tags . '</td><td><a style="text-decoration: none;" href="?' . $publish_get_param . '=' . $file . '&' . adminpanel_csrf_printToken('parameter') . '=' . adminpanel_csrf_printToken('value') . '">' . $publish_get_title . '</a></td><td><a style="text-decoration: none;" href="?edit=' . $file . '">Edit</a></td><td><a style="text-decoration: none;" href="?delete=' . $file . '">Delete</a></td></tr>' . "\n";
-							$articles_indicator++;
+							++$articles_indicator;
 							unset($art_title); unset($art_date); unset($art_tags); unset($art_style); unset($art_content);
 						}
 				?>

@@ -3,21 +3,12 @@
 	// for main page
 	// 11.11.2019
 	// optimizations 06.04.2020
+	// simpleblog_countIndexPages() forceEcho parameter 19.08.2020
 
 	// deny direct access
-	if(php_sapi_name() === 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/coreIndex.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include 'prevent-index.php'; exit();
-		}
+		include './prevent-index.php'; exit();
 	}
 
 	// count articles for main page
@@ -53,7 +44,7 @@
 	}
 
 	// count pages - for main page
-	function simpleblog_countIndexPages($dir, $current_page, $entries_per_page)
+	function simpleblog_countIndexPages($dir, $current_page, $entries_per_page, $forceEcho)
 	{
 		// Usage: echo simpleblog_countPages($simpleblog['root_php'] . '/articles', $current_page, $simpleblog['entries_per_page']) . "\n"
 
@@ -72,15 +63,26 @@
 		$pages_count=ceil(count($files)/$entries_per_page);
 
 		$i=1; // loop indicator
-		while($i <= $pages_count)
-		{
-			if($i == $current_page)
-				$return=$return . '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>';// render current
-			else
-				$return=$return . '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
-
-			++$i;
-		}
+		if($forceEcho)
+			while($i <= $pages_count)
+			{
+				if($i == $current_page)
+					echo '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render current
+				else
+					echo '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
+	
+				++$i;
+			}
+		else
+			while($i <= $pages_count)
+			{
+				if($i == $current_page)
+					$return=$return . '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render current
+				else
+					$return=$return . '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
+	
+				++$i;
+			}
 
 		return $return;
 	}

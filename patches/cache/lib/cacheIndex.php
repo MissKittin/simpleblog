@@ -15,19 +15,9 @@
 	$simpleblog['cache']['cacheIndex']['cache_dir']=$simpleblog['root_php'] . '/tmp/posts_cache';
 
 	// deny direct access
-	if(php_sapi_name() === 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/cacheIndex.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include 'prevent-index.php'; exit();
-		}
+		include './prevent-index.php'; exit();
 	}
 
 	// cache generator
@@ -35,6 +25,15 @@
 	{
 		// private variables
 		$simpleblog['cache']['cacheIndex']['articles_dir']=$simpleblog['root_php'] . '/articles';
+
+		// pivot/force variables (server-independent cache)
+		$simpleblog['cache']['cacheIndex']['pivot_root_html']=$simpleblog['root_html'];
+		$simpleblog['root_html']='<?php echo $simpleblog[\'root_html\']; ?>';
+		if(isset($cms_root))
+		{
+			$simpleblog['cache']['cacheIndex']['pivot_cms_root']=$cms_root;
+			$cms_root='<?php echo $cms_root; ?>';
+		}
 
 		// clear old cache
 		foreach(scandir($simpleblog['cache']['cacheIndex']['cache_dir']) as $cache)
@@ -54,12 +53,21 @@
 				// limit entries
 				if($loop_ind >= $simpleblog['entries_per_page'])
 				{
-					$page++;
+					++$page;
 					$loop_ind=1;
 				}
 				else
-					$loop_ind++;
+					++$loop_ind;
 			}
+
+		// revert and remove pivots
+		$simpleblog['root_html']=$simpleblog['cache']['cacheIndex']['pivot_root_html'];
+		unset($simpleblog['cache']['cacheIndex']['pivot_root_html']);
+		if(isset($cms_root))
+		{
+			$cms_root=$simpleblog['cache']['cacheIndex']['pivot_cms_root'];
+			unset($simpleblog['cache']['cacheIndex']['pivot_cms_root']);
+		}
 	}
 
 	// use_cache flag
@@ -84,7 +92,7 @@
 						$return=$return . '<div class="page" id="current_page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render current
 					else
 						$return=$return . '<div class="page"><a href="?page='. $i .'">' . $i . '</a></div>'; // render
-					$i++; // iterate indicator
+					++$i; // iterate indicator
 				}
 
 			return $return;

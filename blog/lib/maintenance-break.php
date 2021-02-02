@@ -12,24 +12,13 @@
 	$maintenance_break['pattern']=$simpleblog['root_php'] . '/lib/maintenance-break-pattern.php';
 
 	// deny direct access
-	if(php_sapi_name() != 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/maintenance-break.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include 'prevent-index.php'; exit();
-		}
+		include './prevent-index.php'; exit();
 	}
 
 	// Apache version don't have $simpleblog_router_cache
-	if(php_sapi_name() != 'cli-server')
-		$simpleblog_router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
+	$simpleblog_router_cache['strtok']=strtok($_SERVER['REQUEST_URI'], '?');
 
 	// Create cache for better performance
 	$maintenance_break['if_cache']=substr($simpleblog_router_cache['strtok'], strlen($simpleblog['root_html']));
@@ -63,5 +52,5 @@
 
 	// clean
 	unset($maintenance_break);
-	if(php_sapi_name() != 'cli-server') unset($simpleblog_router_cache);
+	unset($simpleblog_router_cache);
 ?>

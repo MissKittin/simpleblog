@@ -1,4 +1,4 @@
-<?php /* import apache settings (if not imported by main index) */ if((!isset($simpleblog)) && (php_sapi_name() != 'cli-server')) include '../../settings.php'; ?>
+<?php /* import settings (if not imported by main index) */ if(!isset($simpleblog)) include '../../settings.php'; ?>
 <?php
 	// import view
 	if(!@include $simpleblog['root_php'] . '/skins/' . $simpleblog['skin'] . '/views/viewIndex.php')

@@ -61,7 +61,7 @@
 				unlink($adminpanel['path']['cron'] . '/' . $_GET['task']);
 			else
 			{
-				include 'delete.php'; exit();
+				include './delete.php'; exit();
 			}
 		}
 
@@ -73,11 +73,11 @@
 			{
 				if(function_exists('opcache_get_status')) if(opcache_get_status()) opcache_reset();
 				file_put_contents($adminpanel['path']['cron'] . '/' . $_GET['task'], $_POST['file_content']);
-				include 'edit.php'; exit();
+				include './edit.php'; exit();
 			}
 			else
 			{
-				include 'edit.php'; exit();
+				include './edit.php'; exit();
 			}
 		}
 ?>

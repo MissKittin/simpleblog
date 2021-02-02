@@ -1,12 +1,5 @@
-<?php if(php_sapi_name() != 'cli-server') include '../../settings.php'; ?>
+<?php if(!isset($simpleblog)) include '../../settings.php'; ?>
 <?php
-	if(php_sapi_name() === 'cli-server')
-		if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strlen(strtok($_SERVER['REQUEST_URI'], '?')) - 1) === '/')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php';
-			exit();
-		}
-
 	if(!isset($_GET['root']))
 	{
 		include $simpleblog['root_php'] . '/lib/prevent-index.php';
@@ -14,9 +7,11 @@
 	}
 
 	header('Content-Type: text/css; X-Content-Type-Options: nosniff;');
+	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT'); header('Pragma: cache'); header('Cache-Control: max-age=3600');
 ?>
 <?php
-	echo '@import "' . $_GET['root'] . '/skins/' . $simpleblog['skin'] . '/sample_addon?root=' . $_GET['root'] . '";';
+	//echo '@import "' . $_GET['root'] . '/skins/' . $simpleblog['skin'] . '/sample_addon?root=' . $_GET['root'] . '";';
+	include './sample_addon/index.php';
 ?>
 
 
@@ -245,7 +240,6 @@
 @media only screen and (max-width: 850px) {
 	#headlinks {
 		width: 600px;
-		
 	}
 	.headlink {
 		width: 90px;

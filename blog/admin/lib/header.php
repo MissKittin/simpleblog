@@ -2,7 +2,7 @@
 	// prevent direct
 	if(substr(strtok($_SERVER['REQUEST_URI'], '?'), strrpos(strtok($_SERVER['REQUEST_URI'], '?'), '/')) === '/header.php')
 	{
-		include 'prevent-index.php'; exit();
+		include './prevent-index.php'; exit();
 	}
 ?>
 <h2 style="float: left;">Administration</h2>

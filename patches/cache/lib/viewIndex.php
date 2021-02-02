@@ -5,19 +5,9 @@
 	// $simpleblog['coreIndex_forceEcho'] variable 19.08.2020
 
 	// deny direct access
-	if(php_sapi_name() === 'cli-server')
+	if(!isset($simpleblog))
 	{
-		if(strtok($_SERVER['REQUEST_URI'], '?') === $simpleblog['root_html'] . '/lib/viewIndex.php')
-		{
-			include $simpleblog['root_php'] . '/lib/prevent-index.php'; exit();
-		}
-	}
-	else
-	{
-		if(!isset($simpleblog))
-		{
-			include 'prevent-index.php'; exit();
-		}
+		include './prevent-index.php'; exit();
 	}
 ?>
 <?php
@@ -47,6 +37,7 @@
 	function simpleblog_viewIndexArticles()
 	{
 		global $simpleblog;
+		global $cms_root; // engineCore() has this, when cache file is used, engineCore() is not called - without this global, $cms_root is not available for cache
 
 		if($simpleblog['cache']['use_cache']) // cache patch
 			include $simpleblog['cache']['cacheIndex']['cache_dir'] . '/' . $simpleblog['page']['current_page'] . '.php';

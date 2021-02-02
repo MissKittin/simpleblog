@@ -3,7 +3,7 @@
 	// Simpleblog v2 11.11.2019
 	// Simpleblog v2.1 03.12.2019
 	// Simpleblog v2.2 06.04.2020
-	// Edit lines 9-36
+	// Simpleblog v2.2 06.04.2020 u1 20.01.2021
 
 	// start execution time monitor (uncomment this to enable)
 	//$simpleblog['execTime']=microtime(true); 
@@ -40,5 +40,5 @@
 	if(file_exists($simpleblog['root_php'] . '/lib/maintenance-break.php')) { include $simpleblog['root_php'] . '/lib/maintenance-break.php'; unset($maintenance_break); }
 
 	// execute cron tasks
-	if(file_exists($simpleblog['root_php'] . '/lib/cron.php')) include $simpleblog['root_php'] . '/lib/cron.php';
+	if((!isset($simpleblog['cron_executed'])) && (file_exists($simpleblog['root_php'] . '/lib/cron.php'))) { include $simpleblog['root_php'] . '/lib/cron.php'; $simpleblog['cron_executed']=true; }
 ?>

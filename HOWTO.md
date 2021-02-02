@@ -11,7 +11,6 @@
 * [How to allow javascript](#how-to-allow-javascript)
 * [Articles addressing scope](#articles-addressing-scope)
 * [php-cli test pool](#php-cli-test-pool)
-* [Supported HTTP servers](#supported-http-servers)
 * [How to upgrade](#how-to-upgrade)
 * [Apache htpasswd security for admin panel](#apache-htpasswd-security-for-admin-panel)
 * [Enabling brute force attack protection](#enabling-brute-force-attack-protection)
@@ -39,7 +38,7 @@
 # First steps after clone
 1. you can rename `blog` to another name
 2. enter into `blog`
-3. run setup.sh or setup-links.sh (setup.bat or setup-links.bat on windows)\*
+3. run `setup.sh` or `setup-links.sh` (setup.bat or setup-links.bat on windows)\*
 4. edit files indicated by the setup script (if you changed the directory name, update `$simpleblog['root_html']` variable)
 5. copy blog/skins/default and create your own.
 6. upload `blog` to server
@@ -53,11 +52,11 @@ But if you use http proxy script, path for browser is `/proxy/blog` and it's not
 # Simpleblog in DOCUMENT_ROOT
 1. (only for php-cli version) open `.router.php` and put `return false;` before `?>`:
 ```
-	// execute cron tasks
-	if(file_exists($simpleblog['root_php'] . '/lib/cron.php')) include $simpleblog['root_php'] . '/lib/cron.php';
-
 	// drop cache
 	unset($simpleblog_router_cache);
+
+	// drop settings (not necessary)
+	//unset($simpleblog);
 
 	return false;
 ?>
@@ -189,13 +188,9 @@ Automation: edit `$simpleblog_path`, put this file on your server, and run it in
 # php-cli test pool
 Setup simpleblog for php built-in server, and type `php -S 0.0.0.0:8080 router.php`, where `router.php` is in the the repo root, not the one in the `blog` directory.
 
-# Supported HTTP servers
-PHP built-in server and Apache. If you want run the Simpleblog on other server, I recommend configure it for Apache.  
-`auto_prepend_file` way isn't tested and I don't recommend this (but if you want...)
-
 # How to upgrade
 1. Merge `favicon`, `footer.php`, `header.php`, `headlinks.php`, `htmlheaders.php` content to new files in `lib`
-2. Merge `settings.php` or `router.php` settings, uncomment backward compatibility options
+2. Merge settings from `settings.php`, uncomment backward compatibility options
 3. Move maintenance break pattern from old `maintenance-break.php` to new `lib/maintenance-break-pattern.php`
 4. Remove all files from old version except `articles`, `cron`, `media`, `pages` and `skins`
 5. Merge new version with old version
