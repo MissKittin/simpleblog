@@ -19,14 +19,6 @@ But first read manual.
 # Additional cron tasks
 * `requireHTTPS.php`
 
-# Additional functions
-* `checkDate.php` -> apply eg custom style beetwen start and end date
-* `checkDate.js` -> javascript version of `checkDate.php`
-* `checkEaster.php` -> checkDate for Easter  
-	calculates the first day of Easter and the end date by adding n days to the first day  
-	**run `php create-easter-date-table.php` before use**
-* `checkEaster.js` -> javascript version of `checkEaster.php`
-
 # Patches
 [Here](patches)
 

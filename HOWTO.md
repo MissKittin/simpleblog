@@ -91,7 +91,7 @@ Default startup page is `posts`. To choose a different startup page, change the 
 Don't touch first `<?php` block of code. Write content below `?>`.
 
 # How to create skins
-Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP. You can use my functions: [here](additional_functions)  
+Copy `skins/default` to `skins/your_theme_name`. `index.php` is main file (don't touch first `<?php` block of code, write content below `?>`). You can add more css by creating `skins/your_theme_name/my_addon/index.php` and linking it by css `@import` rule or include directly by PHP.  
 `views` contains html layouts for `index`, maintenance break, `post`, `tag` and pages.  
 To create an installation package, just zip the directory with your theme.
 
